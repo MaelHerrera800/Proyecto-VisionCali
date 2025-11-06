@@ -64,7 +64,7 @@ estado = np.where(personas > capacidades, "Colapsada", "Estable")
 
 
 fecha_fin = datetime.now().date()
-fecha_inicio = fecha_fin - timedelta(days=730)  # 2 años de histórico
+fecha_inicio = fecha_fin - timedelta(days=10000)  # 2 años de histórico
 fechas_secuenciales = pd.date_range(start=fecha_inicio, end=fecha_fin, periods=num_datos)
 
 FRANJAS_DISPONIBLES = [

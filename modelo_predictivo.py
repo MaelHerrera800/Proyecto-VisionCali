@@ -70,7 +70,7 @@ class ModeloPredictivoMIO:
         self.df = self.df.replace([np.inf, -np.inf], np.nan)
         self.df = self.df.dropna(subset=["Ocupacion"])
 
-        # Variable binaria para colapso (MEJORADA)
+        # Variable binaria para colapso
         self.df = self.df.assign(
             Colapsada=(
                 self.df["Estado"].astype(str).str.strip().str.lower() == "colapsada"
@@ -237,10 +237,16 @@ class ModeloPredictivoMIO:
             return None
 
     # ===========================================================
-    # PREDICCIÓN PARA FECHAS FUTURAS
+    # PREDICCIÓN PARA FECHAS FUTURAS - CORREGIDO PARA 5 DÍAS
     # ===========================================================
-    def generar_fechas_futuras(self, dias_futuros=3):
-        """Genera fechas futuras basándose en datos históricos."""
+    def generar_fechas_futuras(self, dias_futuros=5):
+        """
+        Genera predicciones solo para los próximos N días.
+        Por defecto genera 5 días con 1 registro por terminal por día.
+        
+        Args:
+            dias_futuros: Número de días a predecir (default: 5)
+        """
         fecha_max = self.df["Fecha"].max()
         fechas_futuras = pd.date_range(
             start=fecha_max + timedelta(days=1),
@@ -249,40 +255,50 @@ class ModeloPredictivoMIO:
         )
         
         terminales_unicas = self.df["Terminal"].unique()
-        franjas_unicas = self.df["Franja Horaria"].unique()
         
         escenarios = []
         for fecha in fechas_futuras:
             for terminal in terminales_unicas:
-                for franja in franjas_unicas:
-                    hist = self.df[self.df["Terminal"] == terminal]
-                    
-                    if len(hist) > 0:
-                        cap_promedio = hist["Capacidad Máxima"].median()
-                        ocup_promedio = hist["Ocupacion"].median()
-                    else:
-                        cap_promedio = self.df["Capacidad Máxima"].median()
-                        ocup_promedio = self.df["Ocupacion"].median()
-                    
-                    escenarios.append({
-                        "Terminal": terminal,
-                        "Fecha": fecha,
-                        "Día de la Semana": fecha.day_name(),
-                        "Franja Horaria": franja,
-                        "Capacidad Máxima": cap_promedio,
-                        "Ocupacion": ocup_promedio,
-                        "Personas Actuales": cap_promedio * ocup_promedio
-                    })
+                # Obtener estadísticas históricas de esta terminal
+                hist = self.df[self.df["Terminal"] == terminal]
+                
+                if len(hist) > 0:
+                    # Usar la franja horaria más común de esta terminal
+                    franja_comun = hist["Franja Horaria"].mode()[0]
+                    cap_promedio = hist["Capacidad Máxima"].median()
+                    ocup_promedio = hist["Ocupacion"].median()
+                else:
+                    franja_comun = self.df["Franja Horaria"].mode()[0]
+                    cap_promedio = self.df["Capacidad Máxima"].median()
+                    ocup_promedio = self.df["Ocupacion"].median()
+                
+                escenarios.append({
+                    "Terminal": terminal,
+                    "Fecha": fecha,
+                    "Día de la Semana": fecha.day_name(),
+                    "Franja Horaria": franja_comun,
+                    "Capacidad Máxima": cap_promedio,
+                    "Ocupacion": ocup_promedio,
+                    "Personas Actuales": cap_promedio * ocup_promedio
+                })
         
         df_futuro = pd.DataFrame(escenarios)
-        print(f"📅 Generadas {len(df_futuro)} predicciones futuras ({dias_futuros} días)")
+        print(f"📅 Generadas predicciones para {dias_futuros} días")
+        print(f"   Total registros: {len(df_futuro)} ({len(terminales_unicas)} terminales × {dias_futuros} días)")
         return df_futuro
 
     # ===========================================================
     # PREDICCIÓN
     # ===========================================================
-    def predecir(self, df_objetivo=None, incluir_futuro=True, dias_futuros=30):
-        """Genera predicciones sobre datos históricos o futuros."""
+    def predecir(self, df_objetivo=None, incluir_futuro=True, dias_futuros=5):
+        """
+        Genera predicciones sobre datos históricos o futuros.
+        
+        Args:
+            df_objetivo: DataFrame a predecir (si None, usa self.df)
+            incluir_futuro: Si True, genera predicciones para fechas futuras
+            dias_futuros: Días a predecir en el futuro (default: 5)
+        """
         if self.modelo_ols is None and self.modelo_logit is None:
             print("⚠️ No hay modelos entrenados.")
             return None
@@ -410,31 +426,36 @@ class ModeloPredictivoMIO:
 # ===========================================================
 if __name__ == "__main__":
     print("\n" + "="*60)
-    print("🚀 SISTEMA PREDICTIVO MIO - VERSIÓN CORREGIDA")
+    print("🚀 SISTEMA PREDICTIVO MIO - PREDICCIÓN 5 DÍAS")
     print("="*60 + "\n")
     
-    # IMPORTANTE: Ahora usa usar_ultimo_mes=False por defecto
+    # Entrenar con todos los datos históricos
     modelo = ModeloPredictivoMIO(usar_ultimo_mes=False)
     
     print("\n📊 ENTRENANDO MODELOS...")
     modelo.entrenar_modelo_regresion()
     modelo.entrenar_modelo_colapso()
     
-    print("\n🔮 GENERANDO PREDICCIONES FUTURAS...")
-    df_pred = modelo.predecir(incluir_futuro=True, dias_futuros=30)
+    print("\n🔮 GENERANDO PREDICCIONES PARA LOS PRÓXIMOS 5 DÍAS...")
+    df_pred = modelo.predecir(incluir_futuro=True, dias_futuros=5)
 
     if df_pred is not None:
         modelo.guardar_predicciones()
         
         print("\n" + "="*60)
-        print("📋 VISTA PREVIA DE PREDICCIONES")
+        print("📋 PREDICCIONES GENERADAS")
         print("="*60)
-        print(df_pred.head(15).to_string(index=False))
+        print(df_pred.to_string(index=False))
         
         print("\n" + "="*60)
-        print("📊 RESUMEN ESTADÍSTICO")
+        print("📊 RESUMEN POR TERMINAL")
         print("="*60)
-        print(df_pred[["Personas_Predichas", "Prob_Colapso", "Estado_Previsto"]].describe())
+        resumen = df_pred.groupby("Terminal").agg({
+            "Personas_Predichas": "mean",
+            "Prob_Colapso": "mean",
+            "Estado_Previsto": lambda x: x.value_counts().to_dict()
+        })
+        print(resumen)
     else:
         print("\n⚠️ No se pudieron generar predicciones.")
-        print("Revisa los mensajes de error anteriores.")
+        print("   Revisa los mensajes de error anteriores.")
