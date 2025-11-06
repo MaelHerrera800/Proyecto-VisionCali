@@ -58,6 +58,9 @@ def mostrar_estaciones_colapso():
     limpiar_canvas()
     limpiar_tabla()
 
+    # Asegurar formato de fecha sin hora
+    df_predicciones["Fecha"] = pd.to_datetime(df_predicciones["Fecha"]).dt.date
+
     # Simular los próximos 5 días (futuro)
     fecha_actual = df_predicciones["Fecha"].max()
     fecha_futura = fecha_actual + timedelta(days=5)
@@ -74,7 +77,7 @@ def mostrar_estaciones_colapso():
     label.pack(pady=10)
 
     # Crear tabla de visualización
-    cols = ["Terminal", "Fecha", "Personas_Predichas", "Prob_Colapso"]
+    cols = ["Terminal", "Fecha", "Franja Horaria", "Personas_Predichas", "Prob_Colapso"]
     tree = ttk.Treeview(frame_resultados, columns=cols, show="headings", height=15)
 
     for col in cols:
@@ -84,10 +87,11 @@ def mostrar_estaciones_colapso():
     # Agregar filas
     for _, row in df_colapsos.iterrows():
         tree.insert("", "end", values=(
-            row["Terminal"],
-            row["Fecha"],
-            int(row["Personas_Predichas"]),
-            f"{row['Prob_Colapso']*100:.1f}%"
+            row.get("Terminal", ""),
+            row.get("Fecha", ""),
+            row.get("Franja Horaria", ""),
+            int(row.get("Personas_Predichas", 0)),
+            f"{row.get('Prob_Colapso', 0)*100:.1f}%"
         ))
 
     tree.pack(fill="both", expand=True)
@@ -104,6 +108,8 @@ def grafico_estado_general():
 
     limpiar_canvas()
     limpiar_tabla()
+
+    df_predicciones["Fecha"] = pd.to_datetime(df_predicciones["Fecha"]).dt.date
 
     fecha_actual = df_predicciones["Fecha"].max()
     fecha_futura = fecha_actual + timedelta(days=5)
@@ -135,17 +141,25 @@ def grafico_top_colapsos():
     limpiar_canvas()
     limpiar_tabla()
 
+    df_predicciones["Fecha"] = pd.to_datetime(df_predicciones["Fecha"]).dt.date
+
     fecha_actual = df_predicciones["Fecha"].max()
     fecha_futura = fecha_actual + timedelta(days=5)
     df_futuro = df_predicciones[df_predicciones["Fecha"] <= fecha_futura]
 
-    top_colapso = df_futuro.groupby("Terminal")["Prob_Colapso"].mean().sort_values(ascending=False).head(10)
+    # Agrupar también por franja horaria
+    top_colapso = (
+        df_futuro.groupby(["Terminal", "Franja Horaria"])["Prob_Colapso"]
+        .mean()
+        .sort_values(ascending=False)
+        .head(10)
+    )
 
     fig, ax = plt.subplots(figsize=(10, 6))
-    sns.barplot(x=top_colapso.values, y=top_colapso.index, palette="Reds_r", ax=ax)
-    ax.set_title("🚨 Top 10 estaciones con mayor probabilidad de colapso (próximos 5 días)")
+    top_colapso.plot(kind="barh", color="#e74c3c", ax=ax)
+    ax.set_title("🚨 Top 10 estaciones y franjas horarias con mayor probabilidad de colapso (próximos 5 días)")
     ax.set_xlabel("Probabilidad de colapso promedio")
-    ax.set_ylabel("Terminal")
+    ax.set_ylabel("Terminal y Franja Horaria")
     plt.tight_layout()
     mostrar_grafico(fig)
 
