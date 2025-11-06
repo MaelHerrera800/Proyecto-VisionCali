@@ -210,4 +210,3 @@ canvas = None
 if __name__ == "__main__":
     ventana.mainloop()
 
-#ejemplo de uso: python Graficas.py
