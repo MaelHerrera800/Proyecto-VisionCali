@@ -9,12 +9,12 @@ warnings.filterwarnings("ignore")
 
 
 class ModeloPredictivoMIO:
-    def __init__(self, usar_ultimo_mes=True):
+    def __init__(self, usar_ultimo_mes=False):
         """
         Inicializa el modelo con los datos limpios.
         
         Args:
-            usar_ultimo_mes: Si True, filtra solo el último mes para entrenamiento
+            usar_ultimo_mes: Si True, filtra solo el último mes (CAMBIADO A FALSE POR DEFECTO)
         """
         if usar_ultimo_mes:
             self.df = obtener_ultimo_mes()
@@ -44,11 +44,11 @@ class ModeloPredictivoMIO:
             if col not in self.df.columns:
                 raise KeyError(f"❌ Falta la columna requerida: '{col}' en df_limpio")
 
-        # ✅ Convertir fechas con método moderno
+        # Convertir fechas
         self.df = self.df.assign(Fecha=pd.to_datetime(self.df["Fecha"], errors="coerce"))
         self.df = self.df.dropna(subset=["Terminal", "Fecha", "Personas Actuales", "Capacidad Máxima"])
         
-        # ✅ Convertir a numérico de forma segura
+        # Convertir a numérico
         self.df = self.df.assign(
             **{
                 "Capacidad Máxima": pd.to_numeric(self.df["Capacidad Máxima"], errors="coerce"),
@@ -58,7 +58,7 @@ class ModeloPredictivoMIO:
         
         self.df = self.df.dropna(subset=["Capacidad Máxima", "Personas Actuales"])
 
-        # ✅ Calcular ocupación con manejo de divisiones por cero
+        # Calcular ocupación
         self.df = self.df.assign(
             Ocupacion=lambda x: np.where(
                 x["Capacidad Máxima"] > 0,
@@ -67,13 +67,14 @@ class ModeloPredictivoMIO:
             )
         )
         
-        # ✅ Método moderno: replace sin inplace
         self.df = self.df.replace([np.inf, -np.inf], np.nan)
         self.df = self.df.dropna(subset=["Ocupacion"])
 
-        # Variable binaria para colapso
+        # Variable binaria para colapso (MEJORADA)
         self.df = self.df.assign(
-            Colapsada=(self.df["Estado"].astype(str).str.lower() == "colapsada").astype(int)
+            Colapsada=(
+                self.df["Estado"].astype(str).str.strip().str.lower() == "colapsada"
+            ).astype(int)
         )
 
         print(f"✅ Datos preparados: {len(self.df)} registros válidos.")
@@ -99,39 +100,52 @@ class ModeloPredictivoMIO:
             return None
 
     # ===========================================================
-    # MODELO LOGIT
+    # MODELO LOGIT - VERSIÓN MEJORADA Y CORREGIDA
     # ===========================================================
     def entrenar_modelo_colapso(self):
-        """Entrena un modelo Logit para predecir la probabilidad de colapso."""
+        """Entrena un modelo Logit con validaciones robustas y múltiples métodos."""
         try:
-            # Verificar primero que haya variabilidad
+            print("\n" + "="*60)
+            print("🔍 VALIDANDO DATOS PARA MODELO LOGIT")
+            print("="*60)
+            
+            # 1. VERIFICAR VARIABILIDAD
             num_colapsadas = self.df["Colapsada"].sum()
             num_estables = (self.df["Colapsada"] == 0).sum()
+            total = len(self.df)
             
-            print("\n📊 Revisando datos antes de entrenar Logit:")
-            print(f"   Total de registros: {len(self.df)}")
-            print(f"   Distribución de 'Colapsada':")
-            print(f"      - Estables (0): {num_estables}")
-            print(f"      - Colapsadas (1): {num_colapsadas}")
+            print(f"📊 Estadísticas:")
+            print(f"   Total: {total}")
+            print(f"   Colapsadas: {num_colapsadas} ({num_colapsadas/total*100:.1f}%)")
+            print(f"   Estables: {num_estables} ({num_estables/total*100:.1f}%)")
             
-            # ✅ VALIDACIÓN CRÍTICA: Debe haber al menos 5 de cada tipo
+            # 2. VALIDACIÓN CRÍTICA
             if num_colapsadas < 5 or num_estables < 5:
-                print("\n⚠️ ERROR: No hay suficiente variabilidad en los datos")
-                print(f"   Se necesitan al menos 5 casos de cada tipo")
-                print(f"   Tienes: {num_colapsadas} colapsadas y {num_estables} estables")
-                print("\n💡 SOLUCIÓN: Ejecuta de nuevo limpieza_mio.py para generar nuevos datos")
+                print("\n⚠️ DATOS INSUFICIENTES PARA LOGIT")
+                print("   Se necesitan al menos 5 casos de cada tipo")
+                print("\n💡 SOLUCIONES:")
+                print("   1. Usa usar_ultimo_mes=False (ya es el default)")
+                print("   2. Revisa limpieza_mio.py para generar más datos colapsados")
+                print("   3. Verifica que la columna 'Estado' contenga 'colapsada'")
                 return None
             
-            # ✅ Crear variables dummy con método moderno
+            if total < 20:
+                print("\n⚠️ Muy pocos registros totales (<20)")
+                return None
+            
+            # 3. PREPARAR VARIABLES
+            print("\n🔧 Preparando variables...")
+            
             dummies_franja = pd.get_dummies(
-                self.df["Franja Horaria"].astype(str), 
-                prefix="Franja", 
+                self.df["Franja Horaria"].astype(str),
+                prefix="Franja",
                 drop_first=True,
                 dtype=int
             )
+            
             dummies_dia = pd.get_dummies(
-                self.df["Día de la Semana"].astype(str), 
-                prefix="Dia", 
+                self.df["Día de la Semana"].astype(str),
+                prefix="Dia",
                 drop_first=True,
                 dtype=int
             )
@@ -139,54 +153,94 @@ class ModeloPredictivoMIO:
             X = pd.concat([self.df[["Ocupacion"]], dummies_franja, dummies_dia], axis=1)
             X = X.apply(pd.to_numeric, errors="coerce")
             X = sm.add_constant(X, has_constant='add')
-
             y = pd.to_numeric(self.df["Colapsada"], errors="coerce")
             
-            # Filtrar valores válidos
+            # 4. FILTRAR NULOS
             mask = X.notnull().all(axis=1) & y.notnull()
-            Xm = X[mask].astype(float)
-            ym = y[mask].astype(float)
+            X_clean = X[mask].astype(float)
+            y_clean = y[mask].astype(float)
+            
+            print(f"   Variables: {X_clean.shape[1]}")
+            print(f"   Observaciones válidas: {len(X_clean)}")
 
-            if len(Xm) < 10:
-                print("⚠️ Muy pocos registros válidos (<10) para entrenar el modelo Logit.")
+            if len(X_clean) < 20:
+                print("⚠️ Muy pocos registros válidos después de filtrar")
                 return None
             
-            # ✅ Entrenar con método convergente y más iteraciones
-            modelo_logit = sm.Logit(ym, Xm).fit(
-                method='bfgs',  # Método más robusto
-                maxiter=200,
-                disp=False
-            )
-
-            self.modelo_logit = modelo_logit
-            self.logit_columns = Xm.columns.tolist()
-            print("✅ Modelo Logit entrenado correctamente.")
-            print(f"   Pseudo R² = {modelo_logit.prsquared:.4f}")
-            print(f"   Convergencia: {'✅ OK' if modelo_logit.mle_retvals['converged'] else '⚠️ No convergió'}")
-            return modelo_logit
+            # 5. ENTRENAR CON MÚLTIPLES MÉTODOS
+            print("\n🎯 Entrenando modelo...")
+            
+            metodos = [
+                ('bfgs', 200, True),
+                ('newton', 150, True),
+                ('lbfgs', 200, False),
+                ('nm', 300, False),
+            ]
+            
+            modelo_entrenado = None
+            
+            for metodo, max_iter, usar_hess in metodos:
+                try:
+                    print(f"   Método {metodo}...", end=" ")
+                    
+                    kwargs = {
+                        'method': metodo,
+                        'maxiter': max_iter,
+                        'disp': False,
+                        'warn_convergence': False
+                    }
+                    
+                    modelo = sm.Logit(y_clean, X_clean).fit(**kwargs)
+                    
+                    if modelo.mle_retvals.get('converged', False):
+                        print("✅")
+                        modelo_entrenado = modelo
+                        break
+                    else:
+                        print("⚠️")
+                        
+                except Exception as e:
+                    print(f"❌")
+                    continue
+            
+            # 6. VALIDAR Y GUARDAR
+            if modelo_entrenado is None:
+                print("\n⚠️ Ningún método convergió")
+                print("   Posibles causas:")
+                print("   - Separación perfecta de clases")
+                print("   - Multicolinealidad severa")
+                print("   - Muy poca variabilidad")
+                return None
+            
+            self.modelo_logit = modelo_entrenado
+            self.logit_columns = X_clean.columns.tolist()
+            
+            print("\n✅ MODELO LOGIT ENTRENADO")
+            print("="*60)
+            print(f"   Pseudo R² = {modelo_entrenado.prsquared:.4f}")
+            print(f"   AIC = {modelo_entrenado.aic:.2f}")
+            print(f"   Log-Likelihood = {modelo_entrenado.llf:.2f}")
+            
+            # Coeficientes significativos
+            params_sig = modelo_entrenado.pvalues[modelo_entrenado.pvalues < 0.05]
+            if len(params_sig) > 0:
+                print(f"\n   Variables significativas (p<0.05): {len(params_sig)}")
+            
+            print("="*60 + "\n")
+            return modelo_entrenado
 
         except Exception as e:
-            print("\n" + "="*50)
-            print("❌ Error al entrenar el modelo Logit")
-            print(f"   Tipo: {type(e).__name__}")
-            print(f"   Mensaje: {e}")
-            print("\n💡 SOLUCIÓN:")
-            print("   1. Ejecuta de nuevo: python limpieza_mio.py")
-            print("   2. Verifica que haya casos colapsados Y estables")
-            print("="*50 + "\n")
-            self.modelo_logit = None
+            print("\n❌ ERROR INESPERADO:")
+            print(f"   {type(e).__name__}: {e}")
+            import traceback
+            traceback.print_exc()
             return None
 
     # ===========================================================
     # PREDICCIÓN PARA FECHAS FUTURAS
     # ===========================================================
     def generar_fechas_futuras(self, dias_futuros=30):
-        """
-        Genera fechas futuras basándose en el último mes de datos.
-        
-        Args:
-            dias_futuros: Número de días a predecir hacia el futuro
-        """
+        """Genera fechas futuras basándose en datos históricos."""
         fecha_max = self.df["Fecha"].max()
         fechas_futuras = pd.date_range(
             start=fecha_max + timedelta(days=1),
@@ -194,7 +248,6 @@ class ModeloPredictivoMIO:
             freq='D'
         )
         
-        # Crear escenarios para cada terminal y franja
         terminales_unicas = self.df["Terminal"].unique()
         franjas_unicas = self.df["Franja Horaria"].unique()
         
@@ -202,7 +255,6 @@ class ModeloPredictivoMIO:
         for fecha in fechas_futuras:
             for terminal in terminales_unicas:
                 for franja in franjas_unicas:
-                    # Obtener estadísticas históricas de esta terminal
                     hist = self.df[self.df["Terminal"] == terminal]
                     
                     if len(hist) > 0:
@@ -230,14 +282,7 @@ class ModeloPredictivoMIO:
     # PREDICCIÓN
     # ===========================================================
     def predecir(self, df_objetivo=None, incluir_futuro=True, dias_futuros=30):
-        """
-        Genera predicciones sobre datos históricos o futuros.
-        
-        Args:
-            df_objetivo: DataFrame a predecir (si None, usa self.df)
-            incluir_futuro: Si True, genera predicciones para fechas futuras
-            dias_futuros: Días a predecir en el futuro
-        """
+        """Genera predicciones sobre datos históricos o futuros."""
         if self.modelo_ols is None and self.modelo_logit is None:
             print("⚠️ No hay modelos entrenados.")
             return None
@@ -250,14 +295,13 @@ class ModeloPredictivoMIO:
         else:
             df = self.df.copy()
 
-        # ===== PREDICCIONES DE PERSONAS (OLS) =====
+        # PREDICCIONES DE PERSONAS (OLS)
         if self.modelo_ols is not None:
             X_reg = df[["Capacidad Máxima", "Ocupacion"]].astype(float)
             X_reg = sm.add_constant(X_reg, has_constant='add')
             
             try:
                 preds = self.modelo_ols.predict(X_reg)
-                # ✅ Método moderno: usar clip y astype de forma encadenada
                 df = df.assign(
                     Personas_Predichas=preds.clip(lower=0).round().astype("Int64")
                 )
@@ -267,18 +311,18 @@ class ModeloPredictivoMIO:
         else:
             df = df.assign(Personas_Predichas=pd.NA)
 
-        # ===== PREDICCIONES DE COLAPSO (LOGIT) =====
+        # PREDICCIONES DE COLAPSO (LOGIT)
         if self.modelo_logit is not None and self.logit_columns is not None:
             try:
                 dummies_franja = pd.get_dummies(
-                    df["Franja Horaria"].astype(str), 
-                    prefix="Franja", 
+                    df["Franja Horaria"].astype(str),
+                    prefix="Franja",
                     drop_first=True,
                     dtype=int
                 )
                 dummies_dia = pd.get_dummies(
-                    df["Día de la Semana"].astype(str), 
-                    prefix="Dia", 
+                    df["Día de la Semana"].astype(str),
+                    prefix="Dia",
                     drop_first=True,
                     dtype=int
                 )
@@ -287,22 +331,22 @@ class ModeloPredictivoMIO:
                 X_logit = X_logit.apply(pd.to_numeric, errors="coerce")
                 X_logit = sm.add_constant(X_logit, has_constant='add')
 
-                # Asegurar que tengan las mismas columnas que el entrenamiento
+                # Asegurar mismas columnas que entrenamiento
                 for col in self.logit_columns:
                     if col not in X_logit.columns:
                         X_logit[col] = 0
 
                 X_logit = X_logit[self.logit_columns].astype(float)
                 
-                # ✅ PREDECIR PROBABILIDADES
+                # PREDECIR PROBABILIDADES
                 prob_colapso = self.modelo_logit.predict(X_logit)
                 df = df.assign(Prob_Colapso=prob_colapso)
                 
-                # ✅ ASIGNAR ESTADOS SEGÚN PROBABILIDAD
+                # ASIGNAR ESTADOS
                 df = df.assign(
                     Estado_Previsto=np.select(
                         [
-                            df["Prob_Colapso"] > 0.7,  # Más estricto
+                            df["Prob_Colapso"] > 0.7,
                             (df["Prob_Colapso"] > 0.4) & (df["Prob_Colapso"] <= 0.7),
                             df["Prob_Colapso"] <= 0.4
                         ],
@@ -312,32 +356,30 @@ class ModeloPredictivoMIO:
                 )
                 
                 print(f"✅ Predicciones de colapso generadas")
-                print(f"   Distribución de estados previstos:")
                 conteo_estados = df["Estado_Previsto"].value_counts()
                 for estado, count in conteo_estados.items():
-                    print(f"      - {estado}: {count}")
+                    print(f"   - {estado}: {count}")
                     
             except Exception as e:
                 print(f"⚠️ Error al predecir con Logit: {e}")
                 df = df.assign(Prob_Colapso=np.nan, Estado_Previsto="No disponible")
         else:
-            print("⚠️ Modelo Logit no entrenado. Generando predicciones solo con OLS.")
+            print("⚠️ Modelo Logit no disponible. Solo predicciones OLS.")
             df = df.assign(Prob_Colapso=np.nan, Estado_Previsto="No disponible")
 
-        # ✅ Seleccionar columnas en orden específico
+        # Seleccionar columnas
         columnas_salida = [
             "Terminal", "Fecha", "Día de la Semana", "Franja Horaria",
             "Capacidad Máxima", "Ocupacion", "Personas_Predichas",
             "Prob_Colapso", "Estado_Previsto"
         ]
         
-        # Agregar "Personas Actuales" solo si existe
         if "Personas Actuales" in df.columns:
             columnas_salida.insert(5, "Personas Actuales")
         
         self.df_predicciones = df[columnas_salida].copy()
 
-        print(f"✅ Predicciones generadas: {len(self.df_predicciones)} registros")
+        print(f"\n✅ Predicciones generadas: {len(self.df_predicciones)} registros")
         print(f"   - OLS: {'✅' if self.modelo_ols else '❌'}")
         print(f"   - Logit: {'✅' if self.modelo_logit else '❌'}")
         
@@ -349,15 +391,14 @@ class ModeloPredictivoMIO:
     def guardar_predicciones(self, archivo="predicciones_mio.xlsx"):
         """Guarda predicciones en Excel con formato mejorado"""
         if self.df_predicciones is not None:
-            # ✅ Formato de fecha legible
             df_export = self.df_predicciones.copy()
             df_export["Fecha"] = pd.to_datetime(df_export["Fecha"]).dt.date
             
             df_export.to_excel(archivo, index=False)
-            print(f"💾 Archivo guardado: {archivo}")
+            print(f"\n💾 Archivo guardado: {archivo}")
             print(f"   Total registros: {len(df_export)}")
-            print(f"   Estados previstos:")
             if "Estado_Previsto" in df_export.columns:
+                print(f"   Estados previstos:")
                 for estado, count in df_export["Estado_Previsto"].value_counts().items():
                     print(f"      - {estado}: {count}")
         else:
@@ -369,11 +410,11 @@ class ModeloPredictivoMIO:
 # ===========================================================
 if __name__ == "__main__":
     print("\n" + "="*60)
-    print("🚀 SISTEMA PREDICTIVO MIO - INICIANDO")
+    print("🚀 SISTEMA PREDICTIVO MIO - VERSIÓN CORREGIDA")
     print("="*60 + "\n")
     
-    # Entrenar modelo con último mes
-    modelo = ModeloPredictivoMIO(usar_ultimo_mes=True)
+    # IMPORTANTE: Ahora usa usar_ultimo_mes=False por defecto
+    modelo = ModeloPredictivoMIO(usar_ultimo_mes=False)
     
     print("\n📊 ENTRENANDO MODELOS...")
     modelo.entrenar_modelo_regresion()
@@ -394,3 +435,6 @@ if __name__ == "__main__":
         print("📊 RESUMEN ESTADÍSTICO")
         print("="*60)
         print(df_pred[["Personas_Predichas", "Prob_Colapso", "Estado_Previsto"]].describe())
+    else:
+        print("\n⚠️ No se pudieron generar predicciones.")
+        print("Revisa los mensajes de error anteriores.")
