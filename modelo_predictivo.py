@@ -239,7 +239,7 @@ class ModeloPredictivoMIO:
     # ===========================================================
     # PREDICCIÓN PARA FECHAS FUTURAS
     # ===========================================================
-    def generar_fechas_futuras(self, dias_futuros=30):
+    def generar_fechas_futuras(self, dias_futuros=3):
         """Genera fechas futuras basándose en datos históricos."""
         fecha_max = self.df["Fecha"].max()
         fechas_futuras = pd.date_range(
