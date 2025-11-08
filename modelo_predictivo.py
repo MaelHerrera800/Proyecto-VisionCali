@@ -217,15 +217,10 @@ class ModeloPredictivoMIO_sklearn:
 
             df["Prob_Colapso"] = prob_colapso
             df["Estado_Previsto"] = np.select(
-                [
-                    df["Prob_Colapso"] > 0.75,
-                    (df["Prob_Colapso"] > 0.5) & (df["Prob_Colapso"] <= 0.75),
-                    (df["Prob_Colapso"] > 0.25) & (df["Prob_Colapso"] <= 0.5),
-                    df["Prob_Colapso"] <= 0.25
-                ],
-                ["Colapsará", "Alto Riesgo", "Riesgo Moderado", "Estable"],
-                default="Desconocido"
-            )
+    [df["Prob_Colapso"] > 0.75],
+    ["Colapsará"],
+    default="Estable"
+)
 
         self.df_predicciones = df
         print("✅ Predicciones generadas correctamente")
@@ -234,7 +229,7 @@ class ModeloPredictivoMIO_sklearn:
     # ===========================================================
     # 💾 GUARDAR RESULTADOS ORDENADOS
     # ===========================================================
-    def guardar_predicciones(self, archivo="predicciones_mio_sklearn.xlsx"):
+    def guardar_predicciones(self, archivo="predicciones_mio.xlsx"):
         if self.df_predicciones is None:
             print("⚠️ No hay predicciones para guardar.")
             return
