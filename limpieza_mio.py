@@ -38,7 +38,7 @@ class ObjetoDeDatos:
 
 
 # ============================================================
-# 🏙️ DATOS DE TERMINALES SIMULADOS
+# 🏙️ DATOS DE TERMINALES SIMULADOS - CON ALTA VARIABILIDAD
 # ============================================================
 nombres_terminales = [
     "Terminal Paso del Comercio", "Terminal Menga", "Terminal Andrés Sanín",
@@ -57,19 +57,28 @@ np.random.seed(42)
 terminales_random = np.random.choice(nombres_terminales, num_datos)
 capacidades = np.random.randint(80, 200, num_datos)
 
-# Generar número de personas realista según capacidad
+# 🆕 MEJORADO: Generar ocupación con MAYOR VARIABILIDAD
+# Esto garantiza que habrá suficientes casos de colapso
 personas = []
-for cap in capacidades:
+for i, cap in enumerate(capacidades):
+    # 🎯 ESTRATEGIA: Diferentes escenarios según posición
     rand = np.random.random()
-    if rand < 0.60:
-        personas.append(np.random.randint(int(cap * 0.4), int(cap * 0.8)))
-    elif rand < 0.85:
-        personas.append(np.random.randint(int(cap * 0.8), int(cap * 1.1)))
-    else:
-        personas.append(np.random.randint(int(cap * 1.1), int(cap * 1.4)))
+    
+    if rand < 0.40:  # 40% - Ocupación normal-baja (40-70%)
+        ocupacion = np.random.uniform(0.40, 0.70)
+    elif rand < 0.70:  # 30% - Ocupación normal-alta (70-90%)
+        ocupacion = np.random.uniform(0.70, 0.90)
+    elif rand < 0.85:  # 15% - Ocupación crítica (90-110%)
+        ocupacion = np.random.uniform(0.90, 1.10)
+    else:  # 15% - Sobrecapacidad/Colapso (110-160%)
+        ocupacion = np.random.uniform(1.10, 1.60)
+    
+    personas.append(int(cap * ocupacion))
 
 personas = np.array(personas)
-estado = np.where(personas > capacidades, "Colapsada", "Estable")
+
+# 🆕 CORREGIDO: Estado con umbral en 95%
+estado = np.where(personas > capacidades * 0.95, "Colapsada", "Estable")
 
 # ✅ Fechas entre hace 2 años y hoy (sin hora)
 fecha_fin = datetime.now().date()
@@ -94,6 +103,26 @@ df_terminales["Día de la Semana"] = pd.to_datetime(df_terminales["Fecha"]).dt.d
 
 print(f"✅ Se generaron {len(df_terminales)} registros de simulación.")
 print(f"📅 Rango de fechas: {df_terminales['Fecha'].min()} → {df_terminales['Fecha'].max()}")
+
+# 🆕 Calcular y mostrar ocupación para validación
+ocupacion_temp = (df_terminales["Personas Actuales"] / df_terminales["Capacidad Máxima"])
+print(f"\n📊 Estadísticas de Ocupación ANTES de limpiar:")
+print(f"   Media: {ocupacion_temp.mean():.2%}")
+print(f"   Desv.Std: {ocupacion_temp.std():.2%}")
+print(f"   Mínimo: {ocupacion_temp.min():.2%}")
+print(f"   Máximo: {ocupacion_temp.max():.2%}")
+
+# Distribución de estados
+colapsadas_count = (df_terminales['Estado'] == 'Colapsada').sum()
+estables_count = (df_terminales['Estado'] == 'Estable').sum()
+print(f"\n🚦 Distribución de Estados:")
+print(f"   🚨 Colapsadas (>95%): {colapsadas_count} ({colapsadas_count/num_datos*100:.1f}%)")
+print(f"   ✅ Estables (≤95%): {estables_count} ({estables_count/num_datos*100:.1f}%)")
+
+# Verificar que hay suficientes casos colapsados
+if colapsadas_count < num_datos * 0.10:
+    print(f"\n⚠️  ADVERTENCIA: Solo {colapsadas_count/num_datos*100:.1f}% colapsadas")
+    print(f"   Recomendación: Ajustar distribución para más variabilidad")
 
 # Introducir valores nulos (5%)
 num_nulls = int(num_datos * 0.05)
@@ -128,23 +157,10 @@ with pd.ExcelWriter("data_limpia_mio.xlsx", engine="openpyxl") as writer:
     df_nulos.to_excel(writer, sheet_name="Valores Nulos", index=False)
     df_limpio.to_excel(writer, sheet_name="Datos Limpios", index=False)
 
-print("✅ Archivo 'data_limpia_mio.xlsx' generado exitosamente.")
+print("\n✅ Archivo 'data_limpia_mio.xlsx' generado exitosamente.")
 
 # ============================================================
 # 🧾 BLOQUE PRINCIPAL
 # ============================================================
 if __name__ == "__main__":
     print("\n" + "="*60)
-    print("📊 RESUMEN DE DATOS GENERADOS")
-    print("="*60)
-    print(f"Total registros: {len(df_terminales)}")
-    print(f"Terminales únicas: {df_terminales['Terminal'].nunique()}")
-    print(f"Registros colapsados: {(df_limpio['Estado'] == 'Colapsada').sum()}")
-    print(f"Registros estables: {(df_limpio['Estado'] == 'Estable').sum()}")
-    print("="*60)
-
-    print("\n" + "="*60)
-    print("📅 EJEMPLO: ÚLTIMO DÍA POR TERMINAL")
-    print("="*60)
-    print(df_ultimo_dia_ejemplo.head().to_string(index=False))
-    print("="*60)
