@@ -4,7 +4,9 @@ import openpyxl
 import calendar 
 from datetime import datetime, timedelta
 
-# ------------------- CLASE OBJETO DE DATOS -------------------
+# ============================================================
+# 🧩 CLASE OBJETO DE DATOS
+# ============================================================
 class ObjetoDeDatos:
     def __init__(self, dataframe):
         self.dataframe = dataframe
@@ -13,41 +15,31 @@ class ObjetoDeDatos:
         """Limpia los datos y conserva solo la última observación por terminal"""
         df_limpio = self.dataframe.copy()
 
+        # Validar que existan las columnas necesarias
+        cols_requeridas = ["Personas Actuales", "Franja Horaria", "Estado"]
+        for col in cols_requeridas:
+            if col not in df_limpio.columns:
+                raise KeyError(f"❌ Falta la columna requerida: {col}")
+
+        # Asegurar tipos de datos correctos
+        df_limpio["Personas Actuales"] = df_limpio["Personas Actuales"].astype(float)
+
         # Rellenar valores faltantes
         mediana_personas = df_limpio["Personas Actuales"].median()
         df_limpio["Personas Actuales"] = df_limpio["Personas Actuales"].fillna(mediana_personas)
         df_limpio["Franja Horaria"] = df_limpio["Franja Horaria"].fillna("Desconocida")
         df_limpio = df_limpio.dropna(subset=["Estado"])
 
-        # ✅ Asegurar que la fecha esté sin hora (solo año-mes-día)
+        # Asegurar que la fecha esté sin hora (solo año-mes-día)
         df_limpio["Fecha"] = pd.to_datetime(df_limpio["Fecha"]).dt.date
 
-        # ✅ Obtener la última fecha registrada para cada terminal
-        ultima_fecha_por_terminal = (
-            df_limpio.groupby("Terminal", as_index=False)["Fecha"]
-            .max()
-            .rename(columns={"Fecha": "Ultima_Fecha"})
-        )
-
-        # ✅ Unir con el dataset original para obtener solo el último registro de cada terminal
-        df_final = df_limpio.merge(
-            ultima_fecha_por_terminal,
-            left_on=["Terminal", "Fecha"],
-            right_on=["Terminal", "Ultima_Fecha"],
-            how="inner"
-        )
-
-        # Eliminar columna auxiliar
-        df_final = df_final.drop(columns=["Ultima_Fecha"])
-
-        print(f"📆 Se conservaron los últimos registros por terminal ({len(df_final)} filas)")
-        print(f"   Terminales únicas: {df_final['Terminal'].nunique()}")
-        print(f"   Rango de fechas: {df_final['Fecha'].min()} → {df_final['Fecha'].max()}")
-
-        return df_final
+        # Devolver el DataFrame limpio
+        return df_limpio
 
 
-# ------------------- DATOS DE TERMINALES -------------------
+# ============================================================
+# 🏙️ DATOS DE TERMINALES SIMULADOS
+# ============================================================
 nombres_terminales = [
     "Terminal Paso del Comercio", "Terminal Menga", "Terminal Andrés Sanín",
     "Terminal Simón Bolívar", "Terminal Aguablanca", "Centro", "Plaza de Caycedo",
@@ -115,14 +107,22 @@ df_terminales.loc[indices_nulls_estado, "Estado"] = None
 
 df_nulos = df_terminales.isnull().astype(int)
 
-# ------------------- LIMPIAR DATOS -------------------
+# ============================================================
+# 🧹 LIMPIAR DATOS
+# ============================================================
 objeto_datos = ObjetoDeDatos(df_terminales)
 df_limpio = objeto_datos.limpiar_datos()
 
-print(f"🧹 Datos limpios: {len(df_limpio)} registros después de limpieza")
-print(f"📊 Estados: {df_limpio['Estado'].value_counts().to_dict()}")
+# Crear DataFrame con el último día disponible por terminal
+df_ultimo_dia_ejemplo = (
+    df_limpio.sort_values("Fecha")
+    .groupby("Terminal")
+    .tail(1)
+)
 
-# ------------------- EXPORTAR -------------------
+# ============================================================
+# 📤 EXPORTAR A EXCEL
+# ============================================================
 with pd.ExcelWriter("data_limpia_mio.xlsx", engine="openpyxl") as writer:
     df_terminales.to_excel(writer, sheet_name="Datos Originales", index=False)
     df_nulos.to_excel(writer, sheet_name="Valores Nulos", index=False)
@@ -130,48 +130,9 @@ with pd.ExcelWriter("data_limpia_mio.xlsx", engine="openpyxl") as writer:
 
 print("✅ Archivo 'data_limpia_mio.xlsx' generado exitosamente.")
 
-# ------------------- FUNCIONES AUXILIARES -------------------
-def obtener_ultimo_mes():
-    """Retorna datos del último mes para entrenar el modelo"""
-    fecha_corte = df_limpio["Fecha"].max() - timedelta(days=30)
-    df_ultimo_mes = df_limpio[df_limpio["Fecha"] >= fecha_corte].copy()
-    print(f"📆 Último mes: {len(df_ultimo_mes)} registros desde {fecha_corte}")
-    return df_ultimo_mes
-
-
-def obtener_ultimo_dia_por_estacion():
-    """
-    Retorna solo el último día de datos de cada estación.
-    Esto permite que el modelo use la información más reciente de cada terminal.
-    """
-    df_temp = df_limpio.copy()
-
-    # ✅ Obtener la última fecha de cada estación
-    ultima_fecha_por_estacion = (
-        df_temp.groupby("Terminal", as_index=False)["Fecha"]
-        .max()
-        .rename(columns={"Fecha": "Fecha_Maxima"})
-    )
-
-    # ✅ Hacer merge correctamente con nombres coincidentes
-    df_filtrado = df_temp.merge(
-        ultima_fecha_por_estacion,
-        left_on=["Terminal", "Fecha"],
-        right_on=["Terminal", "Fecha_Maxima"],
-        how="inner"
-    )
-
-    # Eliminar columna auxiliar
-    df_ultimo_dia = df_filtrado.drop(columns=["Fecha_Maxima"])
-
-    print(f"📅 Último día por estación: {len(df_ultimo_dia)} registros")
-    print(f"   Terminales únicas: {df_ultimo_dia['Terminal'].nunique()}")
-    print(f"   Fecha más reciente: {df_ultimo_dia['Fecha'].max()}")
-    
-    return df_ultimo_dia
-
-
-# ------------------- BLOQUE PRINCIPAL -------------------
+# ============================================================
+# 🧾 BLOQUE PRINCIPAL
+# ============================================================
 if __name__ == "__main__":
     print("\n" + "="*60)
     print("📊 RESUMEN DE DATOS GENERADOS")
@@ -183,8 +144,7 @@ if __name__ == "__main__":
     print("="*60)
 
     print("\n" + "="*60)
-    print("📅 EJEMPLO: ÚLTIMO DÍA POR ESTACIÓN")
+    print("📅 EJEMPLO: ÚLTIMO DÍA POR TERMINAL")
     print("="*60)
-    df_ultimo_dia_ejemplo = obtener_ultimo_dia_por_estacion()
     print(df_ultimo_dia_ejemplo.head().to_string(index=False))
     print("="*60)

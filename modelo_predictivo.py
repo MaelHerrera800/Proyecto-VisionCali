@@ -3,7 +3,7 @@ import numpy as np
 import statsmodels.api as sm
 import warnings
 from datetime import datetime, timedelta
-from limpieza_mio import df_limpio, obtener_ultimo_mes
+from limpieza_mio import df_limpio
 
 warnings.filterwarnings("ignore")
 
@@ -12,17 +12,18 @@ class ModeloPredictivoMIO:
     def __init__(self, usar_ultimo_mes=False):
         """
         Inicializa el modelo con los datos limpios.
-        
         Args:
-            usar_ultimo_mes: Si True, filtra solo el último mes (CAMBIADO A FALSE POR DEFECTO)
+            usar_ultimo_mes: Si True, filtra solo el último mes (por defecto False)
         """
         if usar_ultimo_mes:
-            self.df = obtener_ultimo_mes()
-            print("🎯 Usando datos del último mes para entrenar el modelo")
+            fecha_max = pd.to_datetime(df_limpio["Fecha"]).max()
+            fecha_min = fecha_max - pd.Timedelta(days=30)
+            self.df = df_limpio[df_limpio["Fecha"] >= fecha_min].copy()
+            print("📆 Usando solo datos del último mes.")
         else:
             self.df = df_limpio.copy()
-            print("📊 Usando todos los datos históricos")
-            
+            print("📊 Usando todos los datos históricos.")
+
         self._preparar_datos()
         self.modelo_ols = None
         self.modelo_logit = None
@@ -30,59 +31,47 @@ class ModeloPredictivoMIO:
         self.df_predicciones = None
 
     # ===========================================================
-    # PREPARACIÓN DE DATOS
+    # 🧹 PREPARACIÓN DE DATOS
     # ===========================================================
     def _preparar_datos(self):
-        """Prepara datos con métodos modernos de pandas"""
+        """Prepara datos con métodos modernos de pandas."""
         columnas_necesarias = [
-            "Terminal", "Fecha", "Franja Horaria",
-            "Día de la Semana", "Capacidad Máxima",
-            "Personas Actuales", "Estado"
+            "Terminal", "Fecha", "Franja Horaria", "Día de la Semana",
+            "Capacidad Máxima", "Personas Actuales", "Estado"
         ]
-        
+
         for col in columnas_necesarias:
             if col not in self.df.columns:
                 raise KeyError(f"❌ Falta la columna requerida: '{col}' en df_limpio")
 
         # Convertir fechas
-        self.df = self.df.assign(Fecha=pd.to_datetime(self.df["Fecha"], errors="coerce"))
+        self.df["Fecha"] = pd.to_datetime(self.df["Fecha"], errors="coerce")
         self.df = self.df.dropna(subset=["Terminal", "Fecha", "Personas Actuales", "Capacidad Máxima"])
-        
+
         # Convertir a numérico
-        self.df = self.df.assign(
-            **{
-                "Capacidad Máxima": pd.to_numeric(self.df["Capacidad Máxima"], errors="coerce"),
-                "Personas Actuales": pd.to_numeric(self.df["Personas Actuales"], errors="coerce")
-            }
-        )
-        
+        self.df["Capacidad Máxima"] = pd.to_numeric(self.df["Capacidad Máxima"], errors="coerce")
+        self.df["Personas Actuales"] = pd.to_numeric(self.df["Personas Actuales"], errors="coerce")
         self.df = self.df.dropna(subset=["Capacidad Máxima", "Personas Actuales"])
 
         # Calcular ocupación
-        self.df = self.df.assign(
-            Ocupacion=lambda x: np.where(
-                x["Capacidad Máxima"] > 0,
-                x["Personas Actuales"] / x["Capacidad Máxima"],
-                np.nan
-            )
+        self.df["Ocupacion"] = np.where(
+            self.df["Capacidad Máxima"] > 0,
+            self.df["Personas Actuales"] / self.df["Capacidad Máxima"],
+            np.nan
         )
-        
-        self.df = self.df.replace([np.inf, -np.inf], np.nan)
-        self.df = self.df.dropna(subset=["Ocupacion"])
+        self.df = self.df.replace([np.inf, -np.inf], np.nan).dropna(subset=["Ocupacion"])
 
         # Variable binaria para colapso
-        self.df = self.df.assign(
-            Colapsada=(
-                self.df["Estado"].astype(str).str.strip().str.lower() == "colapsada"
-            ).astype(int)
-        )
+        self.df["Colapsada"] = (
+            self.df["Estado"].astype(str).str.strip().str.lower() == "colapsada"
+        ).astype(int)
 
         print(f"✅ Datos preparados: {len(self.df)} registros válidos.")
-        print(f"   - Colapsadas: {self.df['Colapsada'].sum()}")
-        print(f"   - Estables: {(self.df['Colapsada'] == 0).sum()}")
+        print(f" - Colapsadas: {self.df['Colapsada'].sum()}")
+        print(f" - Estables: {(self.df['Colapsada'] == 0).sum()}")
 
     # ===========================================================
-    # MODELO OLS
+    # 📈 MODELO OLS
     # ===========================================================
     def entrenar_modelo_regresion(self):
         """Entrena un modelo de regresión lineal (OLS) para predecir Personas."""
@@ -93,369 +82,197 @@ class ModeloPredictivoMIO:
 
             self.modelo_ols = sm.OLS(y, X).fit()
             print("✅ Modelo de regresión (OLS) entrenado correctamente.")
-            print(f"   R² = {self.modelo_ols.rsquared:.4f}")
+            print(f" R² = {self.modelo_ols.rsquared:.4f}")
             return self.modelo_ols
+
         except Exception as e:
             print(f"❌ Error al entrenar el modelo OLS: {e}")
             return None
 
     # ===========================================================
-    # MODELO LOGIT - VERSIÓN MEJORADA Y CORREGIDA
+    # 🔍 MODELO LOGIT - VERSIÓN MEJORADA
     # ===========================================================
     def entrenar_modelo_colapso(self):
-        """Entrena un modelo Logit con validaciones robustas y múltiples métodos."""
+        """Entrena un modelo Logit con validaciones robustas."""
         try:
             print("\n" + "="*60)
             print("🔍 VALIDANDO DATOS PARA MODELO LOGIT")
             print("="*60)
-            
-            # 1. VERIFICAR VARIABILIDAD
+
             num_colapsadas = self.df["Colapsada"].sum()
             num_estables = (self.df["Colapsada"] == 0).sum()
             total = len(self.df)
-            
-            print(f"📊 Estadísticas:")
-            print(f"   Total: {total}")
-            print(f"   Colapsadas: {num_colapsadas} ({num_colapsadas/total*100:.1f}%)")
-            print(f"   Estables: {num_estables} ({num_estables/total*100:.1f}%)")
-            
-            # 2. VALIDACIÓN CRÍTICA
-            if num_colapsadas < 5 or num_estables < 5:
-                print("\n⚠️ DATOS INSUFICIENTES PARA LOGIT")
-                print("   Se necesitan al menos 5 casos de cada tipo")
-                print("\n💡 SOLUCIONES:")
-                print("   1. Usa usar_ultimo_mes=False (ya es el default)")
-                print("   2. Revisa limpieza_mio.py para generar más datos colapsados")
-                print("   3. Verifica que la columna 'Estado' contenga 'colapsada'")
+
+            print(f"📊 Total: {total}")
+            print(f" Colapsadas: {num_colapsadas}")
+            print(f" Estables: {num_estables}")
+
+            if num_colapsadas < 5 or num_estables < 5 or total < 20:
+                print("⚠️ Datos insuficientes para entrenar el modelo Logit.")
                 return None
-            
-            if total < 20:
-                print("\n⚠️ Muy pocos registros totales (<20)")
-                return None
-            
-            # 3. PREPARAR VARIABLES
-            print("\n🔧 Preparando variables...")
-            
+
+            # Preparar variables
             dummies_franja = pd.get_dummies(
                 self.df["Franja Horaria"].astype(str),
-                prefix="Franja",
-                drop_first=True,
-                dtype=int
+                prefix="Franja", drop_first=True, dtype=int
             )
-            
             dummies_dia = pd.get_dummies(
                 self.df["Día de la Semana"].astype(str),
-                prefix="Dia",
-                drop_first=True,
-                dtype=int
+                prefix="Dia", drop_first=True, dtype=int
             )
 
             X = pd.concat([self.df[["Ocupacion"]], dummies_franja, dummies_dia], axis=1)
-            X = X.apply(pd.to_numeric, errors="coerce")
             X = sm.add_constant(X, has_constant='add')
-            y = pd.to_numeric(self.df["Colapsada"], errors="coerce")
-            
-            # 4. FILTRAR NULOS
+            y = self.df["Colapsada"].astype(float)
+
+            # Eliminar NaN
             mask = X.notnull().all(axis=1) & y.notnull()
             X_clean = X[mask].astype(float)
             y_clean = y[mask].astype(float)
-            
-            print(f"   Variables: {X_clean.shape[1]}")
-            print(f"   Observaciones válidas: {len(X_clean)}")
 
-            if len(X_clean) < 20:
-                print("⚠️ Muy pocos registros válidos después de filtrar")
-                return None
-            
-            # 5. ENTRENAR CON MÚLTIPLES MÉTODOS
-            print("\n🎯 Entrenando modelo...")
-            
-            metodos = [
-                ('bfgs', 200, True),
-                ('newton', 150, True),
-                ('lbfgs', 200, False),
-                ('nm', 300, False),
-            ]
-            
-            modelo_entrenado = None
-            
-            for metodo, max_iter, usar_hess in metodos:
-                try:
-                    print(f"   Método {metodo}...", end=" ")
-                    
-                    kwargs = {
-                        'method': metodo,
-                        'maxiter': max_iter,
-                        'disp': False,
-                        'warn_convergence': False
-                    }
-                    
-                    modelo = sm.Logit(y_clean, X_clean).fit(**kwargs)
-                    
-                    if modelo.mle_retvals.get('converged', False):
-                        print("✅")
-                        modelo_entrenado = modelo
-                        break
-                    else:
-                        print("⚠️")
-                        
-                except Exception as e:
-                    print(f"❌")
-                    continue
-            
-            # 6. VALIDAR Y GUARDAR
-            if modelo_entrenado is None:
-                print("\n⚠️ Ningún método convergió")
-                print("   Posibles causas:")
-                print("   - Separación perfecta de clases")
-                print("   - Multicolinealidad severa")
-                print("   - Muy poca variabilidad")
-                return None
-            
-            self.modelo_logit = modelo_entrenado
+            print(f"📈 Datos válidos: {len(X_clean)} observaciones")
+
+            modelo = sm.Logit(y_clean, X_clean).fit(method="lbfgs", maxiter=200, disp=False)
+            self.modelo_logit = modelo
             self.logit_columns = X_clean.columns.tolist()
-            
-            print("\n✅ MODELO LOGIT ENTRENADO")
-            print("="*60)
-            print(f"   Pseudo R² = {modelo_entrenado.prsquared:.4f}")
-            print(f"   AIC = {modelo_entrenado.aic:.2f}")
-            print(f"   Log-Likelihood = {modelo_entrenado.llf:.2f}")
-            
-            # Coeficientes significativos
-            params_sig = modelo_entrenado.pvalues[modelo_entrenado.pvalues < 0.05]
-            if len(params_sig) > 0:
-                print(f"\n   Variables significativas (p<0.05): {len(params_sig)}")
-            
-            print("="*60 + "\n")
-            return modelo_entrenado
+
+            print("✅ Modelo LOGIT entrenado correctamente.")
+            print(f" Pseudo R² = {modelo.prsquared:.4f}")
+            print(f" AIC = {modelo.aic:.2f}")
+            return modelo
 
         except Exception as e:
-            print("\n❌ ERROR INESPERADO:")
-            print(f"   {type(e).__name__}: {e}")
-            import traceback
-            traceback.print_exc()
+            print(f"❌ Error al entrenar el modelo Logit: {e}")
             return None
 
     # ===========================================================
-    # PREDICCIÓN PARA FECHAS FUTURAS - CORREGIDO PARA 5 DÍAS
+    # 🔮 PREDICCIÓN FUTURA
     # ===========================================================
     def generar_fechas_futuras(self, dias_futuros=5):
-        """
-        Genera predicciones solo para los próximos N días.
-        Por defecto genera 5 días con 1 registro por terminal por día.
-        
-        Args:
-            dias_futuros: Número de días a predecir (default: 5)
-        """
+        """Genera predicciones para los próximos N días."""
         fecha_max = self.df["Fecha"].max()
-        fechas_futuras = pd.date_range(
-            start=fecha_max + timedelta(days=1),
-            periods=dias_futuros,
-            freq='D'
-        )
-        
-        terminales_unicas = self.df["Terminal"].unique()
-        
+        fechas_futuras = pd.date_range(start=fecha_max + timedelta(days=1),
+                                       periods=dias_futuros, freq='D')
+        terminales = self.df["Terminal"].unique()
         escenarios = []
+
         for fecha in fechas_futuras:
-            for terminal in terminales_unicas:
-                # Obtener estadísticas históricas de esta terminal
+            for terminal in terminales:
                 hist = self.df[self.df["Terminal"] == terminal]
-                
                 if len(hist) > 0:
-                    # Usar la franja horaria más común de esta terminal
-                    franja_comun = hist["Franja Horaria"].mode()[0]
-                    cap_promedio = hist["Capacidad Máxima"].median()
-                    ocup_promedio = hist["Ocupacion"].median()
+                    franja = hist["Franja Horaria"].mode()[0]
+                    cap = hist["Capacidad Máxima"].median()
+                    ocup = hist["Ocupacion"].median()
                 else:
-                    franja_comun = self.df["Franja Horaria"].mode()[0]
-                    cap_promedio = self.df["Capacidad Máxima"].median()
-                    ocup_promedio = self.df["Ocupacion"].median()
-                
+                    franja = self.df["Franja Horaria"].mode()[0]
+                    cap = self.df["Capacidad Máxima"].median()
+                    ocup = self.df["Ocupacion"].median()
+
                 escenarios.append({
                     "Terminal": terminal,
                     "Fecha": fecha,
                     "Día de la Semana": fecha.day_name(),
-                    "Franja Horaria": franja_comun,
-                    "Capacidad Máxima": cap_promedio,
-                    "Ocupacion": ocup_promedio,
-                    "Personas Actuales": cap_promedio * ocup_promedio
+                    "Franja Horaria": franja,
+                    "Capacidad Máxima": cap,
+                    "Ocupacion": ocup,
+                    "Personas Actuales": cap * ocup
                 })
-        
+
         df_futuro = pd.DataFrame(escenarios)
-        print(f"📅 Generadas predicciones para {dias_futuros} días")
-        print(f"   Total registros: {len(df_futuro)} ({len(terminales_unicas)} terminales × {dias_futuros} días)")
+        print(f"📅 Generadas predicciones para {dias_futuros} días ({len(df_futuro)} registros)")
         return df_futuro
 
     # ===========================================================
-    # PREDICCIÓN
+    # 📊 PREDICCIÓN COMPLETA
     # ===========================================================
-    def predecir(self, df_objetivo=None, incluir_futuro=True, dias_futuros=5):
-        """
-        Genera predicciones sobre datos históricos o futuros.
-        
-        Args:
-            df_objetivo: DataFrame a predecir (si None, usa self.df)
-            incluir_futuro: Si True, genera predicciones para fechas futuras
-            dias_futuros: Días a predecir en el futuro (default: 5)
-        """
+    def predecir(self, incluir_futuro=True, dias_futuros=5):
+        """Genera predicciones usando OLS y Logit."""
         if self.modelo_ols is None and self.modelo_logit is None:
             print("⚠️ No hay modelos entrenados.")
             return None
 
-        # Decidir qué datos predecir
-        if df_objetivo is not None:
-            df = df_objetivo.copy()
-        elif incluir_futuro:
-            df = self.generar_fechas_futuras(dias_futuros)
-        else:
-            df = self.df.copy()
+        df = self.generar_fechas_futuras(dias_futuros) if incluir_futuro else self.df.copy()
 
-        # PREDICCIONES DE PERSONAS (OLS)
+        # Predicción OLS
         if self.modelo_ols is not None:
-            X_reg = df[["Capacidad Máxima", "Ocupacion"]].astype(float)
-            X_reg = sm.add_constant(X_reg, has_constant='add')
-            
             try:
-                preds = self.modelo_ols.predict(X_reg)
-                df = df.assign(
-                    Personas_Predichas=preds.clip(lower=0).round().astype("Int64")
-                )
+                X_reg = sm.add_constant(df[["Capacidad Máxima", "Ocupacion"]].astype(float), has_constant='add')
+                df["Personas_Predichas"] = self.modelo_ols.predict(X_reg).clip(lower=0).round().astype("Int64")
             except Exception as e:
                 print(f"⚠️ Error en predicción OLS: {e}")
-                df = df.assign(Personas_Predichas=pd.NA)
-        else:
-            df = df.assign(Personas_Predichas=pd.NA)
+                df["Personas_Predichas"] = pd.NA
 
-        # PREDICCIONES DE COLAPSO (LOGIT)
+        # Predicción Logit
         if self.modelo_logit is not None and self.logit_columns is not None:
             try:
-                dummies_franja = pd.get_dummies(
-                    df["Franja Horaria"].astype(str),
-                    prefix="Franja",
-                    drop_first=True,
-                    dtype=int
-                )
-                dummies_dia = pd.get_dummies(
-                    df["Día de la Semana"].astype(str),
-                    prefix="Dia",
-                    drop_first=True,
-                    dtype=int
-                )
-
+                dummies_franja = pd.get_dummies(df["Franja Horaria"].astype(str), prefix="Franja", drop_first=True, dtype=int)
+                dummies_dia = pd.get_dummies(df["Día de la Semana"].astype(str), prefix="Dia", drop_first=True, dtype=int)
                 X_logit = pd.concat([df[["Ocupacion"]], dummies_franja, dummies_dia], axis=1)
-                X_logit = X_logit.apply(pd.to_numeric, errors="coerce")
                 X_logit = sm.add_constant(X_logit, has_constant='add')
 
-                # Asegurar mismas columnas que entrenamiento
                 for col in self.logit_columns:
                     if col not in X_logit.columns:
                         X_logit[col] = 0
-
                 X_logit = X_logit[self.logit_columns].astype(float)
-                
-                # PREDECIR PROBABILIDADES
-                prob_colapso = self.modelo_logit.predict(X_logit)
-                df = df.assign(Prob_Colapso=prob_colapso)
-                
-                # ASIGNAR ESTADOS
-                df = df.assign(
-                    Estado_Previsto=np.select(
-                        [
-                            df["Prob_Colapso"] > 0.7,
-                            (df["Prob_Colapso"] > 0.4) & (df["Prob_Colapso"] <= 0.7),
-                            df["Prob_Colapso"] <= 0.4
-                        ],
-                        ["Colapsará", "Riesgo de Colapso", "Estable"],
-                        default="Desconocido"
-                    )
+
+                df["Prob_Colapso"] = self.modelo_logit.predict(X_logit)
+                df["Estado_Previsto"] = np.select(
+                    [
+                        df["Prob_Colapso"] > 0.7,
+                        (df["Prob_Colapso"] > 0.4) & (df["Prob_Colapso"] <= 0.7),
+                        df["Prob_Colapso"] <= 0.4
+                    ],
+                    ["Colapsará", "Riesgo de Colapso", "Estable"],
+                    default="Desconocido"
                 )
-                
-                print(f"✅ Predicciones de colapso generadas")
-                conteo_estados = df["Estado_Previsto"].value_counts()
-                for estado, count in conteo_estados.items():
-                    print(f"   - {estado}: {count}")
-                    
+                print("✅ Predicciones de colapso generadas.")
             except Exception as e:
-                print(f"⚠️ Error al predecir con Logit: {e}")
-                df = df.assign(Prob_Colapso=np.nan, Estado_Previsto="No disponible")
-        else:
-            print("⚠️ Modelo Logit no disponible. Solo predicciones OLS.")
-            df = df.assign(Prob_Colapso=np.nan, Estado_Previsto="No disponible")
+                print(f"⚠️ Error en predicción Logit: {e}")
+                df["Prob_Colapso"] = np.nan
+                df["Estado_Previsto"] = "No disponible"
 
-        # Seleccionar columnas
-        columnas_salida = [
-            "Terminal", "Fecha", "Día de la Semana", "Franja Horaria",
-            "Capacidad Máxima", "Ocupacion", "Personas_Predichas",
-            "Prob_Colapso", "Estado_Previsto"
-        ]
-        
-        if "Personas Actuales" in df.columns:
-            columnas_salida.insert(5, "Personas Actuales")
-        
-        self.df_predicciones = df[columnas_salida].copy()
-
-        print(f"\n✅ Predicciones generadas: {len(self.df_predicciones)} registros")
-        print(f"   - OLS: {'✅' if self.modelo_ols else '❌'}")
-        print(f"   - Logit: {'✅' if self.modelo_logit else '❌'}")
-        
-        return self.df_predicciones
+        self.df_predicciones = df.copy()
+        return df
 
     # ===========================================================
-    # GUARDAR RESULTADOS
+    # 💾 GUARDAR RESULTADOS
     # ===========================================================
     def guardar_predicciones(self, archivo="predicciones_mio.xlsx"):
-        """Guarda predicciones en Excel con formato mejorado"""
+        """Guarda predicciones en Excel con formato mejorado."""
         if self.df_predicciones is not None:
             df_export = self.df_predicciones.copy()
             df_export["Fecha"] = pd.to_datetime(df_export["Fecha"]).dt.date
-            
             df_export.to_excel(archivo, index=False)
             print(f"\n💾 Archivo guardado: {archivo}")
-            print(f"   Total registros: {len(df_export)}")
+            print(f" Total registros: {len(df_export)}")
+
             if "Estado_Previsto" in df_export.columns:
-                print(f"   Estados previstos:")
+                print("\n📊 Estados previstos:")
                 for estado, count in df_export["Estado_Previsto"].value_counts().items():
-                    print(f"      - {estado}: {count}")
+                    print(f" - {estado}: {count}")
         else:
             print("⚠️ No hay predicciones para guardar.")
 
 
 # ===========================================================
-# BLOQUE PRINCIPAL
+# 🧠 BLOQUE PRINCIPAL
 # ===========================================================
 if __name__ == "__main__":
     print("\n" + "="*60)
     print("🚀 SISTEMA PREDICTIVO MIO - PREDICCIÓN 5 DÍAS")
     print("="*60 + "\n")
-    
-    # Entrenar con todos los datos históricos
+
     modelo = ModeloPredictivoMIO(usar_ultimo_mes=False)
-    
+
     print("\n📊 ENTRENANDO MODELOS...")
     modelo.entrenar_modelo_regresion()
     modelo.entrenar_modelo_colapso()
-    
+
     print("\n🔮 GENERANDO PREDICCIONES PARA LOS PRÓXIMOS 5 DÍAS...")
     df_pred = modelo.predecir(incluir_futuro=True, dias_futuros=5)
 
     if df_pred is not None:
         modelo.guardar_predicciones()
-        
-        print("\n" + "="*60)
-        print("📋 PREDICCIONES GENERADAS")
-        print("="*60)
-        print(df_pred.to_string(index=False))
-        
-        print("\n" + "="*60)
-        print("📊 RESUMEN POR TERMINAL")
-        print("="*60)
-        resumen = df_pred.groupby("Terminal").agg({
-            "Personas_Predichas": "mean",
-            "Prob_Colapso": "mean",
-            "Estado_Previsto": lambda x: x.value_counts().to_dict()
-        })
-        print(resumen)
+        print("\n📋 PREDICCIONES GENERADAS CON ÉXITO")
     else:
         print("\n⚠️ No se pudieron generar predicciones.")
-        print("   Revisa los mensajes de error anteriores.")
