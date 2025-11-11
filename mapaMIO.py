@@ -118,7 +118,7 @@ def generar_mapa_predicciones(df):
         bottom: 30px; left: 30px; width: 210px; height: 130px; 
         background-color: white; border:2px solid grey; z-index:9999;
         font-size:14px; border-radius:10px; padding:10px;">
-        <b>🧭 Leyenda del mapa MIO</b><br>
+        <b>Leyenda del mapa MIO</b><br>
         <i style="background:green; width:15px; height:15px; float:left; margin-right:8px;"></i> Estable<br>
         <i style="background:orange; width:15px; height:15px; float:left; margin-right:8px;"></i> Riesgo de colapso<br>
         <i style="background:red; width:15px; height:15px; float:left; margin-right:8px;"></i> Colapsará<br>
