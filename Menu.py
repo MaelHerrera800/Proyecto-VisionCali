@@ -32,6 +32,10 @@ def ventana_admin():
     admin_win.title("Panel de Administrador")
     admin_win.geometry("300x200")
     tk.Label(admin_win, text="Bienvenido Administrador", font=("Arial", 14)).pack(pady=30)
+    tk.Button(admin_win, text="Generar reporte", command=lambda: messagebox.showinfo("en desarrollo")).pack(pady=40)
+    tk.Button(admin_win, text="Ver graficas", command=lambda: messagebox.showinfo("en desarrollo")).pack(pady=40)
+    tk.Button(admin_win, text="Ver Mapa", command=lambda: messagebox.showinfo("en desarrollo")).pack(pady=40)
+    tk.Button(admin_win, text="Ver estaciones que se van a colapsar", command=lambda: messagebox.showinfo("Funcionalidad en desarrollo")).pack(pady=10)
     tk.Button(admin_win, text="Cerrar", command=admin_win.destroy).pack(pady=10)
 
 def ventana_operario():
@@ -39,6 +43,9 @@ def ventana_operario():
     oper_win.title("Panel de Operario")
     oper_win.geometry("300x200")
     tk.Label(oper_win, text="Bienvenido Operario", font=("Arial", 14)).pack(pady=30)
+    tk.Button(oper_win, text="Actualizar estado de terminales", command=lambda: messagebox.showinfo("en desarrollo")).pack(pady=10)
+    tk.Button(oper_win, text="Ver Mapa", command=lambda: messagebox.showinfo("en desarrollo")).pack(pady=10)
+    tk.Button(oper_win, text="Ver estaciones que se van a colapsar", command=lambda: messagebox.showinfo("en desarrollo")).pack(pady=10)
     tk.Button(oper_win, text="Cerrar", command=oper_win.destroy).pack(pady=10)
 
 
@@ -109,6 +116,7 @@ tk.Label(ventana, text="Seleccione su rol", font=("Arial", 12, "bold"), bg="#f0f
 tk.Button(ventana, text="Administrador", command=login_admin, bg="#4CAF50", fg="white", width=20).pack(pady=10)
 tk.Button(ventana, text="Operario", command=login_operario, bg="#2196F3", fg="white", width=20).pack(pady=10)
 tk.Button(ventana, text="Usuario", command=ventana_usuario, bg="#E21717", fg="white", width=20).pack(pady=10)
+tk.Button(ventana, text="Cerrar", command=ventana.destroy).pack(pady=10)
 
 ventana.mainloop() 
 

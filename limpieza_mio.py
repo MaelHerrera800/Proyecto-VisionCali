@@ -104,25 +104,7 @@ df_terminales["Día de la Semana"] = pd.to_datetime(df_terminales["Fecha"]).dt.d
 print(f"✅ Se generaron {len(df_terminales)} registros de simulación.")
 print(f"📅 Rango de fechas: {df_terminales['Fecha'].min()} → {df_terminales['Fecha'].max()}")
 
-# 🆕 Calcular y mostrar ocupación para validación
-ocupacion_temp = (df_terminales["Personas Actuales"] / df_terminales["Capacidad Máxima"])
-print(f"\n📊 Estadísticas de Ocupación ANTES de limpiar:")
-print(f"   Media: {ocupacion_temp.mean():.2%}")
-print(f"   Desv.Std: {ocupacion_temp.std():.2%}")
-print(f"   Mínimo: {ocupacion_temp.min():.2%}")
-print(f"   Máximo: {ocupacion_temp.max():.2%}")
 
-# Distribución de estados
-colapsadas_count = (df_terminales['Estado'] == 'Colapsada').sum()
-estables_count = (df_terminales['Estado'] == 'Estable').sum()
-print(f"\n🚦 Distribución de Estados:")
-print(f"   🚨 Colapsadas (>95%): {colapsadas_count} ({colapsadas_count/num_datos*100:.1f}%)")
-print(f"   ✅ Estables (≤95%): {estables_count} ({estables_count/num_datos*100:.1f}%)")
-
-# Verificar que hay suficientes casos colapsados
-if colapsadas_count < num_datos * 0.10:
-    print(f"\n⚠️  ADVERTENCIA: Solo {colapsadas_count/num_datos*100:.1f}% colapsadas")
-    print(f"   Recomendación: Ajustar distribución para más variabilidad")
 
 # Introducir valores nulos (5%)
 num_nulls = int(num_datos * 0.05)
@@ -163,4 +145,4 @@ print("\n✅ Archivo 'data_limpia_mio.xlsx' generado exitosamente.")
 # 🧾 BLOQUE PRINCIPAL
 # ============================================================
 if __name__ == "__main__":
-    print("\n" + "="*60)
+    print("listo viejo")
