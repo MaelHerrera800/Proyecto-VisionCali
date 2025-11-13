@@ -233,4 +233,5 @@ def mostrar_solo_tabla_colapsos():
     ventana.mainloop()
 if __name__ == "__main__":
     iniciar_graficas()
+    
 
