@@ -4,6 +4,8 @@ import pyrebase
 import subprocess
 import sys
 import Graficas
+import Reportes_finales
+import webbrowser
 
 # -----------------------------------------------------
 # CONFIGURACIÓN DE FIREBASE
@@ -40,9 +42,9 @@ def ventana_admin():
 
     tk.Label(admin_win, text="Bienvenido Administrador", font=("Arial", 14)).pack(pady=10)
 
-    tk.Button(admin_win, text="Generar reporte", command=lambda: messagebox.showinfo("En desarrollo")).pack(pady=5)
+    tk.Button(admin_win, text="Generar reporte", command=abrir_reporte, bg="#4CAF50", fg="white",).pack(pady=5)
     tk.Button(admin_win, text="Ver gráficas", command=abrir_graficas, bg="#9B59B6", fg="white").pack(pady=5)
-    tk.Button(admin_win, text="Ver Mapa", command=lambda: messagebox.showinfo("En desarrollo")).pack(pady=5)
+    tk.Button(admin_win, text="Ver Mapa", command=abrir_mapa).pack(pady=5)
     tk.Button(admin_win, text="Ver estaciones que se van a colapsar", command=ventana_usuario).pack(pady=5)
     tk.Button(admin_win, text="Cerrar", command=admin_win.destroy, bg="#E74C3C", fg="white").pack(pady=10)
 
@@ -51,13 +53,37 @@ def ventana_operario():
     oper_win.title("Panel de Operario")
     oper_win.geometry("300x250")
     tk.Label(oper_win, text="Bienvenido Operario", font=("Arial", 14)).pack(pady=10)
-    tk.Button(oper_win, text="Ver Mapa", command=lambda: messagebox.showinfo("En desarrollo")).pack(pady=5)
+    tk.Button(oper_win, text="Ver Mapa", command=abrir_mapa).pack(pady=5)
     tk.Button(oper_win, text="Ver estaciones que se van a colapsar", command=ventana_usuario).pack(pady=5)
     tk.Button(oper_win, text="Cerrar", command=oper_win.destroy, bg="#E74C3C", fg="white").pack(pady=10)
 
-# -----------------------------------------------------
-# FUNCIÓN PARA ABRIR EL MÓDULO DE GRÁFICAS
-# -----------------------------------------------------
+# FUNCIÓNes DE ABRIR MÓDULOS
+def abrir_reporte():
+    """
+    Abre el módulo de reportes (Reportes_finales.py) en una ventana separada.
+    """
+    try:
+        subprocess.Popen([sys.executable, "Reportes_finales.py"])
+        messagebox.showinfo("Reporte creado", "Reporte generado correctamente.")# se ejecuta como proceso aparte
+    except Exception as e:
+        messagebox.showerror("Error", f"No se pudo abrir el módulo de reportes:\n{e}")
+def abrir_mapa():
+    """
+    Abre el mapa de predicciones (HTML) generado por mapaMIO.py.
+    Si no existe, ejecuta el script para generarlo.
+    """
+    import os
+    if not os.path.exists("mapa_predicciones_mio_mañana.html"):
+        try:
+            import subprocess, sys
+            subprocess.run([sys.executable, "mapaMIO.py"], check=True)
+            messagebox.showinfo("Mapa creado", "Mapa generado correctamente.")
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo generar el mapa:\n{e}")
+            return
+
+    webbrowser.open("mapa_predicciones_mio_mañana.html")
+    
 
 def abrir_graficas():
     """
@@ -139,8 +165,6 @@ tk.Button(ventana, text="Administrador", command=login_admin, bg="#4CAF50", fg="
 tk.Button(ventana, text="Operario", command=login_operario, bg="#2196F3", fg="white", width=20).pack(pady=10)
 tk.Button(ventana, text="Usuario", command=ventana_usuario, bg="#E21717", fg="white", width=20).pack(pady=10)
 
-# ✅ Botón que abre el módulo de gráficas
-tk.Button( ventana,text="📊 Abrir módulo de gráficas",command=abrir_graficas, bg="#9B59B6",fg="white",width=20).pack(pady=10)
 
 tk.Button(ventana, text="Cerrar", command=ventana.destroy, bg="#E74C3C", fg="white", width=20).pack(pady=10)
 

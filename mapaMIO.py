@@ -140,4 +140,3 @@ for _, fila in df_resumen.iterrows():
 # ===============================================================
 mapa.save("mapa_predicciones_mio_mañana.html")
 print("✅ Mapa generado: mapa_predicciones_mio_mañana.html")
-webbrowser.open("mapa_predicciones_mio_mañana.html")

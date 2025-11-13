@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_4b7d59ea399e78e49235037588b3cc63 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_4b7d59ea399e78e49235037588b3cc63" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_4b7d59ea399e78e49235037588b3cc63 = L.map(
+                "map_4b7d59ea399e78e49235037588b3cc63",
+                {
+                    center: [3.4516, -76.532],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 12,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_66c1cd6ae7145a7315661ada505357eb = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_66c1cd6ae7145a7315661ada505357eb.addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+            var circle_marker_50aa10186c5621232edba151a205c586 = L.circleMarker(
+                [3.465, -76.498],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_f797ba630e725ac16ba58c2cb70dad2d = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_7b454799bfcedd8e426576348d29be02 = $(`<div id="html_7b454799bfcedd8e426576348d29be02" style="width: 100.0%; height: 100.0%;">     <b>Calipso</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_f797ba630e725ac16ba58c2cb70dad2d.setContent(html_7b454799bfcedd8e426576348d29be02);
+            
+        
+
+        circle_marker_50aa10186c5621232edba151a205c586.bindPopup(popup_f797ba630e725ac16ba58c2cb70dad2d)
+        ;
+
+        
+    
+    
+            var circle_marker_31e287224fba9b2528c3fb5bab69f653 = L.circleMarker(
+                [3.388056, -76.545],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_0f0f3bf57be82d468dfa17f60a58af63 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_12dd07f3e8b41f75b3183008f1aaff76 = $(`<div id="html_12dd07f3e8b41f75b3183008f1aaff76" style="width: 100.0%; height: 100.0%;">     <b>Capri</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_0f0f3bf57be82d468dfa17f60a58af63.setContent(html_12dd07f3e8b41f75b3183008f1aaff76);
+            
+        
+
+        circle_marker_31e287224fba9b2528c3fb5bab69f653.bindPopup(popup_0f0f3bf57be82d468dfa17f60a58af63)
+        ;
+
+        
+    
+    
+            var circle_marker_2af5d00468af7eaedbee2a3cb662c0a4 = L.circleMarker(
+                [3.411, -76.495],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_3c1d28f81c737296d694daa38162390b = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_e5e2d85f56b3f87aa6ea1ac8dd847298 = $(`<div id="html_e5e2d85f56b3f87aa6ea1ac8dd847298" style="width: 100.0%; height: 100.0%;">     <b>Cañaverales</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_3c1d28f81c737296d694daa38162390b.setContent(html_e5e2d85f56b3f87aa6ea1ac8dd847298);
+            
+        
+
+        circle_marker_2af5d00468af7eaedbee2a3cb662c0a4.bindPopup(popup_3c1d28f81c737296d694daa38162390b)
+        ;
+
+        
+    
+    
+            var circle_marker_00bf16449724398e5624813662e61e98 = L.circleMarker(
+                [3.4483534462224, -76.530063504386],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_53dac801f6a3f41aebdc07b3053b08c8 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_123115309ddd17717c322b2bebf0c6c2 = $(`<div id="html_123115309ddd17717c322b2bebf0c6c2" style="width: 100.0%; height: 100.0%;">     <b>Centro</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>18:00-21:00<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 21:00-23:00     </div>`)[0];
+                popup_53dac801f6a3f41aebdc07b3053b08c8.setContent(html_123115309ddd17717c322b2bebf0c6c2);
+            
+        
+
+        circle_marker_00bf16449724398e5624813662e61e98.bindPopup(popup_53dac801f6a3f41aebdc07b3053b08c8)
+        ;
+
+        
+    
+    
+            var circle_marker_54a359792fb915019a0564289b29f805 = L.circleMarker(
+                [3.481719, -76.497999],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_68ac49e09f977f95c44db8c329b96c42 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_f70d13dbedafea66e8a7c4783ee29786 = $(`<div id="html_f70d13dbedafea66e8a7c4783ee29786" style="width: 100.0%; height: 100.0%;">     <b>Chiminangos</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_68ac49e09f977f95c44db8c329b96c42.setContent(html_f70d13dbedafea66e8a7c4783ee29786);
+            
+        
+
+        circle_marker_54a359792fb915019a0564289b29f805.bindPopup(popup_68ac49e09f977f95c44db8c329b96c42)
+        ;
+
+        
+    
+    
+            var circle_marker_62f173016bdee828bc5ab580a9851080 = L.circleMarker(
+                [3.456, -76.48],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_7ac6b28340363083c4d9e06091b39589 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_29a3775a4f3d1b426ebfabea3cc84bc9 = $(`<div id="html_29a3775a4f3d1b426ebfabea3cc84bc9" style="width: 100.0%; height: 100.0%;">     <b>Ciudad Modelo</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_7ac6b28340363083c4d9e06091b39589.setContent(html_29a3775a4f3d1b426ebfabea3cc84bc9);
+            
+        
+
+        circle_marker_62f173016bdee828bc5ab580a9851080.bindPopup(popup_7ac6b28340363083c4d9e06091b39589)
+        ;
+
+        
+    
+    
+            var circle_marker_ae66223459fc4302aba915ba00072648 = L.circleMarker(
+                [3.431926, -76.543083],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_ebec148e92535b3e31e8038fbacfa9cf = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_0167b2908764737c3152b84f6fa391c9 = $(`<div id="html_0167b2908764737c3152b84f6fa391c9" style="width: 100.0%; height: 100.0%;">     <b>Estadio</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_ebec148e92535b3e31e8038fbacfa9cf.setContent(html_0167b2908764737c3152b84f6fa391c9);
+            
+        
+
+        circle_marker_ae66223459fc4302aba915ba00072648.bindPopup(popup_ebec148e92535b3e31e8038fbacfa9cf)
+        ;
+
+        
+    
+    
+            var circle_marker_cd63486ba8a8f947c5a226cb60af7ad1 = L.circleMarker(
+                [3.478416, -76.502034],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_201eb2a277ca648bc1717ac6217e6a9d = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_b0fc00bc4d55ba7643af136cd739e302 = $(`<div id="html_b0fc00bc4d55ba7643af136cd739e302" style="width: 100.0%; height: 100.0%;">     <b>Flora Industrial</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_201eb2a277ca648bc1717ac6217e6a9d.setContent(html_b0fc00bc4d55ba7643af136cd739e302);
+            
+        
+
+        circle_marker_cd63486ba8a8f947c5a226cb60af7ad1.bindPopup(popup_201eb2a277ca648bc1717ac6217e6a9d)
+        ;
+
+        
+    
+    
+            var circle_marker_e423f43d648b732f80de8cc0a60f438a = L.circleMarker(
+                [3.456, -76.504],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_e8f5d2e645d2563981a69fee93ba6cdf = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_62bae80b9de249d1e93c4734e9b90a49 = $(`<div id="html_62bae80b9de249d1e93c4734e9b90a49" style="width: 100.0%; height: 100.0%;">     <b>Fátima</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_e8f5d2e645d2563981a69fee93ba6cdf.setContent(html_62bae80b9de249d1e93c4734e9b90a49);
+            
+        
+
+        circle_marker_e423f43d648b732f80de8cc0a60f438a.bindPopup(popup_e8f5d2e645d2563981a69fee93ba6cdf)
+        ;
+
+        
+    
+    
+            var circle_marker_0cede5bada07e0119c3ef28da27af669 = L.circleMarker(
+                [3.462, -76.526],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_d4f184eb25a1a0b193c17f485a0b1da6 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_b79b9bf55b4439afc83ceecdb898724b = $(`<div id="html_b79b9bf55b4439afc83ceecdb898724b" style="width: 100.0%; height: 100.0%;">     <b>Las Américas</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_d4f184eb25a1a0b193c17f485a0b1da6.setContent(html_b79b9bf55b4439afc83ceecdb898724b);
+            
+        
+
+        circle_marker_0cede5bada07e0119c3ef28da27af669.bindPopup(popup_d4f184eb25a1a0b193c17f485a0b1da6)
+        ;
+
+        
+    
+    
+            var circle_marker_ac59c96f7036cc1af2d2ccf8edb0954a = L.circleMarker(
+                [3.4355, -76.5185],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_059eb8a1ca1ff6b302304aaffac11917 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_7386f5a23fb97a8095a0b3ae0ce30816 = $(`<div id="html_7386f5a23fb97a8095a0b3ae0ce30816" style="width: 100.0%; height: 100.0%;">     <b>Lleras Restrepo</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>09:00-12:00<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_059eb8a1ca1ff6b302304aaffac11917.setContent(html_7386f5a23fb97a8095a0b3ae0ce30816);
+            
+        
+
+        circle_marker_ac59c96f7036cc1af2d2ccf8edb0954a.bindPopup(popup_059eb8a1ca1ff6b302304aaffac11917)
+        ;
+
+        
+    
+    
+            var circle_marker_a55e1bdcb8d5de0605fe7a257d150694 = L.circleMarker(
+                [3.435, -76.540833],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_4783e2e22389fdf2a1447c79d088e932 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_16619072067380458a3ad51c36bd900c = $(`<div id="html_16619072067380458a3ad51c36bd900c" style="width: 100.0%; height: 100.0%;">     <b>Manzana del Saber</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_4783e2e22389fdf2a1447c79d088e932.setContent(html_16619072067380458a3ad51c36bd900c);
+            
+        
+
+        circle_marker_a55e1bdcb8d5de0605fe7a257d150694.bindPopup(popup_4783e2e22389fdf2a1447c79d088e932)
+        ;
+
+        
+    
+    
+            var circle_marker_411174882e8ff18677e396a1fe61183c = L.circleMarker(
+                [3.476, -76.506],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_1c64a7ef1c1b5f186bb377647ea14cdc = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_9921d538dc1888575a14dd29ca453333 = $(`<div id="html_9921d538dc1888575a14dd29ca453333" style="width: 100.0%; height: 100.0%;">     <b>Manzanares</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>09:00-12:00, 15:00-18:00<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 12:00-15:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_1c64a7ef1c1b5f186bb377647ea14cdc.setContent(html_9921d538dc1888575a14dd29ca453333);
+            
+        
+
+        circle_marker_411174882e8ff18677e396a1fe61183c.bindPopup(popup_1c64a7ef1c1b5f186bb377647ea14cdc)
+        ;
+
+        
+    
+    
+            var circle_marker_093987bff38de5245407843a2e27f507 = L.circleMarker(
+                [3.425, -76.54],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_3fda68fa78d882d744ecefc0c31d77fe = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_8e982f29af58c5eba2bd5dab7530920a = $(`<div id="html_8e982f29af58c5eba2bd5dab7530920a" style="width: 100.0%; height: 100.0%;">     <b>Mariano Ramos</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_3fda68fa78d882d744ecefc0c31d77fe.setContent(html_8e982f29af58c5eba2bd5dab7530920a);
+            
+        
+
+        circle_marker_093987bff38de5245407843a2e27f507.bindPopup(popup_3fda68fa78d882d744ecefc0c31d77fe)
+        ;
+
+        
+    
+    
+            var circle_marker_f3a90ee4094b3131d6671ff076e7acaf = L.circleMarker(
+                [3.377079, -76.542809],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_21fd6396a986436738f73d3a65b894fd = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_b6de3d8e6f2e2b69c5d7926575936ead = $(`<div id="html_b6de3d8e6f2e2b69c5d7926575936ead" style="width: 100.0%; height: 100.0%;">     <b>Meléndez</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_21fd6396a986436738f73d3a65b894fd.setContent(html_b6de3d8e6f2e2b69c5d7926575936ead);
+            
+        
+
+        circle_marker_f3a90ee4094b3131d6671ff076e7acaf.bindPopup(popup_21fd6396a986436738f73d3a65b894fd)
+        ;
+
+        
+    
+    
+            var circle_marker_e006c78859cdba1300a6fc2dd8709626 = L.circleMarker(
+                [3.444, -76.518],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_34f42535db9f65733a6915949f427a38 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_4d25857775b7090845d237748c182da6 = $(`<div id="html_4d25857775b7090845d237748c182da6" style="width: 100.0%; height: 100.0%;">     <b>Piloto</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_34f42535db9f65733a6915949f427a38.setContent(html_4d25857775b7090845d237748c182da6);
+            
+        
+
+        circle_marker_e006c78859cdba1300a6fc2dd8709626.bindPopup(popup_34f42535db9f65733a6915949f427a38)
+        ;
+
+        
+    
+    
+            var circle_marker_862fb88dbbe6b0ee0920d600f30b81dd = L.circleMarker(
+                [3.4482, -76.531],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_8356138d08288b27c2d59819f75dceee = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_5ca9b6d6eeb1bb18fa27e5e797809921 = $(`<div id="html_5ca9b6d6eeb1bb18fa27e5e797809921" style="width: 100.0%; height: 100.0%;">     <b>Plaza de Caycedo</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_8356138d08288b27c2d59819f75dceee.setContent(html_5ca9b6d6eeb1bb18fa27e5e797809921);
+            
+        
+
+        circle_marker_862fb88dbbe6b0ee0920d600f30b81dd.bindPopup(popup_8356138d08288b27c2d59819f75dceee)
+        ;
+
+        
+    
+    
+            var circle_marker_bbb0e573004e63b30627d96b0e25caa8 = L.circleMarker(
+                [3.425, -76.56],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_94e866f3c92f184540964bb32af209b6 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_08beaaa253647bcc8ce4a46fe97487fd = $(`<div id="html_08beaaa253647bcc8ce4a46fe97487fd" style="width: 100.0%; height: 100.0%;">     <b>Plaza de Toros</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_94e866f3c92f184540964bb32af209b6.setContent(html_08beaaa253647bcc8ce4a46fe97487fd);
+            
+        
+
+        circle_marker_bbb0e573004e63b30627d96b0e25caa8.bindPopup(popup_94e866f3c92f184540964bb32af209b6)
+        ;
+
+        
+    
+    
+            var circle_marker_9c0d98973e1950f67a123589147f1391 = L.circleMarker(
+                [3.484, -76.498],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_b38d85cccf009457f480b722d1e6a481 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_178222a514ef013812a2095b5a8b6f0c = $(`<div id="html_178222a514ef013812a2095b5a8b6f0c" style="width: 100.0%; height: 100.0%;">     <b>Popular</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>12:00-15:00<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_b38d85cccf009457f480b722d1e6a481.setContent(html_178222a514ef013812a2095b5a8b6f0c);
+            
+        
+
+        circle_marker_9c0d98973e1950f67a123589147f1391.bindPopup(popup_b38d85cccf009457f480b722d1e6a481)
+        ;
+
+        
+    
+    
+            var circle_marker_f50071d0da37b4f9ed12bb036d263776 = L.circleMarker(
+                [3.503, -76.518],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_d54fd38f3f273ec123e1933abc5713f5 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_5812dc46c605c4a1b50d7a5bf64ebfca = $(`<div id="html_5812dc46c605c4a1b50d7a5bf64ebfca" style="width: 100.0%; height: 100.0%;">     <b>Prados del Norte</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_d54fd38f3f273ec123e1933abc5713f5.setContent(html_5812dc46c605c4a1b50d7a5bf64ebfca);
+            
+        
+
+        circle_marker_f50071d0da37b4f9ed12bb036d263776.bindPopup(popup_d54fd38f3f273ec123e1933abc5713f5)
+        ;
+
+        
+    
+    
+            var circle_marker_3ea2e2fa1006db51ee55aeee5031ab94 = L.circleMarker(
+                [3.4015, -76.519],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_193abd808d5de7bacc3a71c1c05cfbbf = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_f331d6f2ef73ce9b27c3896e1b6a0397 = $(`<div id="html_f331d6f2ef73ce9b27c3896e1b6a0397" style="width: 100.0%; height: 100.0%;">     <b>Refugio</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_193abd808d5de7bacc3a71c1c05cfbbf.setContent(html_f331d6f2ef73ce9b27c3896e1b6a0397);
+            
+        
+
+        circle_marker_3ea2e2fa1006db51ee55aeee5031ab94.bindPopup(popup_193abd808d5de7bacc3a71c1c05cfbbf)
+        ;
+
+        
+    
+    
+            var circle_marker_44fa87e7875c74fbc8792330dd204a82 = L.circleMarker(
+                [3.43, -76.53],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_334ad91fb88011fc8a6152dfe4120300 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_0e5e340bc4068ee44fed25ea844f905a = $(`<div id="html_0e5e340bc4068ee44fed25ea844f905a" style="width: 100.0%; height: 100.0%;">     <b>Río Cali</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>12:00-15:00<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_334ad91fb88011fc8a6152dfe4120300.setContent(html_0e5e340bc4068ee44fed25ea844f905a);
+            
+        
+
+        circle_marker_44fa87e7875c74fbc8792330dd204a82.bindPopup(popup_334ad91fb88011fc8a6152dfe4120300)
+        ;
+
+        
+    
+    
+            var circle_marker_99883df316c0bf57fa0e9e3e413377bf = L.circleMarker(
+                [3.4875, -76.5075],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_9642dfed6fb251805a70171b21d0eb95 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_e03d5efb32b5d7f262212a6feee80e5b = $(`<div id="html_e03d5efb32b5d7f262212a6feee80e5b" style="width: 100.0%; height: 100.0%;">     <b>Salomia</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>12:00-15:00, 21:00-23:00<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 15:00-18:00, 18:00-21:00     </div>`)[0];
+                popup_9642dfed6fb251805a70171b21d0eb95.setContent(html_e03d5efb32b5d7f262212a6feee80e5b);
+            
+        
+
+        circle_marker_99883df316c0bf57fa0e9e3e413377bf.bindPopup(popup_9642dfed6fb251805a70171b21d0eb95)
+        ;
+
+        
+    
+    
+            var circle_marker_9121ba57799f6b78cf50164e7f8b390e = L.circleMarker(
+                [3.446, -76.532],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_1debeea8c881b134f8a7d4ae72e839b8 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_a37d112a7221e56e49de9bcfd7b3a40a = $(`<div id="html_a37d112a7221e56e49de9bcfd7b3a40a" style="width: 100.0%; height: 100.0%;">     <b>San Bosco</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_1debeea8c881b134f8a7d4ae72e839b8.setContent(html_a37d112a7221e56e49de9bcfd7b3a40a);
+            
+        
+
+        circle_marker_9121ba57799f6b78cf50164e7f8b390e.bindPopup(popup_1debeea8c881b134f8a7d4ae72e839b8)
+        ;
+
+        
+    
+    
+            var circle_marker_620220ec97eed4e602455ddbcff38705 = L.circleMarker(
+                [3.452, -76.492],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_74f644cb90ae1b8f65118a2360c25a53 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_2ac1dc1bda425dfd1f5522ac5925037f = $(`<div id="html_2ac1dc1bda425dfd1f5522ac5925037f" style="width: 100.0%; height: 100.0%;">     <b>San Nicolás</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>09:00-12:00<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_74f644cb90ae1b8f65118a2360c25a53.setContent(html_2ac1dc1bda425dfd1f5522ac5925037f);
+            
+        
+
+        circle_marker_620220ec97eed4e602455ddbcff38705.bindPopup(popup_74f644cb90ae1b8f65118a2360c25a53)
+        ;
+
+        
+    
+    
+            var circle_marker_801abc4515eb75461ff79bc77b7111c4 = L.circleMarker(
+                [3.4479, -76.532],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_4ba4fc2d4da6863f773f37d762ec76c0 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_2d9afc12f591adbded8101738bb59b8b = $(`<div id="html_2d9afc12f591adbded8101738bb59b8b" style="width: 100.0%; height: 100.0%;">     <b>Santa Rosa</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_4ba4fc2d4da6863f773f37d762ec76c0.setContent(html_2d9afc12f591adbded8101738bb59b8b);
+            
+        
+
+        circle_marker_801abc4515eb75461ff79bc77b7111c4.bindPopup(popup_4ba4fc2d4da6863f773f37d762ec76c0)
+        ;
+
+        
+    
+    
+            var circle_marker_14cd2316cab238e555dc06d01664d0ba = L.circleMarker(
+                [3.4892, -76.4558],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_dc00de3175269e84366fdb4c099bbc1c = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_bef5b0dafe924b0d4e5c79e5dfaa7174 = $(`<div id="html_bef5b0dafe924b0d4e5c79e5dfaa7174" style="width: 100.0%; height: 100.0%;">     <b>Terminal Aguablanca</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_dc00de3175269e84366fdb4c099bbc1c.setContent(html_bef5b0dafe924b0d4e5c79e5dfaa7174);
+            
+        
+
+        circle_marker_14cd2316cab238e555dc06d01664d0ba.bindPopup(popup_dc00de3175269e84366fdb4c099bbc1c)
+        ;
+
+        
+    
+    
+            var circle_marker_40577c55063f9b8329e8999f2a94d660 = L.circleMarker(
+                [3.443941, -76.482916],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_6a0b1c4b717532f31ce5cbe1bf8cbefd = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_e49c3f43880d0dfc4f750e2db817e917 = $(`<div id="html_e49c3f43880d0dfc4f750e2db817e917" style="width: 100.0%; height: 100.0%;">     <b>Terminal Andrés Sanín</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_6a0b1c4b717532f31ce5cbe1bf8cbefd.setContent(html_e49c3f43880d0dfc4f750e2db817e917);
+            
+        
+
+        circle_marker_40577c55063f9b8329e8999f2a94d660.bindPopup(popup_6a0b1c4b717532f31ce5cbe1bf8cbefd)
+        ;
+
+        
+    
+    
+            var circle_marker_d1955e8858313912d7092a2ff0fb6898 = L.circleMarker(
+                [3.489476, -76.509063],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_29df845260175c4046d861be7f7966ec = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_f58ed803f0e50a072136ae6fc8bd7e21 = $(`<div id="html_f58ed803f0e50a072136ae6fc8bd7e21" style="width: 100.0%; height: 100.0%;">     <b>Terminal Menga</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>15:00-18:00<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_29df845260175c4046d861be7f7966ec.setContent(html_f58ed803f0e50a072136ae6fc8bd7e21);
+            
+        
+
+        circle_marker_d1955e8858313912d7092a2ff0fb6898.bindPopup(popup_29df845260175c4046d861be7f7966ec)
+        ;
+
+        
+    
+    
+            var circle_marker_1b22832889e0eb8d48ee1a0076c1e5fb = L.circleMarker(
+                [3.4886563335118, -76.493596701742],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_b06f476660e82f5fd8aa03bce7f9af8a = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_3e557981786cf9e1c97486ea8122ff9c = $(`<div id="html_3e557981786cf9e1c97486ea8122ff9c" style="width: 100.0%; height: 100.0%;">     <b>Terminal Paso del Comercio</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_b06f476660e82f5fd8aa03bce7f9af8a.setContent(html_3e557981786cf9e1c97486ea8122ff9c);
+            
+        
+
+        circle_marker_1b22832889e0eb8d48ee1a0076c1e5fb.bindPopup(popup_b06f476660e82f5fd8aa03bce7f9af8a)
+        ;
+
+        
+    
+    
+            var circle_marker_275e4f315fe3ff0a75b7c033db726b59 = L.circleMarker(
+                [3.4325, -76.5325],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_ed0c813040ddee79a4690d7748f145cc = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_aafbae0ca4844d7e78a0e863cb290526 = $(`<div id="html_aafbae0ca4844d7e78a0e863cb290526" style="width: 100.0%; height: 100.0%;">     <b>Terminal Simón Bolívar</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_ed0c813040ddee79a4690d7748f145cc.setContent(html_aafbae0ca4844d7e78a0e863cb290526);
+            
+        
+
+        circle_marker_275e4f315fe3ff0a75b7c033db726b59.bindPopup(popup_ed0c813040ddee79a4690d7748f145cc)
+        ;
+
+        
+    
+    
+            var circle_marker_51319ddc37cd8da55fae2e7f34854e3c = L.circleMarker(
+                [3.456822, -76.530251],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_49aa5d61361f96d6f0eb3f9864ae1554 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_fb55d03ca0e4da3ef3384ee02a4d9eef = $(`<div id="html_fb55d03ca0e4da3ef3384ee02a4d9eef" style="width: 100.0%; height: 100.0%;">     <b>Torre de Cali</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_49aa5d61361f96d6f0eb3f9864ae1554.setContent(html_fb55d03ca0e4da3ef3384ee02a4d9eef);
+            
+        
+
+        circle_marker_51319ddc37cd8da55fae2e7f34854e3c.bindPopup(popup_49aa5d61361f96d6f0eb3f9864ae1554)
+        ;
+
+        
+    
+    
+            var circle_marker_76bbc233f9e274aa873a8d60789fb518 = L.circleMarker(
+                [3.414278, -76.548206],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_50bb47836f57866059e67415137cc81d = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_67a6f9db3fb505a72f59949b3bef33b4 = $(`<div id="html_67a6f9db3fb505a72f59949b3bef33b4" style="width: 100.0%; height: 100.0%;">     <b>Unidad Deportiva</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>Ninguna<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_50bb47836f57866059e67415137cc81d.setContent(html_67a6f9db3fb505a72f59949b3bef33b4);
+            
+        
+
+        circle_marker_76bbc233f9e274aa873a8d60789fb518.bindPopup(popup_50bb47836f57866059e67415137cc81d)
+        ;
+
+        
+    
+    
+            var circle_marker_253dc53cc041f790288f058821ad92fa = L.circleMarker(
+                [3.370903, -76.536686],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_9ccc51dd20ab176411fd56688181e9c2 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_905ca4079f6b36c4aada486ecc878f9c = $(`<div id="html_905ca4079f6b36c4aada486ecc878f9c" style="width: 100.0%; height: 100.0%;">     <b>Univalle</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>05:30-09:00<br><br>     <b>Franja(s) estables:</b><br>09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_9ccc51dd20ab176411fd56688181e9c2.setContent(html_905ca4079f6b36c4aada486ecc878f9c);
+            
+        
+
+        circle_marker_253dc53cc041f790288f058821ad92fa.bindPopup(popup_9ccc51dd20ab176411fd56688181e9c2)
+        ;
+
+        
+    
+    
+            var circle_marker_3dd4ca8378968793fbf0b4327c085415 = L.circleMarker(
+                [3.367013, -76.529109],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_cc41156c39139f625e78029095b97a3d = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_f501d89cba68d368162a11195024270f = $(`<div id="html_f501d89cba68d368162a11195024270f" style="width: 100.0%; height: 100.0%;">     <b>Universidades</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>05:30-09:00<br><br>     <b>Franja(s) estables:</b><br>09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_cc41156c39139f625e78029095b97a3d.setContent(html_f501d89cba68d368162a11195024270f);
+            
+        
+
+        circle_marker_3dd4ca8378968793fbf0b4327c085415.bindPopup(popup_cc41156c39139f625e78029095b97a3d)
+        ;
+
+        
+    
+    
+            var circle_marker_73c8ba6ee2406c78630c1a85e12475ed = L.circleMarker(
+                [3.46121, -76.52704],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_9e7614151f8deda0e6dca38f22460301 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_b7f8131e660e74ce718c26e899c52f8a = $(`<div id="html_b7f8131e660e74ce718c26e899c52f8a" style="width: 100.0%; height: 100.0%;">     <b>Versalles</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>05:30-09:00<br><br>     <b>Franja(s) estables:</b><br>09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_9e7614151f8deda0e6dca38f22460301.setContent(html_b7f8131e660e74ce718c26e899c52f8a);
+            
+        
+
+        circle_marker_73c8ba6ee2406c78630c1a85e12475ed.bindPopup(popup_9e7614151f8deda0e6dca38f22460301)
+        ;
+
+        
+    
+    
+            var circle_marker_17f4f4b7d55f60519b3e2ace53d8f53e = L.circleMarker(
+                [3.513, -76.466],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_8171c8ede5aa71227f5a36a4c8b1b350 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_ef5f89abe135821e4f4523dc71491f85 = $(`<div id="html_ef5f89abe135821e4f4523dc71491f85" style="width: 100.0%; height: 100.0%;">     <b>Villa del Lago</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>05:30-09:00<br><br>     <b>Franja(s) estables:</b><br>09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_8171c8ede5aa71227f5a36a4c8b1b350.setContent(html_ef5f89abe135821e4f4523dc71491f85);
+            
+        
+
+        circle_marker_17f4f4b7d55f60519b3e2ace53d8f53e.bindPopup(popup_8171c8ede5aa71227f5a36a4c8b1b350)
+        ;
+
+        
+    
+    
+            var circle_marker_7ffabfa0f99294fdaa5101e4059b5363 = L.circleMarker(
+                [3.395, -76.52],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_eca0bf15ffcde5ae80cf2b2495e7c816 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_ddd46ea66e0c62de73112ba330c512ae = $(`<div id="html_ddd46ea66e0c62de73112ba330c512ae" style="width: 100.0%; height: 100.0%;">     <b>Villa del Sur</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>05:30-09:00<br><br>     <b>Franja(s) estables:</b><br>09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00     </div>`)[0];
+                popup_eca0bf15ffcde5ae80cf2b2495e7c816.setContent(html_ddd46ea66e0c62de73112ba330c512ae);
+            
+        
+
+        circle_marker_7ffabfa0f99294fdaa5101e4059b5363.bindPopup(popup_eca0bf15ffcde5ae80cf2b2495e7c816)
+        ;
+
+        
+    
+    
+            var circle_marker_a38ffacfc85cf55d57df049982f35cf0 = L.circleMarker(
+                [3.517, -76.479],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_0fd752263134c9ba022edd85a816ccbc = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_9dac1a8d7a92457f6e8aa8b1d75dd77e = $(`<div id="html_9dac1a8d7a92457f6e8aa8b1d75dd77e" style="width: 100.0%; height: 100.0%;">     <b>Vipasa</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>21:00-23:00<br><br>     <b>Franja(s) estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00     </div>`)[0];
+                popup_0fd752263134c9ba022edd85a816ccbc.setContent(html_9dac1a8d7a92457f6e8aa8b1d75dd77e);
+            
+        
+
+        circle_marker_a38ffacfc85cf55d57df049982f35cf0.bindPopup(popup_0fd752263134c9ba022edd85a816ccbc)
+        ;
+
+        
+    
+    
+            var circle_marker_e0b248f44456aa02a426d389f602e0bf = L.circleMarker(
+                [3.491, -76.507],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_4b7d59ea399e78e49235037588b3cc63);
+        
+    
+        var popup_0bde98e28aecc47004a6905a8d9cdd45 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_e6d6f43ca5177c8a90869461b6384072 = $(`<div id="html_e6d6f43ca5177c8a90869461b6384072" style="width: 100.0%; height: 100.0%;">     <b>Álamos</b><br>     Fecha: 2025-11-17<br><br>     <b>Franja(s) colapsadas:</b><br>05:30-09:00, 21:00-23:00<br><br>     <b>Franja(s) estables:</b><br>09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00     </div>`)[0];
+                popup_0bde98e28aecc47004a6905a8d9cdd45.setContent(html_e6d6f43ca5177c8a90869461b6384072);
+            
+        
+
+        circle_marker_e0b248f44456aa02a426d389f602e0bf.bindPopup(popup_0bde98e28aecc47004a6905a8d9cdd45)
+        ;
+
+        
+    
+</script>
+</html>

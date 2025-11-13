@@ -52,7 +52,7 @@ class ModeloPredictivoMIO_sklearn:
         self.df["Fecha"] = pd.to_datetime(self.df["Fecha"], errors="coerce")
         self.df["Capacidad Máxima"] = pd.to_numeric(self.df["Capacidad Máxima"], errors="coerce")
         self.df["Personas Actuales"] = pd.to_numeric(self.df["Personas Actuales"], errors="coerce")
-
+        self.df = self.df[self.df["Franja Horaria"] != "Desconocida"]
         # Calcular ocupación
         self.df["Ocupacion"] = np.where(
             self.df["Capacidad Máxima"] > 0,
@@ -156,7 +156,7 @@ class ModeloPredictivoMIO_sklearn:
         )
 
         terminales = self.df["Terminal"].unique()
-        franjas = self.df["Franja Horaria"].unique()
+        franjas = [f for f in self.df["Franja Horaria"].unique() if f != "Desconocida"]
         escenarios = []
 
         print(f"🧩 Generando escenarios futuros ({len(terminales)} terminales × {len(franjas)} franjas × {len(fechas_futuras)} días)...")

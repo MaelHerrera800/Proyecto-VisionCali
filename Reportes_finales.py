@@ -79,7 +79,7 @@ if "Terminal" in df.columns and "Prob_Colapso" in df.columns:
     plt.tight_layout()
     plt.savefig("graficas/grafico_barras.png")
     plt.close()
-    print("🟢 Gráfico de barras generado correctamente.")
+    print("Gráfico de barras generado correctamente.")
 
 # ==========================================================
 # 📝 CREAR REPORTE EN PDF
@@ -143,9 +143,7 @@ for titulo, ruta in graficos:
 # Crear PDF
 try:
     doc.build(elements)
-    print(f"✅ PDF generado correctamente: {pdf_filename}")
+    print(f"PDF generado correctamente: {pdf_filename}")
 except Exception as e:
-    print(f"❌ Error al generar el PDF: {e}")
+    print(f"Error al generar el PDF: {e}")
     
-if __name__ == "__main__":
-    pass

@@ -51,7 +51,7 @@ nombres_terminales = [
     "Lleras Restrepo", "Ciudad Modelo", "Villa del Sur", "Mariano Ramos", "Cañaverales"
 ]
 
-num_datos = 1000  
+num_datos = 1_0000
 np.random.seed(42)
 
 terminales_random = np.random.choice(nombres_terminales, num_datos)
@@ -82,7 +82,7 @@ estado = np.where(personas > capacidades * 0.95, "Colapsada", "Estable")
 
 # ✅ Fechas entre hace 2 años y hoy (sin hora)
 fecha_fin = datetime.now().date()
-fecha_inicio = fecha_fin - timedelta(days=730)
+fecha_inicio = fecha_fin - timedelta(days=1825)
 fechas_secuenciales = pd.date_range(start=fecha_inicio, end=fecha_fin, periods=num_datos)
 
 FRANJAS_DISPONIBLES = [
@@ -145,4 +145,4 @@ print("\nArchivo 'data_limpia_mio.xlsx' generado exitosamente.")
 # 🧾 BLOQUE PRINCIPAL
 # ============================================================
 if __name__ == "__main__":
-    print("listo viejo")
+    pass

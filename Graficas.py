@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import seaborn as sns
 import pandas as pd
 from datetime import timedelta
 
@@ -10,72 +9,99 @@ from datetime import timedelta
 # IMPORTAR DATOS DEL MODELO PREDICTIVO
 # ===============================================
 try:
-    from modelo_predictivo import ModeloPredictivoMIO_sklearn
-    modelo = ModeloPredictivoMIO_sklearn()
-
-    modelo.entrenar_modelo_ocupacion()
-    modelo.entrenar_modelo_colapso()
-
-    df_predicciones = modelo.predecir()
-    if df_predicciones is None or df_predicciones.empty:
-        raise ValueError("El modelo no generó predicciones válidas.")
-except Exception as e:
-    from tkinter import messagebox
-    messagebox.showerror("Error", f"No se pudo cargar el modelo predictivo: {e}")
-    raise SystemExit
+    df_predicciones = pd.read_excel("predicciones_mio.xlsx")
+except FileNotFoundError:
+    messagebox.showerror(
+        "Error", 
+        "No se encontró el archivo 'predicciones_mio.xlsx'. Ejecuta primero el modelo predictivo."
+    )
+    df_predicciones = None
 
 # ===============================================
 # FUNCIONES AUXILIARES
 # ===============================================
 def verificar_df():
-    """Verifica que df_predicciones tenga datos."""
     if df_predicciones is None or df_predicciones.empty:
         messagebox.showwarning("Sin datos", "No hay datos para analizar.")
         return False
     return True
 
 def limpiar_canvas():
-    """Elimina cualquier gráfico previo del canvas."""
     global canvas
     if canvas:
         canvas.get_tk_widget().destroy()
 
 def limpiar_tabla():
-    """Elimina cualquier tabla previa."""
     for widget in frame_resultados.winfo_children():
         widget.destroy()
 
 # ===============================================
-# 1️⃣ MOSTRAR ESTACIONES QUE COLAPSARÁN
+# SELECTOR DE ESTACIÓN
 # ===============================================
+def crear_selector_estacion(frame_padre):
+    global combo_estaciones
 
+    estaciones = sorted(df_predicciones["Terminal"].dropna().unique())
+
+    label = tk.Label(frame_padre, text="Seleccionar estación:", font=("Arial", 12))
+    label.grid(row=0, column=0, padx=5)
+
+    combo_estaciones = ttk.Combobox(frame_padre, values=estaciones, state="readonly", width=25)
+    combo_estaciones.grid(row=0, column=1, padx=5)
+
+# ===============================================
+# SELECTOR DE FECHA
+# ===============================================
+def crear_selector_fecha(frame_padre):
+    global combo_fechas
+
+    df_predicciones["Fecha"] = pd.to_datetime(df_predicciones["Fecha"]).dt.date
+    fechas = sorted(df_predicciones["Fecha"].unique())
+
+    label = tk.Label(frame_padre, text="Seleccionar fecha:", font=("Arial", 12))
+    label.grid(row=0, column=2, padx=5)
+
+    combo_fechas = ttk.Combobox(frame_padre, values=fechas, state="readonly", width=15)
+    combo_fechas.grid(row=0, column=3, padx=5)
+
+# ===============================================
+# 1️⃣ MOSTRAR ESTACIONES COLAPSADAS (CON FILTROS)
+# ===============================================
 def mostrar_estaciones_colapso():
-    """Muestra en tabla las estaciones que colapsarán en los próximos 5 días."""
     if not verificar_df():
         return
 
     limpiar_canvas()
     limpiar_tabla()
 
-    # Asegurar formato de fecha sin hora
     df_predicciones["Fecha"] = pd.to_datetime(df_predicciones["Fecha"]).dt.date
 
-    # Simular los próximos 5 días (futuro)
-    fecha_actual = df_predicciones["Fecha"].max()
-    fecha_futura = fecha_actual + timedelta(days=5)
-    df_futuro = df_predicciones[df_predicciones["Fecha"] <= fecha_futura]
+    # FILTRAR POR FECHA
+    fecha_sel = combo_fechas.get()
+    if fecha_sel:
+        fecha_sel = pd.to_datetime(fecha_sel).date()
+        df_filtrado = df_predicciones[df_predicciones["Fecha"] == fecha_sel]
+    else:
+        df_filtrado = df_predicciones.copy()
 
-    # Filtrar solo las estaciones que colapsarán
-    df_colapsos = df_futuro[df_futuro["Estado_Previsto"].str.contains("Colapsará", case=False, na=False)]
+    # FILTRAR POR ESTACIÓN
+    estacion_sel = combo_estaciones.get()
+    if estacion_sel:
+        df_filtrado = df_filtrado[df_filtrado["Terminal"] == estacion_sel]
+
+    # FILTRAR COLAPSOS
+    df_colapsos = df_filtrado[
+        df_filtrado["Estado_Previsto"].str.contains("Colapsará", case=False, na=False)
+    ]
 
     if df_colapsos.empty:
-        messagebox.showinfo("Información", "No se predicen colapsos en los próximos 5 días.")
+        messagebox.showinfo("Información", "No se predicen colapsos para esa fecha/estación.")
         return
 
-    label = tk.Label(frame_resultados, text="🚨 Estaciones que colapsarán en los próximos 5 días", font=("Arial", 16, "bold"))
+    label = tk.Label(frame_resultados, text="Estaciones que colapsarán",
+                     font=("Arial", 16, "bold"))
     label.pack(pady=10)
 
-    # Crear tabla de visualización
     cols = ["Terminal", "Fecha", "Franja Horaria", "Personas_Predichas", "Prob_Colapso"]
     tree = ttk.Treeview(frame_resultados, columns=cols, show="headings", height=15)
 
@@ -83,25 +109,21 @@ def mostrar_estaciones_colapso():
         tree.heading(col, text=col)
         tree.column(col, width=180, anchor="center")
 
-    # Agregar filas
     for _, row in df_colapsos.iterrows():
         tree.insert("", "end", values=(
-            row.get("Terminal", ""),
-            row.get("Fecha", ""),
-            row.get("Franja Horaria", ""),
-            int(row.get("Personas_Predichas", 0)),
-            f"{row.get('Prob_Colapso', 0)*100:.1f}%"
+            row["Terminal"],
+            row["Fecha"],
+            row["Franja Horaria"],
+            int(row["Personas_Predichas"]),
+            f"{row['Prob_Colapso'] * 100:.1f}%"
         ))
 
     tree.pack(fill="both", expand=True)
-    frame_resultados.pack(fill="both", expand=True)
 
 # ===============================================
-# 2️⃣ ESTADO GENERAL DE LOS PRÓXIMOS 5 DÍAS
+# 2️⃣ MOSTRAR TODAS LAS ESTACIONES COLAPSADAS
 # ===============================================
-
-def grafico_estado_general():
-    """Gráfico circular del estado general de todas las estaciones en los próximos 5 días."""
+def mostrar_todas_estaciones_colapso():
     if not verificar_df():
         return
 
@@ -110,30 +132,67 @@ def grafico_estado_general():
 
     df_predicciones["Fecha"] = pd.to_datetime(df_predicciones["Fecha"]).dt.date
 
-    fecha_actual = df_predicciones["Fecha"].max()
-    fecha_futura = fecha_actual + timedelta(days=5)
-    df_futuro = df_predicciones[df_predicciones["Fecha"] <= fecha_futura]
+    # FILTRO POR FECHA OPCIONAL
+    fecha_sel = combo_fechas.get()
+    if fecha_sel:
+        fecha_sel = pd.to_datetime(fecha_sel).date()
+        df_filtrado = df_predicciones[df_predicciones["Fecha"] == fecha_sel]
+    else:
+        df_filtrado = df_predicciones.copy()
 
-    conteo = df_futuro["Estado_Previsto"].value_counts()
+    # FILTRAR SOLO COLAPSOS
+    df_colapsos = df_filtrado[
+        df_filtrado["Estado_Previsto"].str.contains("Colapsará", case=False, na=False)
+    ]
+
+    if df_colapsos.empty:
+        messagebox.showinfo("Información", "No se predicen colapsos para esa fecha.")
+        return
+
+    label = tk.Label(frame_resultados, text="Todas las estaciones que colapsarán",
+                     font=("Arial", 16, "bold"))
+    label.pack(pady=10)
+
+    cols = ["Terminal", "Fecha", "Franja Horaria", "Personas_Predichas", "Prob_Colapso"]
+    tree = ttk.Treeview(frame_resultados, columns=cols, show="headings", height=15)
+
+    for col in cols:
+        tree.heading(col, text=col)
+        tree.column(col, width=180, anchor="center")
+
+    for _, row in df_colapsos.iterrows():
+        tree.insert("", "end", values=(
+            row["Terminal"],
+            row["Fecha"],
+            row["Franja Horaria"],
+            int(row["Personas_Predichas"]),
+            f"{row['Prob_Colapso'] * 100:.1f}%"
+        ))
+
+    tree.pack(fill="both", expand=True)
+
+# ===============================================
+# 3️⃣ GRÁFICO ESTADO GENERAL
+# ===============================================
+def grafico_estado_general():
+    if not verificar_df():
+        return
+
+    limpiar_canvas()
+    limpiar_tabla()
+
+    df_predicciones["Fecha"] = pd.to_datetime(df_predicciones["Fecha"]).dt.date
+    conteo = df_predicciones["Estado_Previsto"].value_counts()
 
     fig, ax = plt.subplots(figsize=(6, 6))
-    colores = ["#2ecc71", "#f1c40f", "#e74c3c"]
-    ax.pie(
-        conteo.values,
-        labels=conteo.index,
-        autopct="%1.1f%%",
-        startangle=90,
-        colors=colores
-    )
-    ax.set_title("🌍 Estado general de las estaciones (próximos 5 días)")
+    ax.pie(conteo.values, labels=conteo.index, autopct="%1.1f%%", startangle=90)
+    ax.set_title("Estado general de las estaciones")
     mostrar_grafico(fig)
 
 # ===============================================
-# 3️⃣ TOP ESTACIONES EN RIESGO DE COLAPSO
+# 4️⃣ GRÁFICO TOP 10
 # ===============================================
-
 def grafico_top_colapsos():
-    """Gráfico de barras con las estaciones más propensas a colapsar."""
     if not verificar_df():
         return
 
@@ -142,30 +201,23 @@ def grafico_top_colapsos():
 
     df_predicciones["Fecha"] = pd.to_datetime(df_predicciones["Fecha"]).dt.date
 
-    fecha_actual = df_predicciones["Fecha"].max()
-    fecha_futura = fecha_actual + timedelta(days=5)
-    df_futuro = df_predicciones[df_predicciones["Fecha"] <= fecha_futura]
-
-    # Agrupar también por franja horaria
     top_colapso = (
-        df_futuro.groupby(["Terminal", "Franja Horaria"])["Prob_Colapso"]
+        df_predicciones.groupby(["Terminal", "Franja Horaria"])["Prob_Colapso"]
         .mean()
         .sort_values(ascending=False)
         .head(10)
     )
 
     fig, ax = plt.subplots(figsize=(10, 6))
-    top_colapso.plot(kind="barh", color="#e74c3c", ax=ax)
-    ax.set_title("🚨 Top 10 estaciones y franjas horarias con mayor probabilidad de colapso (próximos 5 días)")
-    ax.set_xlabel("Probabilidad de colapso promedio")
-    ax.set_ylabel("Terminal y Franja Horaria")
+    top_colapso.plot(kind="barh", ax=ax)
+    ax.set_title("Top 10 estaciones en riesgo de colapso")
+    ax.set_xlabel("Probabilidad promedio")
     plt.tight_layout()
     mostrar_grafico(fig)
 
 # ===============================================
-# FUNCIÓN PARA MOSTRAR GRÁFICOS
+# FUNCIÓN PARA MOSTRAR GRÁFICO
 # ===============================================
-
 def mostrar_grafico(fig):
     global canvas
     canvas = FigureCanvasTkAgg(fig, master=frame_resultados)
@@ -175,27 +227,33 @@ def mostrar_grafico(fig):
 # ===============================================
 # INTERFAZ TKINTER
 # ===============================================
-
 def iniciar_graficas():
     ventana = tk.Tk()
-    ventana.title("📊 Sistema Predictivo MIO - Análisis Futuro (Próximos 5 Días)")
-    ventana.geometry("1200x800")
+    ventana.title("Sistema Predictivo MIO - Análisis")
+    ventana.geometry("1300x850")
 
     titulo = tk.Label(
         ventana,
-        text="🔹 Análisis de comportamiento de estaciones (Próximos 5 días)",
+        text="Análisis de comportamiento de estaciones",
         font=("Arial", 18, "bold"),
         pady=10
     )
     titulo.pack()
 
+    frame_selector = tk.Frame(ventana)
+    frame_selector.pack(pady=10)
+
+    crear_selector_estacion(frame_selector)
+    crear_selector_fecha(frame_selector)
+
     frame_botones = tk.Frame(ventana)
     frame_botones.pack(pady=15)
 
     botones = [
-        ("🚨 Ver estaciones que colapsarán", mostrar_estaciones_colapso),
-        ("🌍 Estado general futuro", grafico_estado_general),
-        ("📊 Top 10 estaciones en riesgo", grafico_top_colapsos)
+        ("Filtrar estación colapsada", mostrar_estaciones_colapso),
+        ("Ver todas las estaciones colapsadas", mostrar_todas_estaciones_colapso),
+        ("Estado general", grafico_estado_general),
+        ("Top 10 estaciones en riesgo", grafico_top_colapsos)
     ]
 
     for i, (texto, comando) in enumerate(botones):
@@ -208,29 +266,9 @@ def iniciar_graficas():
 
     global canvas
     canvas = None
-
-def mostrar_solo_tabla_colapsos():
-    """
-    Abre una ventana independiente que solo muestra la tabla
-    con las estaciones que colapsarán en los próximos 5 días.
-    """
-    global frame_resultados, canvas
-
-    ventana = tk.Tk()
-    ventana.title("Estaciones que colapsarán en los próximos 5 días")
-    ventana.geometry("1000x600")
-
-    frame_resultados = tk.Frame(ventana)
-    frame_resultados.pack(fill="both", expand=True)
-
-    canvas = None
-
-    try:
-        mostrar_estaciones_colapso()
-    except Exception as e:
-        messagebox.showerror("Error", f"No se pudo mostrar la tabla de colapsos:\n{e}")
+    ventana.mainloop()
     
+
 
 if __name__ == "__main__":
     iniciar_graficas()
-    
