@@ -101,8 +101,8 @@ df_terminales = pd.DataFrame({
 
 df_terminales["Día de la Semana"] = pd.to_datetime(df_terminales["Fecha"]).dt.day_name()
 
-print(f"✅ Se generaron {len(df_terminales)} registros de simulación.")
-print(f"📅 Rango de fechas: {df_terminales['Fecha'].min()} → {df_terminales['Fecha'].max()}")
+print(f"Se generaron {len(df_terminales)} registros de simulación.")
+print(f"Rango de fechas: {df_terminales['Fecha'].min()} → {df_terminales['Fecha'].max()}")
 
 
 
@@ -139,7 +139,7 @@ with pd.ExcelWriter("data_limpia_mio.xlsx", engine="openpyxl") as writer:
     df_nulos.to_excel(writer, sheet_name="Valores Nulos", index=False)
     df_limpio.to_excel(writer, sheet_name="Datos Limpios", index=False)
 
-print("\n✅ Archivo 'data_limpia_mio.xlsx' generado exitosamente.")
+print("\nArchivo 'data_limpia_mio.xlsx' generado exitosamente.")
 
 # ============================================================
 # 🧾 BLOQUE PRINCIPAL

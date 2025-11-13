@@ -10,20 +10,19 @@ from datetime import timedelta
 # IMPORTAR DATOS DEL MODELO PREDICTIVO
 # ===============================================
 try:
-    from modelo_predictivo import ModeloPredictivoMIO
-    modelo = ModeloPredictivoMIO()
+    from modelo_predictivo import ModeloPredictivoMIO_sklearn
+    modelo = ModeloPredictivoMIO_sklearn()
 
-    modelo.entrenar_modelo_regresion()
+    modelo.entrenar_modelo_ocupacion()
     modelo.entrenar_modelo_colapso()
 
     df_predicciones = modelo.predecir()
     if df_predicciones is None or df_predicciones.empty:
         raise ValueError("El modelo no generó predicciones válidas.")
 except Exception as e:
+    from tkinter import messagebox
     messagebox.showerror("Error", f"No se pudo cargar el modelo predictivo: {e}")
     raise SystemExit
-
-sns.set_style("whitegrid")
 
 # ===============================================
 # FUNCIONES AUXILIARES
@@ -177,36 +176,61 @@ def mostrar_grafico(fig):
 # INTERFAZ TKINTER
 # ===============================================
 
-ventana = tk.Tk()
-ventana.title("📊 Sistema Predictivo MIO - Análisis Futuro (Próximos 5 Días)")
-ventana.geometry("1200x800")
+def iniciar_graficas():
+    ventana = tk.Tk()
+    ventana.title("📊 Sistema Predictivo MIO - Análisis Futuro (Próximos 5 Días)")
+    ventana.geometry("1200x800")
 
-titulo = tk.Label(
-    ventana,
-    text="🔹 Análisis de comportamiento de estaciones (Próximos 5 días)",
-    font=("Arial", 18, "bold"),
-    pady=10
-)
-titulo.pack()
+    titulo = tk.Label(
+        ventana,
+        text="🔹 Análisis de comportamiento de estaciones (Próximos 5 días)",
+        font=("Arial", 18, "bold"),
+        pady=10
+    )
+    titulo.pack()
 
-frame_botones = tk.Frame(ventana)
-frame_botones.pack(pady=15)
+    frame_botones = tk.Frame(ventana)
+    frame_botones.pack(pady=15)
 
-botones = [
-    ("🚨 Ver estaciones que colapsarán", mostrar_estaciones_colapso),
-    ("🌍 Estado general futuro", grafico_estado_general),
-    ("📊 Top 10 estaciones en riesgo", grafico_top_colapsos)
-]
+    botones = [
+        ("🚨 Ver estaciones que colapsarán", mostrar_estaciones_colapso),
+        ("🌍 Estado general futuro", grafico_estado_general),
+        ("📊 Top 10 estaciones en riesgo", grafico_top_colapsos)
+    ]
 
-for i, (texto, comando) in enumerate(botones):
-    btn = ttk.Button(frame_botones, text=texto, command=comando)
-    btn.grid(row=0, column=i, padx=5, pady=5)
+    for i, (texto, comando) in enumerate(botones):
+        btn = ttk.Button(frame_botones, text=texto, command=comando)
+        btn.grid(row=0, column=i, padx=5, pady=5)
 
-frame_resultados = tk.Frame(ventana)
-frame_resultados.pack(fill="both", expand=True)
+    global frame_resultados
+    frame_resultados = tk.Frame(ventana)
+    frame_resultados.pack(fill="both", expand=True)
 
-canvas = None
+    global canvas
+    canvas = None
 
-if __name__ == "__main__":
+def mostrar_solo_tabla_colapsos():
+    """
+    Abre una ventana independiente que solo muestra la tabla
+    con las estaciones que colapsarán en los próximos 5 días.
+    """
+    global frame_resultados, canvas
+
+    ventana = tk.Tk()
+    ventana.title("🚨 Estaciones que colapsarán en los próximos 5 días")
+    ventana.geometry("1000x600")
+
+    frame_resultados = tk.Frame(ventana)
+    frame_resultados.pack(fill="both", expand=True)
+
+    canvas = None
+
+    try:
+        mostrar_estaciones_colapso()
+    except Exception as e:
+        messagebox.showerror("Error", f"No se pudo mostrar la tabla de colapsos:\n{e}")
+    
     ventana.mainloop()
+if __name__ == "__main__":
+    iniciar_graficas()
 

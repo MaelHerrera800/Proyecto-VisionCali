@@ -203,6 +203,7 @@ class ModeloPredictivoMIO_sklearn:
 
         df["Ocupacion"] = ocupacion_pred
         df["Personas_Predichas"] = (df["Ocupacion"] * df["Capacidad Máxima"]).round().astype(int)
+        
 
         # --- Predicción de colapso ---
         if self.modelo_colapso is not None:
@@ -236,7 +237,7 @@ class ModeloPredictivoMIO_sklearn:
 
         df_export = self.df_predicciones.copy()
         df_export["Fecha"] = pd.to_datetime(df_export["Fecha"]).dt.date
-
+        
         # 🔧 Eliminar franjas desconocidas
         df_export = df_export[df_export["Franja Horaria"] != "Desconocida"]
 

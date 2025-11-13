@@ -1,7 +1,7 @@
-# mapaMIO.py
 import pandas as pd
 import folium
 import numpy as np
+import webbrowser
 
 # ===============================================================
 # 📍 COORDENADAS DE ESTACIONES MIO
@@ -50,14 +50,14 @@ ESTACIONES_MIO = {
 }
 
 # ===============================================================
-# 📊 CARGAR DATOS PREDICHOS DEL MODELO
+# 📊 CARGAR PREDICCIONES DEL MODELO
 # ===============================================================
 try:
     df_pred = pd.read_excel("predicciones_mio.xlsx")
 except FileNotFoundError:
     raise FileNotFoundError("⚠️ No se encontró el archivo 'predicciones_mio.xlsx'. Ejecuta primero modelo_predictivo.py")
 
-# Renombrar columnas para mantener consistencia
+# Renombrar columnas para consistencia
 df_pred.rename(columns={
     "Fecha": "Fecha Predicha",
     "Personas_Predichas": "Personas Predichas",
@@ -72,68 +72,72 @@ df_coords = pd.DataFrame.from_dict(ESTACIONES_MIO, orient="index", columns=["Lat
 df_coords.rename(columns={"index": "Terminal"}, inplace=True)
 df_mapa = pd.merge(df_pred, df_coords, on="Terminal", how="left")
 
-# 🔹 Mostrar todas las estaciones (no filtrar por fecha)
-df_mapa_ultima = df_mapa.copy()
-print(f"📊 Total de estaciones visualizadas: {len(df_mapa_ultima)}")
+df_mapa["Fecha Predicha"] = pd.to_datetime(df_mapa["Fecha Predicha"])
 
 # ===============================================================
-# 🗺️ FUNCIÓN PARA GENERAR MAPA DE PREDICCIONES
+# 📅 FILTRAR SOLO LAS PREDICCIONES DE MAÑANA
 # ===============================================================
-def generar_mapa_predicciones(df):
-    mapa = folium.Map(location=[3.4516, -76.5320], zoom_start=12, tiles="CartoDB positron")
+fechas_ordenadas = sorted(df_mapa["Fecha Predicha"].dt.date.unique())
+fecha_max = max(fechas_ordenadas)
+fecha_maniana = fecha_max  # Mostrar el último día disponible
 
-    for _, fila in df.iterrows():
-        if fila["Estado Futuro"] == "Colapsará":
-            color = "red"
-        elif fila["Estado Futuro"] == "Riesgo de Colapso":
-            color = "orange"
-        else:
-            color = "green"
+df_mapa_maniana = df_mapa[df_mapa["Fecha Predicha"].dt.date == fecha_maniana]
 
-        popup_html = f"""
-        <b>{fila['Terminal']}</b><br>
-        Estado futuro: <b style='color:{color}'>{fila['Estado Futuro']}</b><br>
-        Personas predichas: {fila['Personas Predichas']}<br>
-        Capacidad máxima: {fila['Capacidad Máxima']}<br>
-        Probabilidad de colapso: {(fila['Probabilidad Colapso'] * 100):.1f}%<br>
-        Fecha predicha: {pd.to_datetime(fila['Fecha Predicha']).date()}
-        """
+print(f"📅 Mostrando predicciones para: {fecha_maniana}")
+print(f"🚌 Total de registros: {len(df_mapa_maniana)}")
 
-        if not np.isnan(fila["Latitud"]) and not np.isnan(fila["Longitud"]):
-            folium.CircleMarker(
-                location=[fila["Latitud"], fila["Longitud"]],
-                radius=8,
-                color=color,
-                fill=True,
-                fill_color=color,
-                popup=folium.Popup(popup_html, max_width=300)
-            ).add_to(mapa)
+# ===============================================================
+# 📊 AGRUPAR POR TERMINAL Y RESUMIR FRANJAS
+# ===============================================================
+resumen_estaciones = []
 
-    # ---------------------------------------------------------------
-    # 🧭 AGREGAR LEYENDA
-    # ---------------------------------------------------------------
-    legend_html = """
-    <div style="
-        position: fixed; 
-        bottom: 30px; left: 30px; width: 210px; height: 130px; 
-        background-color: white; border:2px solid grey; z-index:9999;
-        font-size:14px; border-radius:10px; padding:10px;">
-        <b>Leyenda del mapa MIO</b><br>
-        <i style="background:green; width:15px; height:15px; float:left; margin-right:8px;"></i> Estable<br>
-        <i style="background:orange; width:15px; height:15px; float:left; margin-right:8px;"></i> Riesgo de colapso<br>
-        <i style="background:red; width:15px; height:15px; float:left; margin-right:8px;"></i> Colapsará<br>
-    </div>
+for terminal, grupo in df_mapa_maniana.groupby("Terminal"):
+    franjas_colapsadas = grupo.loc[
+        grupo["Estado Futuro"].str.contains("Colapsará", case=False, na=False),
+        "Franja Horaria"
+    ].tolist()
+    franjas_estables = grupo.loc[
+        grupo["Estado Futuro"].str.contains("Estable", case=False, na=False),
+        "Franja Horaria"
+    ].tolist()
+
+    resumen_estaciones.append({
+        "Terminal": terminal,
+        "Latitud": grupo["Latitud"].iloc[0],
+        "Longitud": grupo["Longitud"].iloc[0],
+        "Fecha": fecha_maniana,
+        "Colapsadas": franjas_colapsadas,
+        "Estables": franjas_estables
+    })
+
+df_resumen = pd.DataFrame(resumen_estaciones)
+
+# ===============================================================
+# 🗺️ CREAR MAPA
+# ===============================================================
+mapa = folium.Map(location=[3.4516, -76.5320], zoom_start=12, tiles="CartoDB positron")
+
+for _, fila in df_resumen.iterrows():
+    popup_html = f"""
+    <b>{fila['Terminal']}</b><br>
+    Fecha: {fila['Fecha']}<br><br>
+    <b>Franja(s) colapsadas:</b><br>{', '.join(fila['Colapsadas']) if fila['Colapsadas'] else 'Ninguna'}<br><br>
+    <b>Franja(s) estables:</b><br>{', '.join(fila['Estables']) if fila['Estables'] else 'Ninguna'}
     """
-    mapa.get_root().html.add_child(folium.Element(legend_html))
 
-    return mapa
+    if not np.isnan(fila["Latitud"]) and not np.isnan(fila["Longitud"]):
+        folium.CircleMarker(
+            location=[fila["Latitud"], fila["Longitud"]],
+            radius=7,
+            color="yellow",
+            fill=True,
+            fill_color="yellow",
+            popup=folium.Popup(popup_html, max_width=350)
+        ).add_to(mapa)
 
 # ===============================================================
-# 💾 GUARDAR MAPA COMO HTML
+# 💾 GUARDAR Y ABRIR MAPA
 # ===============================================================
-mapa_pred = generar_mapa_predicciones(df_mapa_ultima)
-mapa_pred.save("mapa_predicciones_mio.html")
-print("✅ Mapa de predicciones generado: mapa_predicciones_mio.html")
-
-if __name__ == "__main__":
-    pass
+mapa.save("mapa_predicciones_mio_mañana.html")
+print("✅ Mapa generado: mapa_predicciones_mio_mañana.html")
+webbrowser.open("mapa_predicciones_mio_mañana.html")
