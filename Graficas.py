@@ -217,7 +217,7 @@ def mostrar_solo_tabla_colapsos():
     global frame_resultados, canvas
 
     ventana = tk.Tk()
-    ventana.title("🚨 Estaciones que colapsarán en los próximos 5 días")
+    ventana.title("Estaciones que colapsarán en los próximos 5 días")
     ventana.geometry("1000x600")
 
     frame_resultados = tk.Frame(ventana)
@@ -230,8 +230,7 @@ def mostrar_solo_tabla_colapsos():
     except Exception as e:
         messagebox.showerror("Error", f"No se pudo mostrar la tabla de colapsos:\n{e}")
     
-    ventana.mainloop()
+
 if __name__ == "__main__":
     iniciar_graficas()
     
-
