@@ -31,7 +31,7 @@ auth = firebase.auth()
 
 def ventana_usuario():
     try:
-        Graficas.mostrar_solo_tabla_colapsos()
+        Graficas.mostrar_todas_estaciones_colapso()
     except Exception as e:
         messagebox.showerror("Error", f"No se pudo mostrar las estaciones que colapsarán:\n{e}")
 
