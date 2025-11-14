@@ -266,7 +266,109 @@ def iniciar_graficas():
 
     global canvas
     canvas = None
-    ventana.mainloop()
+
+def tabla_estaciones_colapso():
+    # Crear ventana
+    win = tk.Toplevel()
+    win.title("Estaciones que colapsarán")
+    win.geometry("900x600")
+
+    tk.Label(win, text="Filtrar Estaciones", font=("Arial", 14, "bold")).pack(pady=10)
+
+    # Frame de filtros
+    frame_filtros = tk.Frame(win)
+    frame_filtros.pack(pady=10)
+
+    # Selector estación
+    estaciones = sorted(df["Terminal"].dropna().unique())
+    tk.Label(frame_filtros, text="Estación:", font=("Arial", 12)).grid(row=0, column=0, padx=5)
+    combo_est = ttk.Combobox(frame_filtros, values=estaciones, state="readonly", width=25)
+    combo_est.grid(row=0, column=1, padx=5)
+
+    # Selector fecha
+    fechas = sorted(df["Fecha"].unique())
+    tk.Label(frame_filtros, text="Fecha:", font=("Arial", 12)).grid(row=0, column=2, padx=5)
+    combo_fec = ttk.Combobox(frame_filtros, values=fechas, state="readonly", width=15)
+    combo_fec.grid(row=0, column=3, padx=5)
+
+    # Frame tabla
+    frame_tabla = tk.Frame(win)
+    frame_tabla.pack(fill="both", expand=True)
+
+def tabla_estaciones_colapso():
+    # Crear ventana
+    win = tk.Toplevel()
+    win.title("Estaciones que colapsarán")
+    win.geometry("900x600")
+
+    tk.Label(win, text="Filtrar Estaciones", font=("Arial", 14, "bold")).pack(pady=10)
+
+    # Frame de filtros
+    frame_filtros = tk.Frame(win)
+    frame_filtros.pack(pady=10)
+
+    # Selector estación
+    estaciones = sorted(df_predicciones["Terminal"].dropna().unique())
+    tk.Label(frame_filtros, text="Estación:", font=("Arial", 12)).grid(row=0, column=0, padx=5)
+    combo_est = ttk.Combobox(frame_filtros, values=estaciones, state="readonly", width=25)
+    combo_est.grid(row=0, column=1, padx=5)
+
+    # Selector fecha
+    df_predicciones["Fecha"] = pd.to_datetime(df_predicciones["Fecha"]).dt.date
+    fechas = sorted(df_predicciones["Fecha"].unique())
+    tk.Label(frame_filtros, text="Fecha:", font=("Arial", 12)).grid(row=0, column=2, padx=5)
+    combo_fec = ttk.Combobox(frame_filtros, values=fechas, state="readonly", width=15)
+    combo_fec.grid(row=0, column=3, padx=5)
+
+    # Frame tabla
+    frame_tabla = tk.Frame(win)
+    frame_tabla.pack(fill="both", expand=True)
+
+    # Función interna para mostrar la tabla
+    def mostrar_tabla():
+        for widget in frame_tabla.winfo_children():
+            widget.destroy()
+
+        df_filtrado = df_predicciones.copy()
+
+        estacion = combo_est.get()
+        if estacion:
+            df_filtrado = df_filtrado[df_filtrado["Terminal"] == estacion]
+
+        fecha = combo_fec.get()
+        if fecha:
+            fecha = pd.to_datetime(fecha).date()
+            df_filtrado = df_filtrado[df_filtrado["Fecha"] == fecha]
+
+        # Filtrar colapsos
+        df_filtrado = df_filtrado[
+            df_filtrado["Estado_Previsto"].str.contains("Colapsará", case=False, na=False)
+        ]
+
+        if df_filtrado.empty:
+            messagebox.showinfo("Sin datos", "No hay colapsos para esos filtros.")
+            return
+
+        # Crear tabla
+        columnas = ["Terminal", "Fecha", "Franja Horaria", "Personas_Predichas", "Prob_Colapso"]
+        tabla = ttk.Treeview(frame_tabla, columns=columnas, show="headings", height=15)
+
+        for col in columnas:
+            tabla.heading(col, text=col)
+            tabla.column(col, width=180, anchor="center")
+
+        for _, fila in df_filtrado.iterrows():
+            tabla.insert("", "end", values=(
+                fila["Terminal"],
+                fila["Fecha"],
+                fila["Franja Horaria"],
+                int(fila["Personas_Predichas"]),
+                f"{fila['Prob_Colapso'] * 100:.1f}%"
+            ))
+
+        tabla.pack(fill="both", expand=True)
+
+    tk.Button(win, text="Aplicar filtros", font=("Arial", 12, "bold"), command=mostrar_tabla).pack(pady=10)
     
 
 
