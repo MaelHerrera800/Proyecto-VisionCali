@@ -3,7 +3,7 @@ from tkinter import messagebox
 import pyrebase
 import subprocess
 import sys
-from Graficas import tabla_estaciones_colapso
+import Graficas
 import Reportes_finales
 import webbrowser
 
@@ -31,7 +31,7 @@ auth = firebase.auth()
 
 def ventana_usuario():
     try:
-        tabla_estaciones_colapso()
+        Graficas.mostrar_todas_estaciones_colapso()
     except Exception as e:
         messagebox.showerror("Error", f"No se pudo mostrar las estaciones que colapsarán:\n{e}")
 
@@ -96,6 +96,7 @@ def abrir_graficas():
 
 
     
+
 # -----------------------------------------------------
 # FUNCIONES DE LOGIN
 # -----------------------------------------------------
