@@ -4,9 +4,9 @@ import openpyxl
 import calendar 
 from datetime import datetime, timedelta
 
-# ============================================================
+
 # 🧩 CLASE OBJETO DE DATOS
-# ============================================================
+
 class ObjetoDeDatos:
     def __init__(self, dataframe):
         self.dataframe = dataframe
@@ -19,7 +19,7 @@ class ObjetoDeDatos:
         cols_requeridas = ["Personas Actuales", "Franja Horaria", "Estado"]
         for col in cols_requeridas:
             if col not in df_limpio.columns:
-                raise KeyError(f"❌ Falta la columna requerida: {col}")
+                raise KeyError(f"Falta la columna requerida: {col}")
 
         # Asegurar tipos de datos correctos
         df_limpio["Personas Actuales"] = df_limpio["Personas Actuales"].astype(float)
@@ -37,9 +37,9 @@ class ObjetoDeDatos:
         return df_limpio
 
 
-# ============================================================
-# 🏙️ DATOS DE TERMINALES SIMULADOS - CON ALTA VARIABILIDAD
-# ============================================================
+ 
+# DATOS DE TERMINALES SIMULADOS - CON ALTA VARIABILIDAD
+
 nombres_terminales = [
     "Terminal Paso del Comercio", "Terminal Menga", "Terminal Andrés Sanín",
     "Terminal Simón Bolívar", "Terminal Aguablanca", "Centro", "Plaza de Caycedo",
@@ -57,11 +57,11 @@ np.random.seed(42)
 terminales_random = np.random.choice(nombres_terminales, num_datos)
 capacidades = np.random.randint(80, 200, num_datos)
 
-# 🆕 MEJORADO: Generar ocupación con MAYOR VARIABILIDAD
+# MEJORADO: Generar ocupación con MAYOR VARIABILIDAD
 # Esto garantiza que habrá suficientes casos de colapso
 personas = []
 for i, cap in enumerate(capacidades):
-    # 🎯 ESTRATEGIA: Diferentes escenarios según posición
+    # ESTRATEGIA: Diferentes escenarios según posición
     rand = np.random.random()
     
     if rand < 0.40:  # 40% - Ocupación normal-baja (40-70%)
@@ -77,10 +77,10 @@ for i, cap in enumerate(capacidades):
 
 personas = np.array(personas)
 
-# 🆕 CORREGIDO: Estado con umbral en 95%
+# Estado con umbral en 95%
 estado = np.where(personas > capacidades * 0.95, "Colapsada", "Estable")
 
-# ✅ Fechas entre hace 2 años y hoy (sin hora)
+# Fechas entre hace 2 años y hoy (sin hora)
 fecha_fin = datetime.now().date()
 fecha_inicio = fecha_fin - timedelta(days=1825)
 fechas_secuenciales = pd.date_range(start=fecha_inicio, end=fecha_fin, periods=num_datos)

@@ -3,15 +3,15 @@ from tkinter import messagebox
 import pyrebase
 import subprocess
 import sys
-import Graficas
-import Graficas_solo_tablas
-import Reportes_finales
 import webbrowser
 from PIL import Image, ImageTk
-# -----------------------------------------------------
-# CONFIGURACIÓN DE FIREBASE
-# -----------------------------------------------------
+from modelo_predictivo import ModeloPredictivoMIO_sklearn
+import os
 
+
+
+# CONFIGURACIÓN DE FIREBASE
+ 
 firebaseConfig = {
     "apiKey": "AIzaSyALWtfuk7-Ti9S2L0uFzJOtj_kkt9SS-5Q",
     "authDomain": "menu-del-mio.firebaseapp.com",
@@ -149,9 +149,42 @@ def login_operario():
 
     tk.Button(login_win, text="Iniciar Sesión", command=iniciar, bg="#2196F3", fg="white").pack(pady=10)
 
-# -----------------------------------------------------
-# VENTANA PRINCIPAL
-# -----------------------------------------------------
+
+#  INICIALIZACIÓN AUTOMÁTICA ANTES DE MOSTRAR EL MENÚ
+
+def inicializar_sistema():
+    # Si YA existe el archivo de predicciones, no volver a crear
+    if os.path.exists("predicciones_mio.xlsx"):
+        print("📌 Archivo de predicciones ya existe. No se volverá a generar.")
+        return
+
+    print("\n🚀 Generando predicciones iniciales...\n")
+
+    try:
+        modelo = ModeloPredictivoMIO_sklearn(
+            usar_ultimo_mes=False,
+            usar_random_forest=True
+        )
+
+        modelo.entrenar_modelo_ocupacion()
+        modelo.entrenar_modelo_colapso()
+        df_pred = modelo.predecir(incluir_futuro=True, dias_futuros=5)
+
+        if df_pred is not None:
+            modelo.guardar_predicciones()
+            print("✅ Predicciones generadas correctamente.\n")
+        else:
+            print("⚠️ No se generaron predicciones.\n")
+
+    except Exception as e:
+        import traceback
+        print("❌ Error durante inicialización:")
+        traceback.print_exc()
+
+# Ejecutar ANTES del menú
+inicializar_sistema()
+
+
 
 ventana = tk.Tk()
 ventana.title("MENÚ DE VISIÓNCALI")
@@ -179,4 +212,4 @@ tk.Button(ventana, text="Cerrar", command=ventana.destroy, bg="#E74C3C", fg="whi
 ventana.mainloop()
 
 if __name__ == "__main__":
-    ventana.mainloop()
+    pass

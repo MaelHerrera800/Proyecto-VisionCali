@@ -1,20 +1,18 @@
-# ================================================================
-# 🔴 NOTA IMPORTANTE
+
+# NOTA IMPORTANTE
 # No fue posible mantener dos tipos diferentes de tablas dentro del
 # mismo módulo de gráficas, ya que mezclar interfaces gráficas con
 # funciones sin gráficas generaba conflictos visuales y de control
 # de ventana. Por ello, se creó este módulo separado que contiene
 # exclusivamente las TABLAS SIN GRÁFICAS.
-# ================================================================
+
 
 import tkinter as tk
 from tkinter import ttk, messagebox
 import pandas as pd
 
+# CLASE QUE MANEJA SOLAMENTE TABLAS 
 
-# ============================================================
-#   👉 CLASE QUE MANEJA SOLAMENTE TABLAS (SIN GRÁFICAS)
-# ============================================================
 class TablasMIO:
 
     def __init__(self, df):
@@ -36,9 +34,9 @@ class TablasMIO:
         return df[df["Estado_Previsto"].str.contains("Colapsará", case=False, na=False)]
 
 
-# ============================================================
-#   👉 INTERFAZ QUE MUESTRA SOLO TABLAS
-# ============================================================
+
+# INTERFAZ QUE MUESTRA SOLO TABLAS
+
 class InterfazTablas:
 
     def __init__(self, df):
@@ -87,9 +85,9 @@ class InterfazTablas:
         self.frame_tabla = tk.Frame(self.ventana)
         self.frame_tabla.pack(fill="both", expand=True)
 
-    # ==========================
+    
     #  SELECTORES
-    # ==========================
+    
 
     def crear_selector_estacion(self, frame):
         estaciones = sorted(self.df["Terminal"].dropna().unique())
@@ -183,16 +181,16 @@ class InterfazTablas:
 
         tabla.pack(fill="both", expand=True)
 
-    # ==========================
+    
     #  INICIAR VENTANA
-    # ==========================
+    
     def iniciar(self):
         self.ventana.mainloop()
 
 
-# ============================================================
+
 #   EJECUCIÓN DEL MÓDULO
-# ============================================================
+
 if __name__ == "__main__":
     try:
         df = pd.read_excel("predicciones_mio.xlsx")

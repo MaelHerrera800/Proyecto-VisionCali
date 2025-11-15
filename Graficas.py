@@ -5,9 +5,9 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
 
 
-# ============================================================
-#  🔵 CLASE QUE MANEJA TODAS LAS VISUALIZACIONES Y FILTROS
-# ============================================================
+
+#  CLASE QUE MANEJA TODAS LAS VISUALIZACIONES Y FILTROS
+
 class VisualizacionesMIO:
 
     def __init__(self, df):
@@ -25,16 +25,16 @@ class VisualizacionesMIO:
             df = df[df["Terminal"] == estacion]
         return df
 
-    # ------------------------------
+    
     # TABLA: COLAPSOS POR FILTROS
-    # ------------------------------
+   
     def obtener_colapsos(self, fecha=None, estacion=None):
         df = self.filtrar(fecha, estacion)
         return df[df["Estado_Previsto"].str.contains("Colapsará", case=False, na=False)]
 
-    # ------------------------------
+
     # GRÁFICO ESTADO GENERAL (POR DÍA)
-    # ------------------------------
+    
     def grafico_estado_general(self, fecha=None):
         df = self.filtrar(fecha)
         conteo = df["Estado_Previsto"].value_counts()
@@ -65,9 +65,9 @@ class VisualizacionesMIO:
         return fig
 
 
-# ============================================================
-#  🔵 CLASE INTERFAZ TKINTER — SOLO MANEJA LA VENTANA
-# ============================================================
+
+#   CLASE INTERFAZ TKINTER — SOLO MANEJA LA VENTANA
+
 class InterfazMIO:
 
     def __init__(self, df_predicciones):
@@ -104,9 +104,9 @@ class InterfazMIO:
 
         self.canvas = None
 
-    # -----------------------------------------
+    
     # Selectores
-    # -----------------------------------------
+    
     def crear_selector_estacion(self, frame):
         estaciones = sorted(self.df["Terminal"].dropna().unique())
 
@@ -124,9 +124,8 @@ class InterfazMIO:
         self.combo_fechas = ttk.Combobox(frame, values=fechas, state="readonly", width=15)
         self.combo_fechas.grid(row=0, column=3, padx=5)
 
-    # -----------------------------------------
+    
     # Botones
-    # -----------------------------------------
     def crear_botones(self):
         frame = tk.Frame(self.ventana)
         frame.pack(pady=15)
@@ -141,9 +140,8 @@ class InterfazMIO:
         for i, (texto, comando) in enumerate(botones):
             ttk.Button(frame, text=texto, command=comando).grid(row=0, column=i, padx=5, pady=5)
 
-    # -----------------------------------------
+    
     # Utilidades
-    # -----------------------------------------
     def limpiar(self):
         for widget in self.frame_resultados.winfo_children():
             widget.destroy()
@@ -157,9 +155,9 @@ class InterfazMIO:
     def get_estacion(self):
         return self.combo_estaciones.get() or None
 
-    # -----------------------------------------
+    
     # TABLAS Y GRÁFICOS
-    # -----------------------------------------
+    
     def mostrar_estaciones_colapso(self):
         self.limpiar()
         fecha = self.get_fecha()
@@ -233,17 +231,16 @@ class InterfazMIO:
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(fill="both", expand=True)
 
-    # -----------------------------------------
+     
     # Iniciar ventana
-    # -----------------------------------------
+     
     def iniciar(self):
         self.ventana.mainloop()
     
 
 
-# ============================================================
+
 #   EJECUCIÓN PRINCIPAL
-# ============================================================
 if __name__ == "__main__":
     try:
         df = pd.read_excel("predicciones_mio.xlsx")
