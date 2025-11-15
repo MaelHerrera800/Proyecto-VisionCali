@@ -4,9 +4,10 @@ import pyrebase
 import subprocess
 import sys
 import Graficas
+import Graficas_solo_tablas
 import Reportes_finales
 import webbrowser
-
+from PIL import Image, ImageTk
 # -----------------------------------------------------
 # CONFIGURACIÓN DE FIREBASE
 # -----------------------------------------------------
@@ -31,14 +32,17 @@ auth = firebase.auth()
 
 def ventana_usuario():
     try:
-        Graficas.mostrar_todas_estaciones_colapso()
+        subprocess.Popen([sys.executable, "Graficas_solo_tablas.py"])
     except Exception as e:
-        messagebox.showerror("Error", f"No se pudo mostrar las estaciones que colapsarán:\n{e}")
+        messagebox.showerror("Error", f"No se pudo abrir el módulo de tablas:\n{e}")
+
 
 def ventana_admin():
     admin_win = tk.Toplevel()
     admin_win.title("Panel de Administrador")
     admin_win.geometry("300x300")
+
+
 
     tk.Label(admin_win, text="Bienvenido Administrador", font=("Arial", 14)).pack(pady=10)
 
@@ -64,25 +68,17 @@ def abrir_reporte():
     """
     try:
         subprocess.Popen([sys.executable, "Reportes_finales.py"])
-        messagebox.showinfo("Reporte creado", "Reporte generado correctamente.")# se ejecuta como proceso aparte
+        
     except Exception as e:
         messagebox.showerror("Error", f"No se pudo abrir el módulo de reportes:\n{e}")
 def abrir_mapa():
     """
-    Abre el mapa de predicciones (HTML) generado por mapaMIO.py.
-    Si no existe, ejecuta el script para generarlo.
+    Abre el módulo de mapa (mapaMIO.py) en una ventana separada.
     """
-    import os
-    if not os.path.exists("mapa_predicciones_mio_mañana.html"):
-        try:
-            import subprocess, sys
-            subprocess.run([sys.executable, "mapaMIO.py"], check=True)
-            messagebox.showinfo("Mapa creado", "Mapa generado correctamente.")
-        except Exception as e:
-            messagebox.showerror("Error", f"No se pudo generar el mapa:\n{e}")
-            return
-
-    webbrowser.open("mapa_predicciones_mio_mañana.html")
+    try:
+        subprocess.Popen([sys.executable, "mapaMIO.py"])
+    except Exception as e:
+        messagebox.showerror("Error", f"No se pudo abrir el módulo de mapa:\n{e}")
     
 
 def abrir_graficas():
@@ -161,6 +157,15 @@ ventana = tk.Tk()
 ventana.title("MENÚ DE VISIÓNCALI")
 ventana.geometry("300x350")
 ventana.config(bg="#f0f0f0")
+
+try:
+     img = Image.open("logovisioncali.jpg")   # ruta de tu imagen
+     img = img.resize((180, 180))
+     logo = ImageTk.PhotoImage(img)
+     tk.Label(ventana, image=logo, bg="#f0f0f0").pack(pady=10)
+     ventana.logo = logo   # evita que Tkinter elimine la imagen
+except Exception as e:
+     print("No se pudo cargar el logo:", e)
 
 tk.Label(ventana, text="Seleccione su rol", font=("Arial", 12, "bold"), bg="#f0f0f0").pack(pady=10)
 

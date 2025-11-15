@@ -2,6 +2,9 @@ import pandas as pd
 import folium
 import numpy as np
 import webbrowser
+import tkinter as tk
+from tkinter import ttk, messagebox
+from datetime import date
 
 # ===============================================================
 # 📍 COORDENADAS DE ESTACIONES MIO
@@ -50,93 +53,136 @@ ESTACIONES_MIO = {
 }
 
 # ===============================================================
-# 📊 CARGAR PREDICCIONES DEL MODELO
+# CARGAR Y PROCESAR DATOS
 # ===============================================================
-try:
-    df_pred = pd.read_excel("predicciones_mio.xlsx")
-except FileNotFoundError:
-    raise FileNotFoundError("⚠️ No se encontró el archivo 'predicciones_mio.xlsx'. Ejecuta primero modelo_predictivo.py")
+def cargar_predicciones():
+    try:
+        df = pd.read_excel("predicciones_mio.xlsx")
+    except FileNotFoundError:
+        messagebox.showerror("Error", "No se encontró 'predicciones_mio.xlsx'.")
+        return None
 
-# Renombrar columnas para consistencia
-df_pred.rename(columns={
-    "Fecha": "Fecha Predicha",
-    "Personas_Predichas": "Personas Predichas",
-    "Prob_Colapso": "Probabilidad Colapso",
-    "Estado_Previsto": "Estado Futuro"
-}, inplace=True)
+    df.rename(columns={
+        "Fecha": "Fecha Predicha",
+        "Personas_Predichas": "Personas Predichas",
+        "Prob_Colapso": "Probabilidad Colapso",
+        "Estado_Previsto": "Estado Futuro"
+    }, inplace=True)
 
-# ===============================================================
-# 🌍 AGREGAR COORDENADAS A CADA TERMINAL
-# ===============================================================
-df_coords = pd.DataFrame.from_dict(ESTACIONES_MIO, orient="index", columns=["Latitud", "Longitud"]).reset_index()
-df_coords.rename(columns={"index": "Terminal"}, inplace=True)
-df_mapa = pd.merge(df_pred, df_coords, on="Terminal", how="left")
+    df["Fecha Predicha"] = pd.to_datetime(df["Fecha Predicha"])
+    return df
 
-df_mapa["Fecha Predicha"] = pd.to_datetime(df_mapa["Fecha Predicha"])
 
-# ===============================================================
-# 📅 FILTRAR SOLO LAS PREDICCIONES DE MAÑANA
-# ===============================================================
-fechas_ordenadas = sorted(df_mapa["Fecha Predicha"].dt.date.unique())
-fecha_max = max(fechas_ordenadas)
-fecha_maniana = fecha_max  # Mostrar el último día disponible
+def agregar_coordenadas(df, estaciones_dict):
+    df_coords = pd.DataFrame.from_dict(
+        estaciones_dict, orient="index", columns=["Latitud", "Longitud"]
+    ).reset_index()
 
-df_mapa_maniana = df_mapa[df_mapa["Fecha Predicha"].dt.date == fecha_maniana]
+    df_coords.rename(columns={"index": "Terminal"}, inplace=True)
+    return pd.merge(df, df_coords, on="Terminal", how="left")
 
-print(f"📅 Mostrando predicciones para: {fecha_maniana}")
-print(f"🚌 Total de registros: {len(df_mapa_maniana)}")
 
-# ===============================================================
-# 📊 AGRUPAR POR TERMINAL Y RESUMIR FRANJAS
-# ===============================================================
-resumen_estaciones = []
+def resumen_por_terminal(df, fecha):
+    df_fecha = df[df["Fecha Predicha"].dt.date == fecha]
 
-for terminal, grupo in df_mapa_maniana.groupby("Terminal"):
-    franjas_colapsadas = grupo.loc[
-        grupo["Estado Futuro"].str.contains("Colapsará", case=False, na=False),
-        "Franja Horaria"
-    ].tolist()
-    franjas_estables = grupo.loc[
-        grupo["Estado Futuro"].str.contains("Estable", case=False, na=False),
-        "Franja Horaria"
-    ].tolist()
+    resumen = []
+    for terminal, grupo in df_fecha.groupby("Terminal"):
 
-    resumen_estaciones.append({
-        "Terminal": terminal,
-        "Latitud": grupo["Latitud"].iloc[0],
-        "Longitud": grupo["Longitud"].iloc[0],
-        "Fecha": fecha_maniana,
-        "Colapsadas": franjas_colapsadas,
-        "Estables": franjas_estables
-    })
+        colapsadas = grupo.loc[
+            grupo["Estado Futuro"].str.contains("Colapsará", case=False, na=False),
+            "Franja Horaria"
+        ].tolist()
 
-df_resumen = pd.DataFrame(resumen_estaciones)
+        estables = grupo.loc[
+            grupo["Estado Futuro"].str.contains("Estable", case=False, na=False),
+            "Franja Horaria"
+        ].tolist()
+
+        resumen.append({
+            "Terminal": terminal,
+            "Latitud": grupo["Latitud"].iloc[0],
+            "Longitud": grupo["Longitud"].iloc[0],
+            "Fecha": fecha,
+            "Colapsadas": colapsadas,
+            "Estables": estables
+        })
+
+    return pd.DataFrame(resumen)
+
 
 # ===============================================================
-# 🗺️ CREAR MAPA
+# GENERACIÓN DEL MAPA
 # ===============================================================
-mapa = folium.Map(location=[3.4516, -76.5320], zoom_start=12, tiles="CartoDB positron")
+def crear_mapa(df_resumen, filename="mapa_predicciones_mio.html"):
 
-for _, fila in df_resumen.iterrows():
-    popup_html = f"""
-    <b>{fila['Terminal']}</b><br>
-    Fecha: {fila['Fecha']}<br><br>
-    <b>Franja(s) colapsadas:</b><br>{', '.join(fila['Colapsadas']) if fila['Colapsadas'] else 'Ninguna'}<br><br>
-    <b>Franja(s) estables:</b><br>{', '.join(fila['Estables']) if fila['Estables'] else 'Ninguna'}
-    """
+    mapa = folium.Map(location=[3.4516, -76.5320], zoom_start=12, tiles="CartoDB positron")
 
-    if not np.isnan(fila["Latitud"]) and not np.isnan(fila["Longitud"]):
+    for _, fila in df_resumen.iterrows():
+
+        # ✔ Nueva lógica: rojo si hay AL MENOS 1 colapsada
+        color = "red" if len(fila["Colapsadas"]) > 0 else "green"
+
+        popup_html = f"""
+        <b>{fila['Terminal']}</b><br>
+        Fecha: {fila['Fecha']}<br><br>
+
+        <b>🟥 Colapsadas:</b><br>{', '.join(fila['Colapsadas']) if fila['Colapsadas'] else 'Ninguna'}<br><br>
+        <b>🟩 Estables:</b><br>{', '.join(fila['Estables']) if fila['Estables'] else 'Ninguna'}
+        """
+
         folium.CircleMarker(
             location=[fila["Latitud"], fila["Longitud"]],
             radius=7,
-            color="yellow",
+            color=color,
             fill=True,
-            fill_color="yellow",
+            fill_color=color,
             popup=folium.Popup(popup_html, max_width=350)
         ).add_to(mapa)
 
+    mapa.save(filename)
+    webbrowser.open(filename)
+
+
 # ===============================================================
-# 💾 GUARDAR Y ABRIR MAPA
+# INTERFAZ TKINTER
 # ===============================================================
-mapa.save("mapa_predicciones_mio_mañana.html")
-print("✅ Mapa generado: mapa_predicciones_mio_mañana.html")
+def abrir_menu():
+    df = cargar_predicciones()
+    if df is None:
+        return
+
+    df_mapa = agregar_coordenadas(df, ESTACIONES_MIO)
+
+    fechas = sorted(df_mapa["Fecha Predicha"].dt.date.unique())
+
+    # Ventana principal
+    root = tk.Tk()
+    root.title("Selección de Fecha - Mapa MIO")
+    root.geometry("350x180")
+
+    tk.Label(root, text="Seleccione la fecha para generar el mapa:",
+             font=("Arial", 12)).pack(pady=10)
+
+    combo = ttk.Combobox(root, values=[str(f) for f in fechas], state="readonly", font=("Arial", 11))
+    combo.pack(pady=5)
+
+    def generar():
+        if not combo.get():
+            messagebox.showwarning("Error", "Debe seleccionar una fecha.")
+            return
+
+        fecha_sel = pd.to_datetime(combo.get()).date()
+        df_res = resumen_por_terminal(df_mapa, fecha_sel)
+        crear_mapa(df_res)
+
+    tk.Button(root, text="Generar mapa", font=("Arial", 12),
+              command=generar).pack(pady=15)
+
+    root.mainloop()
+
+
+# ===============================================================
+# EJECUCIÓN
+# ===============================================================
+if __name__ == "__main__":
+    abrir_menu()

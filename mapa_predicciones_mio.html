@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_7d6e54926c42257accbab2aa9397ea74 {
+                #map_0f7033895240a3076b5d75d994177be0 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -54,26 +54,14 @@
 <body>
     
     
-    <div style="
-        position: fixed; 
-        bottom: 30px; left: 30px; width: 210px; height: 130px; 
-        background-color: white; border:2px solid grey; z-index:9999;
-        font-size:14px; border-radius:10px; padding:10px;">
-        <b>Leyenda del mapa MIO</b><br>
-        <i style="background:green; width:15px; height:15px; float:left; margin-right:8px;"></i> Estable<br>
-        <i style="background:orange; width:15px; height:15px; float:left; margin-right:8px;"></i> Riesgo de colapso<br>
-        <i style="background:red; width:15px; height:15px; float:left; margin-right:8px;"></i> Colapsará<br>
-    </div>
-    
-    
-            <div class="folium-map" id="map_7d6e54926c42257accbab2aa9397ea74" ></div>
+            <div class="folium-map" id="map_0f7033895240a3076b5d75d994177be0" ></div>
         
 </body>
 <script>
     
     
-            var map_7d6e54926c42257accbab2aa9397ea74 = L.map(
-                "map_7d6e54926c42257accbab2aa9397ea74",
+            var map_0f7033895240a3076b5d75d994177be0 = L.map(
+                "map_0f7033895240a3076b5d75d994177be0",
                 {
                     center: [3.4516, -76.532],
                     crs: L.CRS.EPSG3857,
@@ -90,7 +78,7 @@
 
         
     
-            var tile_layer_6b40cd63f8d2f9b929254593c37509d0 = L.tileLayer(
+            var tile_layer_6ee7d316653e47189d07dbd04912c8e7 = L.tileLayer(
                 "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
                 {
   "minZoom": 0,
@@ -107,7 +95,927 @@
             );
         
     
-            tile_layer_6b40cd63f8d2f9b929254593c37509d0.addTo(map_7d6e54926c42257accbab2aa9397ea74);
+            tile_layer_6ee7d316653e47189d07dbd04912c8e7.addTo(map_0f7033895240a3076b5d75d994177be0);
         
+    
+            var circle_marker_78cfa7ead310f6a4242a9afc831fb2f5 = L.circleMarker(
+                [3.465, -76.498],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_45273c51aefca98a62eaa66c5e342fbf = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_1320d8a0fade7a9b5c95a5f079885666 = $(`<div id="html_1320d8a0fade7a9b5c95a5f079885666" style="width: 100.0%; height: 100.0%;">         <b>Calipso</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>12:00-15:00, 21:00-23:00<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 15:00-18:00, 18:00-21:00         </div>`)[0];
+                popup_45273c51aefca98a62eaa66c5e342fbf.setContent(html_1320d8a0fade7a9b5c95a5f079885666);
+            
+        
+
+        circle_marker_78cfa7ead310f6a4242a9afc831fb2f5.bindPopup(popup_45273c51aefca98a62eaa66c5e342fbf)
+        ;
+
+        
+    
+    
+            var circle_marker_d4ae2e289dc4575554ac75dfcff7ebe5 = L.circleMarker(
+                [3.388056, -76.545],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_623a233838096354128560448b3f6d74 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_55bf92a51b970025a2d0ff15317ca2fe = $(`<div id="html_55bf92a51b970025a2d0ff15317ca2fe" style="width: 100.0%; height: 100.0%;">         <b>Capri</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>15:00-18:00, 18:00-21:00<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 21:00-23:00         </div>`)[0];
+                popup_623a233838096354128560448b3f6d74.setContent(html_55bf92a51b970025a2d0ff15317ca2fe);
+            
+        
+
+        circle_marker_d4ae2e289dc4575554ac75dfcff7ebe5.bindPopup(popup_623a233838096354128560448b3f6d74)
+        ;
+
+        
+    
+    
+            var circle_marker_64f087d0085d417bbf186cab46fd46d2 = L.circleMarker(
+                [3.411, -76.495],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_45ddabb33531e714ad51f94e560922ad = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_43fdf0d6214d80d974df804780653243 = $(`<div id="html_43fdf0d6214d80d974df804780653243" style="width: 100.0%; height: 100.0%;">         <b>Cañaverales</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>15:00-18:00<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_45ddabb33531e714ad51f94e560922ad.setContent(html_43fdf0d6214d80d974df804780653243);
+            
+        
+
+        circle_marker_64f087d0085d417bbf186cab46fd46d2.bindPopup(popup_45ddabb33531e714ad51f94e560922ad)
+        ;
+
+        
+    
+    
+            var circle_marker_112bbf0bdfffeacaee03dd3ea53e33e4 = L.circleMarker(
+                [3.4483534462224, -76.530063504386],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_ed0bc7bd68fd0246c6132500388fc1b1 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_cca268bcf94fdef62851bfb12b8cfdcf = $(`<div id="html_cca268bcf94fdef62851bfb12b8cfdcf" style="width: 100.0%; height: 100.0%;">         <b>Centro</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>12:00-15:00, 18:00-21:00<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 15:00-18:00, 21:00-23:00         </div>`)[0];
+                popup_ed0bc7bd68fd0246c6132500388fc1b1.setContent(html_cca268bcf94fdef62851bfb12b8cfdcf);
+            
+        
+
+        circle_marker_112bbf0bdfffeacaee03dd3ea53e33e4.bindPopup(popup_ed0bc7bd68fd0246c6132500388fc1b1)
+        ;
+
+        
+    
+    
+            var circle_marker_88d2a168515060dbbd78d5cb37d9b549 = L.circleMarker(
+                [3.481719, -76.497999],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_5c80be164c9e74c5a65e1ca63a01203c = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_0fceee1a3483c684030a5f848a57f4d7 = $(`<div id="html_0fceee1a3483c684030a5f848a57f4d7" style="width: 100.0%; height: 100.0%;">         <b>Chiminangos</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_5c80be164c9e74c5a65e1ca63a01203c.setContent(html_0fceee1a3483c684030a5f848a57f4d7);
+            
+        
+
+        circle_marker_88d2a168515060dbbd78d5cb37d9b549.bindPopup(popup_5c80be164c9e74c5a65e1ca63a01203c)
+        ;
+
+        
+    
+    
+            var circle_marker_59cccaf51c990259e61cb1035c103a83 = L.circleMarker(
+                [3.456, -76.48],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_08cf956c60ea2720a9becc5370d82516 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_35116e1ef34013b5f5d6d70727eb8488 = $(`<div id="html_35116e1ef34013b5f5d6d70727eb8488" style="width: 100.0%; height: 100.0%;">         <b>Ciudad Modelo</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_08cf956c60ea2720a9becc5370d82516.setContent(html_35116e1ef34013b5f5d6d70727eb8488);
+            
+        
+
+        circle_marker_59cccaf51c990259e61cb1035c103a83.bindPopup(popup_08cf956c60ea2720a9becc5370d82516)
+        ;
+
+        
+    
+    
+            var circle_marker_b90f0d520303c8d63e8daef649707104 = L.circleMarker(
+                [3.431926, -76.543083],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_85c67cad8bb9e11e2e91e983a2cae643 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_76881f81dffbb87b59a19090edac5a30 = $(`<div id="html_76881f81dffbb87b59a19090edac5a30" style="width: 100.0%; height: 100.0%;">         <b>Estadio</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>18:00-21:00<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 21:00-23:00         </div>`)[0];
+                popup_85c67cad8bb9e11e2e91e983a2cae643.setContent(html_76881f81dffbb87b59a19090edac5a30);
+            
+        
+
+        circle_marker_b90f0d520303c8d63e8daef649707104.bindPopup(popup_85c67cad8bb9e11e2e91e983a2cae643)
+        ;
+
+        
+    
+    
+            var circle_marker_017a718c09f5b92f3ce89f23171121ac = L.circleMarker(
+                [3.478416, -76.502034],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_e80d43d1c0f866015064196daeb07548 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_cef3dcd92c6b1057a56ff9f03b4afa4c = $(`<div id="html_cef3dcd92c6b1057a56ff9f03b4afa4c" style="width: 100.0%; height: 100.0%;">         <b>Flora Industrial</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>12:00-15:00, 15:00-18:00<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_e80d43d1c0f866015064196daeb07548.setContent(html_cef3dcd92c6b1057a56ff9f03b4afa4c);
+            
+        
+
+        circle_marker_017a718c09f5b92f3ce89f23171121ac.bindPopup(popup_e80d43d1c0f866015064196daeb07548)
+        ;
+
+        
+    
+    
+            var circle_marker_544e9cc8555331717cbb4fa445ac1399 = L.circleMarker(
+                [3.456, -76.504],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_229e155e0340e7016bab738602b7f860 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_e6a383ecf0d8569bd4fec381b292e5e2 = $(`<div id="html_e6a383ecf0d8569bd4fec381b292e5e2" style="width: 100.0%; height: 100.0%;">         <b>Fátima</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>15:00-18:00<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_229e155e0340e7016bab738602b7f860.setContent(html_e6a383ecf0d8569bd4fec381b292e5e2);
+            
+        
+
+        circle_marker_544e9cc8555331717cbb4fa445ac1399.bindPopup(popup_229e155e0340e7016bab738602b7f860)
+        ;
+
+        
+    
+    
+            var circle_marker_b0cd0a86bc522640c8321828b0e133ca = L.circleMarker(
+                [3.462, -76.526],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_84250f677b075244ce6d1ad6aaa0de21 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_96069ed862c8e0012ab2350bff93f8c8 = $(`<div id="html_96069ed862c8e0012ab2350bff93f8c8" style="width: 100.0%; height: 100.0%;">         <b>Las Américas</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_84250f677b075244ce6d1ad6aaa0de21.setContent(html_96069ed862c8e0012ab2350bff93f8c8);
+            
+        
+
+        circle_marker_b0cd0a86bc522640c8321828b0e133ca.bindPopup(popup_84250f677b075244ce6d1ad6aaa0de21)
+        ;
+
+        
+    
+    
+            var circle_marker_d5831e9b01866d17b4af277d9835ebda = L.circleMarker(
+                [3.4355, -76.5185],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_13d19c313e05579fa8980f9f38c1e20a = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_ad7636bf5103d76bb873f20798d8aaac = $(`<div id="html_ad7636bf5103d76bb873f20798d8aaac" style="width: 100.0%; height: 100.0%;">         <b>Lleras Restrepo</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>05:30-09:00, 15:00-18:00<br><br>         <b>🟩 Estables:</b><br>09:00-12:00, 12:00-15:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_13d19c313e05579fa8980f9f38c1e20a.setContent(html_ad7636bf5103d76bb873f20798d8aaac);
+            
+        
+
+        circle_marker_d5831e9b01866d17b4af277d9835ebda.bindPopup(popup_13d19c313e05579fa8980f9f38c1e20a)
+        ;
+
+        
+    
+    
+            var circle_marker_7cac3111c37c5ab472dd1c2d012761f7 = L.circleMarker(
+                [3.435, -76.540833],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_1d92124bef9055389cab635069ab9558 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_a02d01a297e7a4111ed163925f24c116 = $(`<div id="html_a02d01a297e7a4111ed163925f24c116" style="width: 100.0%; height: 100.0%;">         <b>Manzana del Saber</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>05:30-09:00<br><br>         <b>🟩 Estables:</b><br>09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_1d92124bef9055389cab635069ab9558.setContent(html_a02d01a297e7a4111ed163925f24c116);
+            
+        
+
+        circle_marker_7cac3111c37c5ab472dd1c2d012761f7.bindPopup(popup_1d92124bef9055389cab635069ab9558)
+        ;
+
+        
+    
+    
+            var circle_marker_83df7bd1e91a0784c9fcdccfa1c8a60a = L.circleMarker(
+                [3.476, -76.506],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_f5261490ea6125c2db275015376c1313 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_0531c1fadf0b8cca166f4cd585d0eda8 = $(`<div id="html_0531c1fadf0b8cca166f4cd585d0eda8" style="width: 100.0%; height: 100.0%;">         <b>Manzanares</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_f5261490ea6125c2db275015376c1313.setContent(html_0531c1fadf0b8cca166f4cd585d0eda8);
+            
+        
+
+        circle_marker_83df7bd1e91a0784c9fcdccfa1c8a60a.bindPopup(popup_f5261490ea6125c2db275015376c1313)
+        ;
+
+        
+    
+    
+            var circle_marker_671ba58a00e31528f06416ed3813ed75 = L.circleMarker(
+                [3.425, -76.54],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_96d7e10df9b4d4a570ff190ae749658a = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_3106c7872b01b5ec94d1e8ebd0d6c605 = $(`<div id="html_3106c7872b01b5ec94d1e8ebd0d6c605" style="width: 100.0%; height: 100.0%;">         <b>Mariano Ramos</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_96d7e10df9b4d4a570ff190ae749658a.setContent(html_3106c7872b01b5ec94d1e8ebd0d6c605);
+            
+        
+
+        circle_marker_671ba58a00e31528f06416ed3813ed75.bindPopup(popup_96d7e10df9b4d4a570ff190ae749658a)
+        ;
+
+        
+    
+    
+            var circle_marker_ae60889aa57dd223cb1a3c71fcc4569e = L.circleMarker(
+                [3.377079, -76.542809],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_24480b4945e49d8878b4d7fd2024cdc4 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_b963ca39a13e81d9344aa9581e657f30 = $(`<div id="html_b963ca39a13e81d9344aa9581e657f30" style="width: 100.0%; height: 100.0%;">         <b>Meléndez</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_24480b4945e49d8878b4d7fd2024cdc4.setContent(html_b963ca39a13e81d9344aa9581e657f30);
+            
+        
+
+        circle_marker_ae60889aa57dd223cb1a3c71fcc4569e.bindPopup(popup_24480b4945e49d8878b4d7fd2024cdc4)
+        ;
+
+        
+    
+    
+            var circle_marker_4207ae56a91a8d58c6e9a479e82047c5 = L.circleMarker(
+                [3.444, -76.518],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_928ecc1b7ea0b5e0c6b0971c1d8500c7 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_3a8a77a5bda94b9d0192898ad8992f02 = $(`<div id="html_3a8a77a5bda94b9d0192898ad8992f02" style="width: 100.0%; height: 100.0%;">         <b>Piloto</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>15:00-18:00<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_928ecc1b7ea0b5e0c6b0971c1d8500c7.setContent(html_3a8a77a5bda94b9d0192898ad8992f02);
+            
+        
+
+        circle_marker_4207ae56a91a8d58c6e9a479e82047c5.bindPopup(popup_928ecc1b7ea0b5e0c6b0971c1d8500c7)
+        ;
+
+        
+    
+    
+            var circle_marker_39fbfe377a7db1d621ca48768b9e4efa = L.circleMarker(
+                [3.4482, -76.531],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_c63af07d4ae9303b9910b2b7c328a64d = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_f528aa8138c1b4e4922e33fa4fca2b82 = $(`<div id="html_f528aa8138c1b4e4922e33fa4fca2b82" style="width: 100.0%; height: 100.0%;">         <b>Plaza de Caycedo</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>21:00-23:00<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00         </div>`)[0];
+                popup_c63af07d4ae9303b9910b2b7c328a64d.setContent(html_f528aa8138c1b4e4922e33fa4fca2b82);
+            
+        
+
+        circle_marker_39fbfe377a7db1d621ca48768b9e4efa.bindPopup(popup_c63af07d4ae9303b9910b2b7c328a64d)
+        ;
+
+        
+    
+    
+            var circle_marker_05614be6b7cc529c3baa4dca4c6f20f0 = L.circleMarker(
+                [3.425, -76.56],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_6b3153e50ce5c1c8f841728dea36c828 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_a94c2c34f3fe3e772884afa8b57f046e = $(`<div id="html_a94c2c34f3fe3e772884afa8b57f046e" style="width: 100.0%; height: 100.0%;">         <b>Plaza de Toros</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_6b3153e50ce5c1c8f841728dea36c828.setContent(html_a94c2c34f3fe3e772884afa8b57f046e);
+            
+        
+
+        circle_marker_05614be6b7cc529c3baa4dca4c6f20f0.bindPopup(popup_6b3153e50ce5c1c8f841728dea36c828)
+        ;
+
+        
+    
+    
+            var circle_marker_e9e4a0dbf588d86636679374053e7b10 = L.circleMarker(
+                [3.484, -76.498],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_d5a8d283ec9447b0e13ee461336ec93e = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_4619d54fdff9cb1af9dbfba9f875b835 = $(`<div id="html_4619d54fdff9cb1af9dbfba9f875b835" style="width: 100.0%; height: 100.0%;">         <b>Popular</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>21:00-23:00<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00         </div>`)[0];
+                popup_d5a8d283ec9447b0e13ee461336ec93e.setContent(html_4619d54fdff9cb1af9dbfba9f875b835);
+            
+        
+
+        circle_marker_e9e4a0dbf588d86636679374053e7b10.bindPopup(popup_d5a8d283ec9447b0e13ee461336ec93e)
+        ;
+
+        
+    
+    
+            var circle_marker_3a834a3bf842a46cc1dd9c23d90034b5 = L.circleMarker(
+                [3.503, -76.518],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_6123c329ab32dcf9a179471618c689fc = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_e87a1bc4f8aa9f511a17e86dd39e4db5 = $(`<div id="html_e87a1bc4f8aa9f511a17e86dd39e4db5" style="width: 100.0%; height: 100.0%;">         <b>Prados del Norte</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>21:00-23:00<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00         </div>`)[0];
+                popup_6123c329ab32dcf9a179471618c689fc.setContent(html_e87a1bc4f8aa9f511a17e86dd39e4db5);
+            
+        
+
+        circle_marker_3a834a3bf842a46cc1dd9c23d90034b5.bindPopup(popup_6123c329ab32dcf9a179471618c689fc)
+        ;
+
+        
+    
+    
+            var circle_marker_a38630f6eb1baac6a085b1040a4c9be2 = L.circleMarker(
+                [3.4015, -76.519],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_f4ec779c1606b03f6b48b0e9d362dad2 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_d9519682fb8a12ddbbb32ffaad46eb3d = $(`<div id="html_d9519682fb8a12ddbbb32ffaad46eb3d" style="width: 100.0%; height: 100.0%;">         <b>Refugio</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_f4ec779c1606b03f6b48b0e9d362dad2.setContent(html_d9519682fb8a12ddbbb32ffaad46eb3d);
+            
+        
+
+        circle_marker_a38630f6eb1baac6a085b1040a4c9be2.bindPopup(popup_f4ec779c1606b03f6b48b0e9d362dad2)
+        ;
+
+        
+    
+    
+            var circle_marker_6f1599a3273d1b08e104862ee4dd96bb = L.circleMarker(
+                [3.43, -76.53],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_86b83df482ed71d08b47a75a3a09fe5c = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_b12e1fe7c3fa819916dfb188ed2ee489 = $(`<div id="html_b12e1fe7c3fa819916dfb188ed2ee489" style="width: 100.0%; height: 100.0%;">         <b>Río Cali</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_86b83df482ed71d08b47a75a3a09fe5c.setContent(html_b12e1fe7c3fa819916dfb188ed2ee489);
+            
+        
+
+        circle_marker_6f1599a3273d1b08e104862ee4dd96bb.bindPopup(popup_86b83df482ed71d08b47a75a3a09fe5c)
+        ;
+
+        
+    
+    
+            var circle_marker_65d0e850d0132c03df8456d42aae4e53 = L.circleMarker(
+                [3.4875, -76.5075],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_533dc69274eea83e84afdf3c93bda826 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_63742ead3f304d3e75108852da6ecf1a = $(`<div id="html_63742ead3f304d3e75108852da6ecf1a" style="width: 100.0%; height: 100.0%;">         <b>Salomia</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>21:00-23:00<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00         </div>`)[0];
+                popup_533dc69274eea83e84afdf3c93bda826.setContent(html_63742ead3f304d3e75108852da6ecf1a);
+            
+        
+
+        circle_marker_65d0e850d0132c03df8456d42aae4e53.bindPopup(popup_533dc69274eea83e84afdf3c93bda826)
+        ;
+
+        
+    
+    
+            var circle_marker_6c7e3cb152973e2de619a7ea4a88fed5 = L.circleMarker(
+                [3.446, -76.532],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_277710746f3b520afcd077e67218667d = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_6dfbe23d4bfe5df7c8a97d38f1b4c339 = $(`<div id="html_6dfbe23d4bfe5df7c8a97d38f1b4c339" style="width: 100.0%; height: 100.0%;">         <b>San Bosco</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>05:30-09:00<br><br>         <b>🟩 Estables:</b><br>09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_277710746f3b520afcd077e67218667d.setContent(html_6dfbe23d4bfe5df7c8a97d38f1b4c339);
+            
+        
+
+        circle_marker_6c7e3cb152973e2de619a7ea4a88fed5.bindPopup(popup_277710746f3b520afcd077e67218667d)
+        ;
+
+        
+    
+    
+            var circle_marker_ef6c46920880972df666b874556359fb = L.circleMarker(
+                [3.452, -76.492],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_68ba606c0c162e9df74dc79349555200 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_0e907b2a40e4ad28fc817260b7945919 = $(`<div id="html_0e907b2a40e4ad28fc817260b7945919" style="width: 100.0%; height: 100.0%;">         <b>San Nicolás</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_68ba606c0c162e9df74dc79349555200.setContent(html_0e907b2a40e4ad28fc817260b7945919);
+            
+        
+
+        circle_marker_ef6c46920880972df666b874556359fb.bindPopup(popup_68ba606c0c162e9df74dc79349555200)
+        ;
+
+        
+    
+    
+            var circle_marker_af3107f0adabedd19b06af839ee8cd7c = L.circleMarker(
+                [3.4479, -76.532],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_0ac25be1c779605d00e04d168d15e13b = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_f26f1e63ff677591b95b36f0c4a7864d = $(`<div id="html_f26f1e63ff677591b95b36f0c4a7864d" style="width: 100.0%; height: 100.0%;">         <b>Santa Rosa</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_0ac25be1c779605d00e04d168d15e13b.setContent(html_f26f1e63ff677591b95b36f0c4a7864d);
+            
+        
+
+        circle_marker_af3107f0adabedd19b06af839ee8cd7c.bindPopup(popup_0ac25be1c779605d00e04d168d15e13b)
+        ;
+
+        
+    
+    
+            var circle_marker_ea9f9411ac289d886571b79041f1d3c0 = L.circleMarker(
+                [3.4892, -76.4558],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_20d7d2253cf0b0fe1b76464065ce029c = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_fa1b6f91bb6e8f81ab5cb707ea2475cd = $(`<div id="html_fa1b6f91bb6e8f81ab5cb707ea2475cd" style="width: 100.0%; height: 100.0%;">         <b>Terminal Aguablanca</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_20d7d2253cf0b0fe1b76464065ce029c.setContent(html_fa1b6f91bb6e8f81ab5cb707ea2475cd);
+            
+        
+
+        circle_marker_ea9f9411ac289d886571b79041f1d3c0.bindPopup(popup_20d7d2253cf0b0fe1b76464065ce029c)
+        ;
+
+        
+    
+    
+            var circle_marker_0726ab49242fe8613b06a87269f5ff0e = L.circleMarker(
+                [3.443941, -76.482916],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_de0ca94388d48ad1cc929939b817a3b2 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_c5ad03173775843dbd1456c5d47660c4 = $(`<div id="html_c5ad03173775843dbd1456c5d47660c4" style="width: 100.0%; height: 100.0%;">         <b>Terminal Andrés Sanín</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_de0ca94388d48ad1cc929939b817a3b2.setContent(html_c5ad03173775843dbd1456c5d47660c4);
+            
+        
+
+        circle_marker_0726ab49242fe8613b06a87269f5ff0e.bindPopup(popup_de0ca94388d48ad1cc929939b817a3b2)
+        ;
+
+        
+    
+    
+            var circle_marker_3fb2c4d8eb433ea3e4843db1b5f0e34f = L.circleMarker(
+                [3.489476, -76.509063],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_cff4a22c5518574804a7be73a89cc46f = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_774a92d3bd5cae9824e01ad01f81d2b9 = $(`<div id="html_774a92d3bd5cae9824e01ad01f81d2b9" style="width: 100.0%; height: 100.0%;">         <b>Terminal Menga</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_cff4a22c5518574804a7be73a89cc46f.setContent(html_774a92d3bd5cae9824e01ad01f81d2b9);
+            
+        
+
+        circle_marker_3fb2c4d8eb433ea3e4843db1b5f0e34f.bindPopup(popup_cff4a22c5518574804a7be73a89cc46f)
+        ;
+
+        
+    
+    
+            var circle_marker_baf366efa77e039eda1b7867ae42fb66 = L.circleMarker(
+                [3.4886563335118, -76.493596701742],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_b7c2ece1253085c092a74113a7c61e91 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_9708b673c19f958658f24b9f1f0f232b = $(`<div id="html_9708b673c19f958658f24b9f1f0f232b" style="width: 100.0%; height: 100.0%;">         <b>Terminal Paso del Comercio</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_b7c2ece1253085c092a74113a7c61e91.setContent(html_9708b673c19f958658f24b9f1f0f232b);
+            
+        
+
+        circle_marker_baf366efa77e039eda1b7867ae42fb66.bindPopup(popup_b7c2ece1253085c092a74113a7c61e91)
+        ;
+
+        
+    
+    
+            var circle_marker_e7c6d7c8eb437b72da53c4414eb5ce78 = L.circleMarker(
+                [3.4325, -76.5325],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_c1a5d406477c49a0c9974e3cf8941362 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_55debd42f943ac55ec5dd6313c5a45eb = $(`<div id="html_55debd42f943ac55ec5dd6313c5a45eb" style="width: 100.0%; height: 100.0%;">         <b>Terminal Simón Bolívar</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_c1a5d406477c49a0c9974e3cf8941362.setContent(html_55debd42f943ac55ec5dd6313c5a45eb);
+            
+        
+
+        circle_marker_e7c6d7c8eb437b72da53c4414eb5ce78.bindPopup(popup_c1a5d406477c49a0c9974e3cf8941362)
+        ;
+
+        
+    
+    
+            var circle_marker_834134b49790ce2ae6dba40f5590997d = L.circleMarker(
+                [3.456822, -76.530251],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_07c064d7225a003c90bc3a7961bb0050 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_001f8824a5491fe886c283832681ab2d = $(`<div id="html_001f8824a5491fe886c283832681ab2d" style="width: 100.0%; height: 100.0%;">         <b>Torre de Cali</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_07c064d7225a003c90bc3a7961bb0050.setContent(html_001f8824a5491fe886c283832681ab2d);
+            
+        
+
+        circle_marker_834134b49790ce2ae6dba40f5590997d.bindPopup(popup_07c064d7225a003c90bc3a7961bb0050)
+        ;
+
+        
+    
+    
+            var circle_marker_275a07036b5ba2ac32f2250b7ba1b5bc = L.circleMarker(
+                [3.414278, -76.548206],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_c9a0b09aae498a298c0c3855e0ccf47f = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_d76bff38cfed3ca290a187a82ff5817a = $(`<div id="html_d76bff38cfed3ca290a187a82ff5817a" style="width: 100.0%; height: 100.0%;">         <b>Unidad Deportiva</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>12:00-15:00<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_c9a0b09aae498a298c0c3855e0ccf47f.setContent(html_d76bff38cfed3ca290a187a82ff5817a);
+            
+        
+
+        circle_marker_275a07036b5ba2ac32f2250b7ba1b5bc.bindPopup(popup_c9a0b09aae498a298c0c3855e0ccf47f)
+        ;
+
+        
+    
+    
+            var circle_marker_fe4b666e7babed0c25942ce7835ab2e6 = L.circleMarker(
+                [3.370903, -76.536686],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_2367810a530254b26a95ee28241df153 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_e5243557de6aba4d230ec2b38ab384d2 = $(`<div id="html_e5243557de6aba4d230ec2b38ab384d2" style="width: 100.0%; height: 100.0%;">         <b>Univalle</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_2367810a530254b26a95ee28241df153.setContent(html_e5243557de6aba4d230ec2b38ab384d2);
+            
+        
+
+        circle_marker_fe4b666e7babed0c25942ce7835ab2e6.bindPopup(popup_2367810a530254b26a95ee28241df153)
+        ;
+
+        
+    
+    
+            var circle_marker_8c680db961c68889042d7cd80177254b = L.circleMarker(
+                [3.367013, -76.529109],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_2520dae90bdd049c09a826fd21fbae06 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_0284e57ff70b21357c460a724aec855a = $(`<div id="html_0284e57ff70b21357c460a724aec855a" style="width: 100.0%; height: 100.0%;">         <b>Universidades</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_2520dae90bdd049c09a826fd21fbae06.setContent(html_0284e57ff70b21357c460a724aec855a);
+            
+        
+
+        circle_marker_8c680db961c68889042d7cd80177254b.bindPopup(popup_2520dae90bdd049c09a826fd21fbae06)
+        ;
+
+        
+    
+    
+            var circle_marker_f02cb697cbecddcd7b88fcd8e31c4130 = L.circleMarker(
+                [3.46121, -76.52704],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_e75d4f3c1d123d57f7c22bf836178323 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_fe7a3992d7a369c0ac687e1cc9ea0030 = $(`<div id="html_fe7a3992d7a369c0ac687e1cc9ea0030" style="width: 100.0%; height: 100.0%;">         <b>Versalles</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_e75d4f3c1d123d57f7c22bf836178323.setContent(html_fe7a3992d7a369c0ac687e1cc9ea0030);
+            
+        
+
+        circle_marker_f02cb697cbecddcd7b88fcd8e31c4130.bindPopup(popup_e75d4f3c1d123d57f7c22bf836178323)
+        ;
+
+        
+    
+    
+            var circle_marker_143ab8b61ea259452ec2f222a587aabb = L.circleMarker(
+                [3.513, -76.466],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_8b44dbb2f4acfccd3ace8a148266498c = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_86f3f60fafeb366d61d5527dc98424dc = $(`<div id="html_86f3f60fafeb366d61d5527dc98424dc" style="width: 100.0%; height: 100.0%;">         <b>Villa del Lago</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_8b44dbb2f4acfccd3ace8a148266498c.setContent(html_86f3f60fafeb366d61d5527dc98424dc);
+            
+        
+
+        circle_marker_143ab8b61ea259452ec2f222a587aabb.bindPopup(popup_8b44dbb2f4acfccd3ace8a148266498c)
+        ;
+
+        
+    
+    
+            var circle_marker_b0bb423b341e812085f76e7fecf19f54 = L.circleMarker(
+                [3.395, -76.52],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_b771cf2cd58ddab16eb65635e20e4a56 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_08d7668af2ddbdb082d69a16a8645cc3 = $(`<div id="html_08d7668af2ddbdb082d69a16a8645cc3" style="width: 100.0%; height: 100.0%;">         <b>Villa del Sur</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>Ninguna<br><br>         <b>🟩 Estables:</b><br>05:30-09:00, 09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_b771cf2cd58ddab16eb65635e20e4a56.setContent(html_08d7668af2ddbdb082d69a16a8645cc3);
+            
+        
+
+        circle_marker_b0bb423b341e812085f76e7fecf19f54.bindPopup(popup_b771cf2cd58ddab16eb65635e20e4a56)
+        ;
+
+        
+    
+    
+            var circle_marker_2aa99fd9278457d5a53420253f066a74 = L.circleMarker(
+                [3.517, -76.479],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_4ae2747031e1973f358b8671732b6870 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_2186f4c25a982e3271de1e4cd43acb7c = $(`<div id="html_2186f4c25a982e3271de1e4cd43acb7c" style="width: 100.0%; height: 100.0%;">         <b>Vipasa</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>05:30-09:00<br><br>         <b>🟩 Estables:</b><br>09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_4ae2747031e1973f358b8671732b6870.setContent(html_2186f4c25a982e3271de1e4cd43acb7c);
+            
+        
+
+        circle_marker_2aa99fd9278457d5a53420253f066a74.bindPopup(popup_4ae2747031e1973f358b8671732b6870)
+        ;
+
+        
+    
+    
+            var circle_marker_ce75d954b344c3a15efa1bb11caa5ccb = L.circleMarker(
+                [3.491, -76.507],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(map_0f7033895240a3076b5d75d994177be0);
+        
+    
+        var popup_8b5f4f3884b537db4889fe46be028566 = L.popup({
+  "maxWidth": 350,
+});
+
+        
+            
+                var html_2cf3e03bd091c41ba10238d22c3234af = $(`<div id="html_2cf3e03bd091c41ba10238d22c3234af" style="width: 100.0%; height: 100.0%;">         <b>Álamos</b><br>         Fecha: 2025-11-15<br><br>          <b>🟥 Colapsadas:</b><br>05:30-09:00<br><br>         <b>🟩 Estables:</b><br>09:00-12:00, 12:00-15:00, 15:00-18:00, 18:00-21:00, 21:00-23:00         </div>`)[0];
+                popup_8b5f4f3884b537db4889fe46be028566.setContent(html_2cf3e03bd091c41ba10238d22c3234af);
+            
+        
+
+        circle_marker_ce75d954b344c3a15efa1bb11caa5ccb.bindPopup(popup_8b5f4f3884b537db4889fe46be028566)
+        ;
+
+        
+    
 </script>
 </html>

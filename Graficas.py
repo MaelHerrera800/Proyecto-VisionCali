@@ -3,272 +3,251 @@ from tkinter import ttk, messagebox
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
-from datetime import timedelta
 
-# ===============================================
-# IMPORTAR DATOS DEL MODELO PREDICTIVO
-# ===============================================
-try:
-    df_predicciones = pd.read_excel("predicciones_mio.xlsx")
-except FileNotFoundError:
-    messagebox.showerror(
-        "Error", 
-        "No se encontró el archivo 'predicciones_mio.xlsx'. Ejecuta primero el modelo predictivo."
-    )
-    df_predicciones = None
 
-# ===============================================
-# FUNCIONES AUXILIARES
-# ===============================================
-def verificar_df():
-    if df_predicciones is None or df_predicciones.empty:
-        messagebox.showwarning("Sin datos", "No hay datos para analizar.")
-        return False
-    return True
+# ============================================================
+#  🔵 CLASE QUE MANEJA TODAS LAS VISUALIZACIONES Y FILTROS
+# ============================================================
+class VisualizacionesMIO:
 
-def limpiar_canvas():
-    global canvas
-    if canvas:
-        canvas.get_tk_widget().destroy()
+    def __init__(self, df):
+        self.df = df.copy()
+        self.df["Fecha"] = pd.to_datetime(self.df["Fecha"]).dt.date
 
-def limpiar_tabla():
-    for widget in frame_resultados.winfo_children():
-        widget.destroy()
+    # ------------------------------
+    # FILTRAR POR FECHA Y ESTACIÓN
+    # ------------------------------
+    def filtrar(self, fecha=None, estacion=None):
+        df = self.df.copy()
+        if fecha:
+            df = df[df["Fecha"] == fecha]
+        if estacion:
+            df = df[df["Terminal"] == estacion]
+        return df
 
-# ===============================================
-# SELECTOR DE ESTACIÓN
-# ===============================================
-def crear_selector_estacion(frame_padre):
-    global combo_estaciones
+    # ------------------------------
+    # TABLA: COLAPSOS POR FILTROS
+    # ------------------------------
+    def obtener_colapsos(self, fecha=None, estacion=None):
+        df = self.filtrar(fecha, estacion)
+        return df[df["Estado_Previsto"].str.contains("Colapsará", case=False, na=False)]
 
-    estaciones = sorted(df_predicciones["Terminal"].dropna().unique())
+    # ------------------------------
+    # GRÁFICO ESTADO GENERAL (POR DÍA)
+    # ------------------------------
+    def grafico_estado_general(self, fecha=None):
+        df = self.filtrar(fecha)
+        conteo = df["Estado_Previsto"].value_counts()
 
-    label = tk.Label(frame_padre, text="Seleccionar estación:", font=("Arial", 12))
-    label.grid(row=0, column=0, padx=5)
+        fig, ax = plt.subplots(figsize=(6, 6))
+        ax.pie(conteo.values, labels=conteo.index, autopct="%1.1f%%", startangle=90)
+        ax.set_title("Estado general de estaciones")
+        return fig
 
-    combo_estaciones = ttk.Combobox(frame_padre, values=estaciones, state="readonly", width=25)
-    combo_estaciones.grid(row=0, column=1, padx=5)
+    # ------------------------------
+    # TOP 10 COLAPSOS POR DÍA
+    # ------------------------------
+    def grafico_top_10(self, fecha=None):
+        df = self.filtrar(fecha)
 
-# ===============================================
-# SELECTOR DE FECHA
-# ===============================================
-def crear_selector_fecha(frame_padre):
-    global combo_fechas
+        top_colapso = (
+            df.groupby(["Terminal", "Franja Horaria"])["Prob_Colapso"]
+            .mean()
+            .sort_values(ascending=False)
+            .head(10)
+        )
 
-    df_predicciones["Fecha"] = pd.to_datetime(df_predicciones["Fecha"]).dt.date
-    fechas = sorted(df_predicciones["Fecha"].unique())
+        fig, ax = plt.subplots(figsize=(10, 6))
+        top_colapso.plot(kind="barh", ax=ax)
+        ax.set_title("Top 10 estaciones en riesgo de colapso")
+        ax.set_xlabel("Probabilidad promedio")
+        plt.tight_layout()
+        return fig
 
-    label = tk.Label(frame_padre, text="Seleccionar fecha:", font=("Arial", 12))
-    label.grid(row=0, column=2, padx=5)
 
-    combo_fechas = ttk.Combobox(frame_padre, values=fechas, state="readonly", width=15)
-    combo_fechas.grid(row=0, column=3, padx=5)
+# ============================================================
+#  🔵 CLASE INTERFAZ TKINTER — SOLO MANEJA LA VENTANA
+# ============================================================
+class InterfazMIO:
 
-# ===============================================
-# 1️⃣ MOSTRAR ESTACIONES COLAPSADAS (CON FILTROS)
-# ===============================================
-def mostrar_estaciones_colapso():
-    if not verificar_df():
-        return
+    def __init__(self, df_predicciones):
+        self.df = df_predicciones
 
-    limpiar_canvas()
-    limpiar_tabla()
+        # Crear instancia de visualizaciones
+        self.visual = VisualizacionesMIO(self.df)
 
-    df_predicciones["Fecha"] = pd.to_datetime(df_predicciones["Fecha"]).dt.date
+        # Crear ventana
+        self.ventana = tk.Tk()
+        self.ventana.title("Sistema Predictivo MIO - Análisis")
+        self.ventana.geometry("1300x850")
 
-    # FILTRAR POR FECHA
-    fecha_sel = combo_fechas.get()
-    if fecha_sel:
-        fecha_sel = pd.to_datetime(fecha_sel).date()
-        df_filtrado = df_predicciones[df_predicciones["Fecha"] == fecha_sel]
-    else:
-        df_filtrado = df_predicciones.copy()
+        titulo = tk.Label(
+            self.ventana,
+            text="Análisis de comportamiento de estaciones",
+            font=("Arial", 18, "bold"),
+            pady=10
+        )
+        titulo.pack()
 
-    # FILTRAR POR ESTACIÓN
-    estacion_sel = combo_estaciones.get()
-    if estacion_sel:
-        df_filtrado = df_filtrado[df_filtrado["Terminal"] == estacion_sel]
+        # Selectores
+        frame_selector = tk.Frame(self.ventana)
+        frame_selector.pack(pady=10)
+        self.crear_selector_estacion(frame_selector)
+        self.crear_selector_fecha(frame_selector)
 
-    # FILTRAR COLAPSOS
-    df_colapsos = df_filtrado[
-        df_filtrado["Estado_Previsto"].str.contains("Colapsará", case=False, na=False)
-    ]
+        # Botones
+        self.crear_botones()
 
-    if df_colapsos.empty:
-        messagebox.showinfo("Información", "No se predicen colapsos para esa fecha/estación.")
-        return
+        # Área de resultados
+        self.frame_resultados = tk.Frame(self.ventana)
+        self.frame_resultados.pack(fill="both", expand=True)
 
-    label = tk.Label(frame_resultados, text="Estaciones que colapsarán",
-                     font=("Arial", 16, "bold"))
-    label.pack(pady=10)
+        self.canvas = None
 
-    cols = ["Terminal", "Fecha", "Franja Horaria", "Personas_Predichas", "Prob_Colapso"]
-    tree = ttk.Treeview(frame_resultados, columns=cols, show="headings", height=15)
+    # -----------------------------------------
+    # Selectores
+    # -----------------------------------------
+    def crear_selector_estacion(self, frame):
+        estaciones = sorted(self.df["Terminal"].dropna().unique())
 
-    for col in cols:
-        tree.heading(col, text=col)
-        tree.column(col, width=180, anchor="center")
+        tk.Label(frame, text="Estación:", font=("Arial", 12)).grid(row=0, column=0, padx=5)
 
-    for _, row in df_colapsos.iterrows():
-        tree.insert("", "end", values=(
-            row["Terminal"],
-            row["Fecha"],
-            row["Franja Horaria"],
-            int(row["Personas_Predichas"]),
-            f"{row['Prob_Colapso'] * 100:.1f}%"
-        ))
+        self.combo_estaciones = ttk.Combobox(frame, values=estaciones, state="readonly", width=25)
+        self.combo_estaciones.grid(row=0, column=1, padx=5)
 
-    tree.pack(fill="both", expand=True)
+    def crear_selector_fecha(self, frame):
+        # Convertir fechas a string sin la hora
+        fechas = sorted( pd.to_datetime(self.df["Fecha"]).dt.strftime("%Y-%m-%d").unique())
 
-# ===============================================
-# 2️⃣ MOSTRAR TODAS LAS ESTACIONES COLAPSADAS
-# ===============================================
-def mostrar_todas_estaciones_colapso():
-    if not verificar_df():
-        return
+        tk.Label(frame, text="Fecha:", font=("Arial", 12)).grid(row=0, column=2, padx=5)
 
-    limpiar_canvas()
-    limpiar_tabla()
+        self.combo_fechas = ttk.Combobox(frame, values=fechas, state="readonly", width=15)
+        self.combo_fechas.grid(row=0, column=3, padx=5)
 
-    df_predicciones["Fecha"] = pd.to_datetime(df_predicciones["Fecha"]).dt.date
+    # -----------------------------------------
+    # Botones
+    # -----------------------------------------
+    def crear_botones(self):
+        frame = tk.Frame(self.ventana)
+        frame.pack(pady=15)
 
-    # FILTRO POR FECHA OPCIONAL
-    fecha_sel = combo_fechas.get()
-    if fecha_sel:
-        fecha_sel = pd.to_datetime(fecha_sel).date()
-        df_filtrado = df_predicciones[df_predicciones["Fecha"] == fecha_sel]
-    else:
-        df_filtrado = df_predicciones.copy()
+        botones = [
+            ("Filtrar estación colapsada", self.mostrar_estaciones_colapso),
+            ("Ver todas estaciones colapsadas", self.mostrar_todos_colapsos),
+            ("Estado general por día", self.mostrar_estado_general),
+            ("Top 10 por día", self.mostrar_top_10)
+        ]
 
-    # FILTRAR SOLO COLAPSOS
-    df_colapsos = df_filtrado[
-        df_filtrado["Estado_Previsto"].str.contains("Colapsará", case=False, na=False)
-    ]
+        for i, (texto, comando) in enumerate(botones):
+            ttk.Button(frame, text=texto, command=comando).grid(row=0, column=i, padx=5, pady=5)
 
-    if df_colapsos.empty:
-        messagebox.showinfo("Información", "No se predicen colapsos para esa fecha.")
-        return
+    # -----------------------------------------
+    # Utilidades
+    # -----------------------------------------
+    def limpiar(self):
+        for widget in self.frame_resultados.winfo_children():
+            widget.destroy()
+        if self.canvas:
+            self.canvas.get_tk_widget().destroy()
 
-    label = tk.Label(frame_resultados, text="Todas las estaciones que colapsarán",
-                     font=("Arial", 16, "bold"))
-    label.pack(pady=10)
+    def get_fecha(self):
+        f = self.combo_fechas.get()
+        return pd.to_datetime(f).date() if f else None
 
-    cols = ["Terminal", "Fecha", "Franja Horaria", "Personas_Predichas", "Prob_Colapso"]
-    tree = ttk.Treeview(frame_resultados, columns=cols, show="headings", height=15)
+    def get_estacion(self):
+        return self.combo_estaciones.get() or None
 
-    for col in cols:
-        tree.heading(col, text=col)
-        tree.column(col, width=180, anchor="center")
+    # -----------------------------------------
+    # TABLAS Y GRÁFICOS
+    # -----------------------------------------
+    def mostrar_estaciones_colapso(self):
+        self.limpiar()
+        fecha = self.get_fecha()
+        estacion = self.get_estacion()
 
-    for _, row in df_colapsos.iterrows():
-        tree.insert("", "end", values=(
-            row["Terminal"],
-            row["Fecha"],
-            row["Franja Horaria"],
-            int(row["Personas_Predichas"]),
-            f"{row['Prob_Colapso'] * 100:.1f}%"
-        ))
+        df = self.visual.obtener_colapsos(fecha, estacion)
 
-    tree.pack(fill="both", expand=True)
+        if df.empty:
+            messagebox.showinfo("Información", "No hay colapsos para este filtro.")
+            return
 
-# ===============================================
-# 3️⃣ GRÁFICO ESTADO GENERAL
-# ===============================================
-def grafico_estado_general():
-    if not verificar_df():
-        return
+        cols = ["Terminal", "Fecha", "Franja Horaria", "Personas_Predichas", "Prob_Colapso"]
+        tree = ttk.Treeview(self.frame_resultados, columns=cols, show="headings", height=15)
 
-    limpiar_canvas()
-    limpiar_tabla()
+        for col in cols:
+            tree.heading(col, text=col)
+            tree.column(col, width=180, anchor="center")
 
-    df_predicciones["Fecha"] = pd.to_datetime(df_predicciones["Fecha"]).dt.date
-    conteo = df_predicciones["Estado_Previsto"].value_counts()
+        for _, row in df.iterrows():
+            tree.insert("", "end", values=(
+                row["Terminal"],
+                row["Fecha"],
+                row["Franja Horaria"],
+                int(row["Personas_Predichas"]),
+                f"{row['Prob_Colapso'] * 100:.1f}%"
+            ))
 
-    fig, ax = plt.subplots(figsize=(6, 6))
-    ax.pie(conteo.values, labels=conteo.index, autopct="%1.1f%%", startangle=90)
-    ax.set_title("Estado general de las estaciones")
-    mostrar_grafico(fig)
+        tree.pack(fill="both", expand=True)
 
-# ===============================================
-# 4️⃣ GRÁFICO TOP 10
-# ===============================================
-def grafico_top_colapsos():
-    if not verificar_df():
-        return
+    def mostrar_todos_colapsos(self):
+        self.limpiar()
+        fecha = self.get_fecha()
 
-    limpiar_canvas()
-    limpiar_tabla()
+        df = self.visual.obtener_colapsos(fecha)
 
-    df_predicciones["Fecha"] = pd.to_datetime(df_predicciones["Fecha"]).dt.date
+        if df.empty:
+            messagebox.showinfo("Información", "No hay colapsos para esa fecha.")
+            return
 
-    top_colapso = (
-        df_predicciones.groupby(["Terminal", "Franja Horaria"])["Prob_Colapso"]
-        .mean()
-        .sort_values(ascending=False)
-        .head(10)
-    )
+        cols = ["Terminal", "Fecha", "Franja Horaria", "Personas_Predichas", "Prob_Colapso"]
+        tree = ttk.Treeview(self.frame_resultados, columns=cols, show="headings", height=15)
 
-    fig, ax = plt.subplots(figsize=(10, 6))
-    top_colapso.plot(kind="barh", ax=ax)
-    ax.set_title("Top 10 estaciones en riesgo de colapso")
-    ax.set_xlabel("Probabilidad promedio")
-    plt.tight_layout()
-    mostrar_grafico(fig)
+        for col in cols:
+            tree.heading(col, text=col)
+            tree.column(col, width=180, anchor="center")
 
-# ===============================================
-# FUNCIÓN PARA MOSTRAR GRÁFICO
-# ===============================================
-def mostrar_grafico(fig):
-    global canvas
-    canvas = FigureCanvasTkAgg(fig, master=frame_resultados)
-    canvas.draw()
-    canvas.get_tk_widget().pack(fill="both", expand=True)
+        for _, row in df.iterrows():
+            tree.insert("", "end", values=(
+                row["Terminal"],
+                row["Fecha"],
+                row["Franja Horaria"],
+                int(row["Personas_Predichas"]),
+                f"{row['Prob_Colapso'] * 100:.1f}%"
+            ))
 
-# ===============================================
-# INTERFAZ TKINTER
-# ===============================================
-def iniciar_graficas():
-    ventana = tk.Tk()
-    ventana.title("Sistema Predictivo MIO - Análisis")
-    ventana.geometry("1300x850")
+        tree.pack(fill="both", expand=True)
 
-    titulo = tk.Label(
-        ventana,
-        text="Análisis de comportamiento de estaciones",
-        font=("Arial", 18, "bold"),
-        pady=10
-    )
-    titulo.pack()
+    def mostrar_estado_general(self):
+        self.limpiar()
+        fecha = self.get_fecha()
+        fig = self.visual.grafico_estado_general(fecha)
+        self.canvas = FigureCanvasTkAgg(fig, master=self.frame_resultados)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().pack(fill="both", expand=True)
 
-    frame_selector = tk.Frame(ventana)
-    frame_selector.pack(pady=10)
+    def mostrar_top_10(self):
+        self.limpiar()
+        fecha = self.get_fecha()
+        fig = self.visual.grafico_top_10(fecha)
+        self.canvas = FigureCanvasTkAgg(fig, master=self.frame_resultados)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().pack(fill="both", expand=True)
 
-    crear_selector_estacion(frame_selector)
-    crear_selector_fecha(frame_selector)
-
-    frame_botones = tk.Frame(ventana)
-    frame_botones.pack(pady=15)
-
-    botones = [
-        ("Filtrar estación colapsada", mostrar_estaciones_colapso),
-        ("Ver todas las estaciones colapsadas", mostrar_todas_estaciones_colapso),
-        ("Estado general", grafico_estado_general),
-        ("Top 10 estaciones en riesgo", grafico_top_colapsos)
-    ]
-
-    for i, (texto, comando) in enumerate(botones):
-        btn = ttk.Button(frame_botones, text=texto, command=comando)
-        btn.grid(row=0, column=i, padx=5, pady=5)
-
-    global frame_resultados
-    frame_resultados = tk.Frame(ventana)
-    frame_resultados.pack(fill="both", expand=True)
-
-    global canvas
-    canvas = None
-    ventana.mainloop()
+    # -----------------------------------------
+    # Iniciar ventana
+    # -----------------------------------------
+    def iniciar(self):
+        self.ventana.mainloop()
     
 
 
+# ============================================================
+#   EJECUCIÓN PRINCIPAL
+# ============================================================
 if __name__ == "__main__":
-    iniciar_graficas()
+    try:
+        df = pd.read_excel("predicciones_mio.xlsx")
+        app = InterfazMIO(df)
+        app.iniciar()
+    except FileNotFoundError:
+        messagebox.showerror("Error", "No se encontró el archivo 'predicciones_mio.xlsx'.")

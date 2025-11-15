@@ -11,139 +11,237 @@ from reportlab.platypus import (
 )
 from reportlab.lib.units import inch
 
-# ==========================================================
-# 📁 ARCHIVO DE DATOS
-# ==========================================================
-archivo_excel = "predicciones_mio.xlsx"
-if not os.path.exists(archivo_excel):
-    print(f"⚠️ No se encontró el archivo {archivo_excel}. Ejecuta primero el modelo predictivo.")
-    exit()
+import tkinter as tk
+from tkinter import ttk, messagebox
 
-df = pd.read_excel(archivo_excel)
 
 # ==========================================================
-# 📊 ESTADÍSTICAS BÁSICAS
+# 📌 FUNCIÓN PRINCIPAL: GENERAR REPORTE
 # ==========================================================
-total_estaciones = df["Terminal"].nunique() if "Terminal" in df.columns else 0
-total_registros = len(df)
+def generar_reporte_por_dia(df_original, dia):
 
-# Colapsos
-if "Estado_Previsto" in df.columns:
-    colapsos = (df["Estado_Previsto"].str.contains("Colapsará", case=False, na=False)).sum()
-    porcentaje_colapsos = (colapsos / total_registros) * 100 if total_registros else 0
-else:
-    colapsos, porcentaje_colapsos = 0, 0
+    df = df_original.copy()
 
-# Buscar columna de ocupación
-columna_ocupacion = None
-for col in df.columns:
-    if "ocup" in col.lower():
-        columna_ocupacion = col
-        break
+    # Validar columna fecha
+    if "Fecha" not in df.columns:
+        messagebox.showerror("Error", "El archivo no contiene columna 'Fecha'. Cambia el nombre.")
+        return
 
-if columna_ocupacion:
-    ocupacion_promedio = df[columna_ocupacion].mean() * 100
-    fuente_ocupacion = columna_ocupacion
-else:
-    fuente_ocupacion = "Personas_Predichas" if "Personas_Predichas" in df.columns else None
-    ocupacion_promedio = df[fuente_ocupacion].mean() if fuente_ocupacion else 0
+    df["Fecha"] = pd.to_datetime(df["Fecha"], errors="coerce")
 
-# Probabilidad de colapso
-if "Prob_Colapso" in df.columns:
+    # Filtrar por día
+    df = df[df["Fecha"].dt.day == dia]
+
+    if df.empty:
+        messagebox.showwarning("Sin datos", f"No existen datos para el día {dia}.")
+        return
+
+    # ================================
+    # 📊 ESTADÍSTICAS
+    # ================================
+    total_estaciones = df["Terminal"].nunique()
+    total_registros = len(df)
+
+    # Colapsos
+    colapsos = df[df["Estado_Previsto"].str.contains("Colapsará", case=False, na=False)]
+    cantidad_colapsos = len(colapsos)
+    porcentaje_colapsos = (cantidad_colapsos / total_registros) * 100
+
+    # Ocupación
+    ocupacion_promedio = df["Ocupacion"].mean() * 100
+
+    # Probabilidad de colapso
     prob_colapso_promedio = df["Prob_Colapso"].mean() * 100
-else:
-    prob_colapso_promedio = 0
 
-# ==========================================================
-# 🖼️ GENERAR GRÁFICAS
-# ==========================================================
-os.makedirs("graficas", exist_ok=True)
+    # ================================
+    # 🖼️ GENERAR GRÁFICAS
+    # ================================
+    os.makedirs("graficas", exist_ok=True)
 
-# Gráfico circular del estado previsto
-if "Estado_Previsto" in df.columns:
+    # GRAFICO 1: ESTADO GENERAL
     plt.figure(figsize=(6, 6))
     conteo = df["Estado_Previsto"].value_counts()
     plt.pie(conteo, labels=conteo.index, autopct="%1.1f%%")
-    plt.title("Distribución del Estado Previsto")
-    plt.savefig("graficas/grafico_circular.png")
+    plt.title("Estado General de Estaciones")
+    plt.savefig("graficas/estado_general.png")
     plt.close()
-    print("🟢 Gráfico circular generado correctamente.")
 
-# Gráfico de barras: promedio de probabilidad por terminal
-if "Terminal" in df.columns and "Prob_Colapso" in df.columns:
-    plt.figure(figsize=(10, 5))
-    promedio_terminal = df.groupby("Terminal")["Prob_Colapso"].mean().sort_values(ascending=False)
-    promedio_terminal.plot(kind="bar")
-    plt.title("Probabilidad promedio de colapso por terminal")
-    plt.ylabel("Probabilidad (%)")
+    # GRAFICO 2: TOP 10 COLAPSOS
+    top_colapso = (
+        df.groupby(["Terminal", "Franja Horaria"])["Prob_Colapso"]
+        .mean()
+        .sort_values(ascending=False)
+        .head(10)
+    )
+
+    plt.figure(figsize=(10, 6))
+    top_colapso.plot(kind="barh")
+    plt.title("Top 10 estaciones/franjas en riesgo de colapso")
+    plt.xlabel("Probabilidad promedio")
     plt.tight_layout()
-    plt.savefig("graficas/grafico_barras.png")
+    plt.savefig("graficas/top_colapso.png")
     plt.close()
-    print("Gráfico de barras generado correctamente.")
 
-# ==========================================================
-# 📝 CREAR REPORTE EN PDF
-# ==========================================================
-pdf_filename = "Reporte_Modelo_Predictivo_MIO.pdf"
-doc = SimpleDocTemplate(pdf_filename, pagesize=A4)
-styles = getSampleStyleSheet()
-elements = []
+    # ================================
+    # 📈 ANÁLISIS DE TENDENCIAS
+    # ================================
+    tendencias = []
 
-# Encabezado con fecha
-fecha = datetime.now().strftime("%d/%m/%Y %H:%M")
-titulo = Paragraph("📘 Reporte del Modelo Predictivo del Sistema MIO", styles["Title"])
-subtitulo = Paragraph(f"Generado el {fecha}", styles["Normal"])
-elements += [titulo, subtitulo, Spacer(1, 12)]
-
-# Descripción
-texto_intro = f"""
-Este reporte resume los resultados del modelo predictivo aplicado al sistema MIO,
-incluyendo las estadísticas generales de todas las estaciones y las gráficas generadas
-automáticamente a partir de los datos más recientes.<br/><br/>
-<b>Fuente de ocupación:</b> {fuente_ocupacion if fuente_ocupacion else 'No disponible'}
-"""
-elements.append(Paragraph(texto_intro, styles["BodyText"]))
-elements.append(Spacer(1, 12))
-
-# Tabla resumen
-data = [
-    ["Indicador", "Valor"],
-    ["Total de estaciones analizadas", total_estaciones],
-    ["Total de registros procesados", total_registros],
-    ["Promedio de ocupación (%)", f"{ocupacion_promedio:.2f}%"],
-    ["Promedio de probabilidad de colapso (%)", f"{prob_colapso_promedio:.2f}%"],
-    ["Escenarios colapsados", f"{colapsos} ({porcentaje_colapsos:.2f}%)"],
-]
-tabla = Table(data, colWidths=[250, 200])
-tabla.setStyle(TableStyle([
-    ("BACKGROUND", (0, 0), (-1, 0), colors.grey),
-    ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
-    ("ALIGN", (0, 0), (-1, -1), "CENTER"),
-    ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-    ("BOTTOMPADDING", (0, 0), (-1, 0), 10),
-    ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
-    ("GRID", (0, 0), (-1, -1), 1, colors.black),
-]))
-elements += [tabla, Spacer(1, 20)]
-
-# Gráficos
-graficos = [
-    ("Gráfico Circular - Estado Previsto", "graficas/grafico_circular.png"),
-    ("Gráfico de Barras - Probabilidad por Terminal", "graficas/grafico_barras.png")
-]
-
-for titulo, ruta in graficos:
-    if os.path.exists(ruta):
-        elements.append(Paragraph(f"<b>{titulo}</b>", styles["Heading2"]))
-        elements.append(Image(ruta, width=5*inch, height=4*inch))
-        elements.append(Spacer(1, 20))
+    # TENDENCIA COLAPSO
+    if prob_colapso_promedio > 70:
+        tendencias.append("Existe una tendencia ALTA al colapso durante este día.")
+    elif prob_colapso_promedio > 40:
+        tendencias.append("Se observa una tendencia MODERADA al colapso.")
     else:
-        elements.append(Paragraph(f"⚠️ {titulo} no disponible", styles["BodyText"]))
+        tendencias.append("La tendencia al colapso es BAJA, indicando un día estable.")
 
-# Crear PDF
-try:
-    doc.build(elements)
-    print(f"PDF generado correctamente: {pdf_filename}")
-except Exception as e:
-    print(f"Error al generar el PDF: {e}")
-    
+    # TENDENCIA OCUPACIÓN
+    if ocupacion_promedio > 80:
+        tendencias.append("La ocupación promedio es CRÍTICA (superior al 80%).")
+    elif ocupacion_promedio > 50:
+        tendencias.append("La ocupación promedio es MODERADA (mayor al 50%).")
+    else:
+        tendencias.append("La ocupación promedio es BAJA para este día.")
+
+    # TERMINAL MÁS RIESGOSA
+    top_riesgo = df.groupby("Terminal")["Prob_Colapso"].mean().sort_values(ascending=False)
+    estacion_riesgo = top_riesgo.index[0]
+    riesgo_valor = top_riesgo.iloc[0] * 100
+    tendencias.append(
+        f"La terminal con mayor riesgo de colapso es <b>{estacion_riesgo}</b> "
+        f"con un riesgo promedio de <b>{riesgo_valor:.2f}%</b>."
+    )
+
+    # FRANJA HORARIA MÁS CRÍTICA
+    franja_top = df.groupby("Franja Horaria")["Prob_Colapso"].mean().sort_values(ascending=False)
+    franja_riesgo = franja_top.index[0]
+    franja_valor = franja_top.iloc[0] * 100
+    tendencias.append(
+        f"La franja horaria más crítica del día fue <b>{franja_riesgo}</b> "
+        f"con una probabilidad de <b>{franja_valor:.2f}%</b>."
+    )
+
+    # ====================================================
+    # 📝 CREAR PDF
+    # ====================================================
+    pdf_filename = f"Reporte_MIO_Dia_{dia}.pdf"
+    doc = SimpleDocTemplate(pdf_filename, pagesize=A4)
+    styles = getSampleStyleSheet()
+    elements = []
+
+    fecha_actual = datetime.now().strftime("%d/%m/%Y %H:%M")
+    elements.append(Paragraph(f"<b>Reporte Predictivo del MIO - Día {dia}</b>", styles["Title"]))
+    elements.append(Paragraph(f"Generado el: {fecha_actual}", styles["Normal"]))
+    elements.append(Spacer(1, 12))
+
+    # INTRODUCCIÓN
+    intro = f"""
+    Este reporte presenta el análisis predictivo correspondiente al día <b>{dia}</b>,
+    basado en datos del modelo de predicción del sistema MIO. Incluye indicadores clave,
+    descripción de gráficas y análisis de tendencias operativas relevantes.
+    """
+    elements.append(Paragraph(intro, styles["BodyText"]))
+    elements.append(Spacer(1, 12))
+
+    # TABLA DE INDICADORES
+    data = [
+        ["Indicador", "Valor"],
+        ["Total de estaciones analizadas", total_estaciones],
+        ["Total de registros", total_registros],
+        ["Promedio de ocupación (%)", f"{ocupacion_promedio:.2f}%"],
+        ["Probabilidad promedio de colapso (%)", f"{prob_colapso_promedio:.2f}%"],
+        ["Escenarios previstos como 'Colapsará'", f"{cantidad_colapsos} ({porcentaje_colapsos:.2f}%)"],
+    ]
+
+    tabla = Table(data, colWidths=[250, 200])
+    tabla.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.grey),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
+        ("GRID", (0, 0), (-1, -1), 1, colors.black),
+    ]))
+
+    elements.append(tabla)
+    elements.append(Spacer(1, 20))
+
+    # 📈 ANÁLISIS DE TENDENCIAS
+    elements.append(Paragraph("<b>Análisis de Tendencias</b>", styles["Heading2"]))
+    for t in tendencias:
+        elements.append(Paragraph(f"- {t}", styles["BodyText"]))
+    elements.append(Spacer(1, 20))
+
+    # GRAFICOS + TEXTO
+    descripcion_graficos = {
+        "Estado General de Estaciones":
+            """
+            Este gráfico circular representa qué porcentaje de las estaciones estuvieron 
+            clasificados como 'Estable' o 'Colapsará'. Permite identificar rápidamente 
+            el nivel general de riesgo presente en el sistema durante el día analizado.
+            """,
+        "Top 10 estaciones/franjas en riesgo de colapso":
+            """
+            Este gráfico de barras identifica las combinaciones de terminal y franja horaria 
+            con mayor probabilidad de colapso. Es fundamental para priorizar la intervención 
+            operativa en los puntos más vulnerables del sistema.
+            """
+    }
+
+    graficos = [
+        ("Estado General de Estaciones", "graficas/estado_general.png"),
+        ("Top 10 estaciones/franjas en riesgo de colapso", "graficas/top_colapso.png")
+    ]
+
+    for titulo, ruta in graficos:
+        if os.path.exists(ruta):
+            elements.append(Paragraph(f"<b>{titulo}</b>", styles["Heading2"]))
+            elements.append(Image(ruta, width=5 * inch, height=4 * inch))
+            elements.append(Spacer(1, 12))
+            elements.append(Paragraph(descripcion_graficos[titulo], styles["BodyText"]))
+            elements.append(Spacer(1, 20))
+
+    # GUARDAR PDF
+    try:
+        doc.build(elements)
+        messagebox.showinfo("PDF generado", f"Reporte creado correctamente:\n{pdf_filename}")
+    except Exception as e:
+        messagebox.showerror("Error al generar PDF", str(e))
+
+
+# ==========================================================
+# 🔹 INTERFAZ GRÁFICA TKINTER
+# ==========================================================
+def abrir_interfaz():
+    ventana = tk.Tk()
+    ventana.title("Generador de Reportes MIO")
+    ventana.geometry("350x500")
+    ventana.config(bg="#d9e6f2")
+
+    ttk.Label(ventana, text="Seleccione el reporte a generar:", font=("Arial", 12, "bold")).pack(pady=15)
+
+    dias_unicos = sorted(df_global["Fecha"].dt.day.unique())
+
+    for dia in dias_unicos:
+        ttk.Button(
+            ventana,
+            text=f"Generar Reporte Día {dia}",
+            width=30,
+            command=lambda d=dia: generar_reporte_por_dia(df_global, d)
+        ).pack(pady=5)
+    ventana.mainloop()
+
+archivo_excel = "predicciones_mio.xlsx"
+
+if not os.path.exists(archivo_excel):
+    root = tk.Tk()
+    root.withdraw()
+    messagebox.showerror("Error", "No se encontró predicciones_mio.xlsx")
+    root.destroy()
+    exit()
+
+df_global = pd.read_excel(archivo_excel)
+df_global["Fecha"] = pd.to_datetime(df_global["Fecha"], errors="coerce")
+
+if __name__ == "__main__":
+    abrir_interfaz()
+
