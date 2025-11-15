@@ -109,7 +109,7 @@ class ModeloPredictivoMIO_sklearn:
         y_test_pred = self.modelo_ocupacion.predict(X_test_scaled)
         r2 = r2_score(y_test, y_test_pred)
 
-        print(f"✅ Modelo de ocupación entrenado correctamente (R² = {r2:.3f})")
+        print(f"Modelo de ocupación entrenado correctamente (R² = {r2:.3f})")
 
     # ===========================================================
     # 🔍 MODELO DE COLAPSO
@@ -159,7 +159,7 @@ class ModeloPredictivoMIO_sklearn:
         franjas = [f for f in self.df["Franja Horaria"].unique() if f != "Desconocida"]
         escenarios = []
 
-        print(f"🧩 Generando escenarios futuros ({len(terminales)} terminales × {len(franjas)} franjas × {len(fechas_futuras)} días)...")
+        print(f"Generando escenarios futuros ({len(terminales)} terminales × {len(franjas)} franjas × {len(fechas_futuras)} días)...")
 
         for fecha in fechas_futuras:
             dia_semana = fecha.day_name()
@@ -181,7 +181,7 @@ class ModeloPredictivoMIO_sklearn:
                     })
 
         df_futuro = pd.DataFrame(escenarios)
-        print(f"✅ Escenarios generados: {len(df_futuro)} registros.")
+        print(f"Escenarios generados: {len(df_futuro)} registros.")
         return df_futuro
 
     # ===========================================================
@@ -224,7 +224,7 @@ class ModeloPredictivoMIO_sklearn:
 )
 
         self.df_predicciones = df
-        print("✅ Predicciones generadas correctamente")
+        print("Predicciones generadas correctamente")
         return df
 
     # ===========================================================
@@ -260,15 +260,15 @@ class ModeloPredictivoMIO_sklearn:
         df_export = df_export[columnas_finales]
 
         df_export.to_excel(archivo, index=False)
-        print(f"💾 Archivo guardado correctamente: {archivo}")
-        print(f"📊 Total de registros: {len(df_export)}")
+        print(f"Archivo guardado correctamente: {archivo}")
+        print(f"Total de registros: {len(df_export)}")
 
 
 # ===========================================================
 # 🧠 BLOQUE PRINCIPAL
 # ===========================================================
 if __name__ == "__main__":
-    print("\n🚀 Iniciando sistema predictivo del MIO...\n")
+    print("\nIniciando sistema predictivo del MIO...\n")
 
     modelo = ModeloPredictivoMIO_sklearn(usar_ultimo_mes=False, usar_random_forest=True)
 

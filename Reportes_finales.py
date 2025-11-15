@@ -2,6 +2,8 @@ import os
 import pandas as pd
 from datetime import datetime
 import matplotlib.pyplot as plt
+import webbrowser
+import os
 
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
@@ -202,10 +204,16 @@ def generar_reporte_por_dia(df_original, dia):
 
     # GUARDAR PDF
     try:
-        doc.build(elements)
-        messagebox.showinfo("PDF generado", f"Reporte creado correctamente:\n{pdf_filename}")
+     doc.build(elements)
+     messagebox.showinfo("PDF generado", f"Reporte creado correctamente:\n{pdf_filename}")
+
+    
+     ruta_completa = os.path.abspath(pdf_filename)
+     webbrowser.open(ruta_completa)
+
     except Exception as e:
-        messagebox.showerror("Error al generar PDF", str(e))
+     messagebox.showerror("Error al generar PDF", str(e))
+
 
 
 # ==========================================================
@@ -244,4 +252,5 @@ df_global["Fecha"] = pd.to_datetime(df_global["Fecha"], errors="coerce")
 
 if __name__ == "__main__":
     abrir_interfaz()
+    
 

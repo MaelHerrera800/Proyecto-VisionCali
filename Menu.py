@@ -26,9 +26,8 @@ firebaseConfig = {
 firebase = pyrebase.initialize_app(firebaseConfig)
 auth = firebase.auth()
 
-# -----------------------------------------------------
 # FUNCIONES DE VENTANAS SECUNDARIAS
-# -----------------------------------------------------
+
 
 def ventana_usuario():
     try:
