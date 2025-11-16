@@ -125,28 +125,7 @@ def login_operario():
 # INICIALIZACIÓN DEL SISTEMA
 # -----------------------------------------------------
 def inicializar_sistema():
-    # Verificar y generar data limpia
-    try:
-        import limpieza_mio
-    except ImportError:
-        print("No se encontró el módulo limpieza_mio.")
-        return
-
-    if not os.path.exists("data_limpia_mio.xlsx"):
-      try:
-        print("Generando data limpia...")
-
-        df_limpio = limpieza_mio.generar_df_limpio()
-
-        df_limpio.to_excel("data_limpia_mio.xlsx", index=False)
-
-        print("Archivo 'data_limpia_mio.xlsx' generado exitosamente.")
-
-      except Exception as e:
-        print("Error generando data limpia:", e)
-    else:
-     print("'data_limpia_mio.xlsx' ya existe. No se generó nuevamente.")
-    # Verificar y generar predicciones
+    
     if not os.path.exists("predicciones_mio.xlsx"):
         try:
             from modelo_predictivo import ModeloPredictivoMIO_sklearn
