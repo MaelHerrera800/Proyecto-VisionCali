@@ -9,17 +9,17 @@ from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.metrics import (
-    mean_squared_error, r2_score, mean_absolute_error,
-    classification_report
+    mean_squared_error, r2_score, mean_absolute_error, classification_report
 )
 
-from limpieza_mio import df_limpio
-
+df_limpio = pd.read_excel("data_limpia_mio.xlsx")
 warnings.filterwarnings("ignore")
 
 
 class ModeloPredictivoMIO_sklearn:
+
     def __init__(self, usar_ultimo_mes=False, usar_random_forest=True):
+
         if usar_ultimo_mes:
             fecha_max = pd.to_datetime(df_limpio["Fecha"]).max()
             fecha_min = fecha_max - pd.Timedelta(days=30)
@@ -35,40 +35,50 @@ class ModeloPredictivoMIO_sklearn:
         self.modelo_colapso = None
         self.scaler_ocupacion = StandardScaler()
         self.scaler_colapso = StandardScaler()
-
         self.label_encoders = {}
         self.df_predicciones = None
+
+
 
     # ===========================================================
     # 🧹 PREPARAR DATOS
     # ===========================================================
     def _preparar_datos(self):
+
         columnas = [
             "Terminal", "Fecha", "Franja Horaria", "Día de la Semana",
             "Capacidad Máxima", "Personas Actuales", "Estado"
         ]
+
         self.df = self.df.dropna(subset=columnas)
 
         self.df["Fecha"] = pd.to_datetime(self.df["Fecha"], errors="coerce")
         self.df["Capacidad Máxima"] = pd.to_numeric(self.df["Capacidad Máxima"], errors="coerce")
         self.df["Personas Actuales"] = pd.to_numeric(self.df["Personas Actuales"], errors="coerce")
+
         self.df = self.df[self.df["Franja Horaria"] != "Desconocida"]
+
         # Calcular ocupación
         self.df["Ocupacion"] = np.where(
             self.df["Capacidad Máxima"] > 0,
             self.df["Personas Actuales"] / self.df["Capacidad Máxima"],
             np.nan
         )
+
         self.df = self.df.dropna(subset=["Ocupacion"])
+
         self.df["Colapsada"] = (self.df["Ocupacion"] > 0.95).astype(int)
 
         # Unificar nombres de días
         self.df["Día de la Semana"] = pd.to_datetime(self.df["Fecha"]).dt.day_name()
 
+
+
     # ===========================================================
     # 🔧 ENCODING DE VARIABLES
     # ===========================================================
     def _preparar_features(self, df, entrenar=True):
+
         df_features = df.copy()
         categoricas = ['Terminal', 'Franja Horaria', 'Día de la Semana']
 
@@ -87,34 +97,46 @@ class ModeloPredictivoMIO_sklearn:
         features_numericas = ['Capacidad Máxima'] + [f'{col}_encoded' for col in categoricas]
         return df_features[features_numericas]
 
+
+
     # ===========================================================
     # 📈 MODELO DE OCUPACIÓN
     # ===========================================================
     def entrenar_modelo_ocupacion(self):
+
         X = self._preparar_features(self.df, entrenar=True)
         y = self.df["Ocupacion"].values
 
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.2, random_state=42
+        )
+
         X_train_scaled = self.scaler_ocupacion.fit_transform(X_train)
         X_test_scaled = self.scaler_ocupacion.transform(X_test)
 
         if self.usar_random_forest:
             self.modelo_ocupacion = RandomForestRegressor(
-                n_estimators=100, max_depth=20, min_samples_split=5, random_state=42
+                n_estimators=100,
+                max_depth=20,
+                min_samples_split=5,
+                random_state=42
             )
         else:
             self.modelo_ocupacion = LinearRegression()
 
         self.modelo_ocupacion.fit(X_train_scaled, y_train)
         y_test_pred = self.modelo_ocupacion.predict(X_test_scaled)
-        r2 = r2_score(y_test, y_test_pred)
 
+        r2 = r2_score(y_test, y_test_pred)
         print(f"Modelo de ocupación entrenado correctamente (R² = {r2:.3f})")
+
+
 
     # ===========================================================
     # 🔍 MODELO DE COLAPSO
     # ===========================================================
     def entrenar_modelo_colapso(self):
+
         X = self._preparar_features(self.df, entrenar=True)
         X["Ocupacion"] = self.df["Ocupacion"].values
         y = self.df["Colapsada"].values
@@ -128,12 +150,17 @@ class ModeloPredictivoMIO_sklearn:
 
         if self.usar_random_forest:
             self.modelo_colapso = RandomForestClassifier(
-                n_estimators=100, max_depth=20, min_samples_split=5,
-                class_weight='balanced', random_state=42
+                n_estimators=100,
+                max_depth=20,
+                min_samples_split=5,
+                class_weight='balanced',
+                random_state=42
             )
         else:
             self.modelo_colapso = LogisticRegression(
-                class_weight='balanced', max_iter=1000, random_state=42
+                class_weight='balanced',
+                max_iter=1000,
+                random_state=42
             )
 
         self.modelo_colapso.fit(X_train_scaled, y_train)
@@ -141,14 +168,19 @@ class ModeloPredictivoMIO_sklearn:
 
         y_test_pred = self.modelo_colapso.predict(X_test_scaled)
         reporte = classification_report(y_test, y_test_pred, target_names=["Estable", "Colapsada"])
+
         print("✅ Modelo de colapso entrenado correctamente")
         print(reporte)
 
+
+
     # ===========================================================
-    # 🔮 GENERAR FECHAS FUTURAS — VERSIÓN COMPLETA Y ROBUSTA
+    # 🔮 GENERAR FECHAS FUTURAS
     # ===========================================================
     def generar_fechas_futuras(self, dias_futuros=5):
+
         fecha_max = self.df["Fecha"].max()
+
         fechas_futuras = pd.date_range(
             start=fecha_max + timedelta(days=1),
             periods=dias_futuros,
@@ -157,6 +189,7 @@ class ModeloPredictivoMIO_sklearn:
 
         terminales = self.df["Terminal"].unique()
         franjas = [f for f in self.df["Franja Horaria"].unique() if f != "Desconocida"]
+
         escenarios = []
 
         print(f"Generando escenarios futuros ({len(terminales)} terminales × {len(franjas)} franjas × {len(fechas_futuras)} días)...")
@@ -184,29 +217,38 @@ class ModeloPredictivoMIO_sklearn:
         print(f"Escenarios generados: {len(df_futuro)} registros.")
         return df_futuro
 
+
+
     # ===========================================================
     # 🔮 PREDICCIÓN COMPLETA
     # ===========================================================
     def predecir(self, incluir_futuro=True, dias_futuros=5):
+
         if self.modelo_ocupacion is None:
             print("⚠️ No hay modelo de ocupación entrenado.")
             return None
 
         df = self.df.copy()
+
         if incluir_futuro:
             df = self.generar_fechas_futuras(dias_futuros)
 
-        # --- Predicción de ocupación ---
+        # Predicción de ocupación
         X = self._preparar_features(df, entrenar=False)
         X_scaled = self.scaler_ocupacion.transform(X)
-        ocupacion_pred = np.clip(self.modelo_ocupacion.predict(X_scaled), 0.1, 2.0)
+
+        ocupacion_pred = np.clip(
+            self.modelo_ocupacion.predict(X_scaled),
+            0.1,
+            2.0
+        )
 
         df["Ocupacion"] = ocupacion_pred
         df["Personas_Predichas"] = (df["Ocupacion"] * df["Capacidad Máxima"]).round().astype(int)
-        
 
-        # --- Predicción de colapso ---
+        # Predicción de colapso
         if self.modelo_colapso is not None:
+
             X_colapso = X.copy()
             X_colapso["Ocupacion"] = ocupacion_pred
 
@@ -218,30 +260,31 @@ class ModeloPredictivoMIO_sklearn:
 
             df["Prob_Colapso"] = prob_colapso
             df["Estado_Previsto"] = np.select(
-    [df["Prob_Colapso"] > 0.75],
-    ["Colapsará"],
-    default="Estable"
-)
+                [df["Prob_Colapso"] > 0.75],
+                ["Colapsará"],
+                default="Estable"
+            )
 
         self.df_predicciones = df
         print("Predicciones generadas correctamente")
         return df
 
+
+
     # ===========================================================
-    # 💾 GUARDAR RESULTADOS ORDENADOS
+    # 💾 GUARDAR RESULTADOS
     # ===========================================================
     def guardar_predicciones(self, archivo="predicciones_mio.xlsx"):
+
         if self.df_predicciones is None:
             print("⚠️ No hay predicciones para guardar.")
             return
 
         df_export = self.df_predicciones.copy()
         df_export["Fecha"] = pd.to_datetime(df_export["Fecha"]).dt.date
-        
-        # 🔧 Eliminar franjas desconocidas
+
         df_export = df_export[df_export["Franja Horaria"] != "Desconocida"]
 
-        # 🔧 Ordenar franjas horarias cronológicamente
         def extraer_hora_inicio(franja):
             try:
                 return int(franja.split(":")[0])
@@ -249,31 +292,42 @@ class ModeloPredictivoMIO_sklearn:
                 return 0
 
         df_export["Hora_Inicio"] = df_export["Franja Horaria"].apply(extraer_hora_inicio)
-        df_export = df_export.sort_values(by=["Fecha", "Terminal", "Hora_Inicio"]).reset_index(drop=True)
+
+        df_export = df_export.sort_values(
+            by=["Fecha", "Terminal", "Hora_Inicio"]
+        ).reset_index(drop=True)
 
         columnas = [
             "Fecha", "Día de la Semana", "Terminal", "Franja Horaria",
             "Capacidad Máxima", "Ocupacion", "Personas_Predichas",
             "Prob_Colapso", "Estado_Previsto"
         ]
+
         columnas_finales = [c for c in columnas if c in df_export.columns]
         df_export = df_export[columnas_finales]
 
         df_export.to_excel(archivo, index=False)
+
         print(f"Archivo guardado correctamente: {archivo}")
         print(f"Total de registros: {len(df_export)}")
+
 
 
 # ===========================================================
 # 🧠 BLOQUE PRINCIPAL
 # ===========================================================
 if __name__ == "__main__":
+
     print("\nIniciando sistema predictivo del MIO...\n")
 
-    modelo = ModeloPredictivoMIO_sklearn(usar_ultimo_mes=False, usar_random_forest=True)
+    modelo = ModeloPredictivoMIO_sklearn(
+        usar_ultimo_mes=False,
+        usar_random_forest=True
+    )
 
     modelo.entrenar_modelo_ocupacion()
     modelo.entrenar_modelo_colapso()
+
     df_pred = modelo.predecir(incluir_futuro=True, dias_futuros=5)
 
     if df_pred is not None:

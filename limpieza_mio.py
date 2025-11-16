@@ -5,7 +5,7 @@ import calendar
 from datetime import datetime, timedelta
 
 
-# 🧩 CLASE OBJETO DE DATOS
+# CLASE OBJETO DE DATOS
 
 class ObjetoDeDatos:
     def __init__(self, dataframe):
@@ -51,7 +51,7 @@ nombres_terminales = [
     "Lleras Restrepo", "Ciudad Modelo", "Villa del Sur", "Mariano Ramos", "Cañaverales"
 ]
 
-num_datos = 1_000
+num_datos = 1_000_00
 np.random.seed(42)
 
 terminales_random = np.random.choice(nombres_terminales, num_datos)

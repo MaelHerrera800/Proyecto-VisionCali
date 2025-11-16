@@ -6,9 +6,9 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import date
 
-# ===============================================================
-# 📍 COORDENADAS DE ESTACIONES MIO
-# ===============================================================
+
+# COORDENADAS DE ESTACIONES MIO
+
 ESTACIONES_MIO = {
     "Terminal Paso del Comercio": (3.4886563335118, -76.493596701742),
     "Terminal Menga": (3.489476, -76.509063),
@@ -52,9 +52,9 @@ ESTACIONES_MIO = {
     "Cañaverales": (3.4110, -76.4950),
 }
 
-# ===============================================================
+
 # CARGAR Y PROCESAR DATOS
-# ===============================================================
+
 def cargar_predicciones():
     try:
         df = pd.read_excel("predicciones_mio.xlsx")
@@ -110,16 +110,16 @@ def resumen_por_terminal(df, fecha):
     return pd.DataFrame(resumen)
 
 
-# ===============================================================
+
 # GENERACIÓN DEL MAPA
-# ===============================================================
+
 def crear_mapa(df_resumen, filename="mapa_predicciones_mio.html"):
 
     mapa = folium.Map(location=[3.4516, -76.5320], zoom_start=12, tiles="CartoDB positron")
 
     for _, fila in df_resumen.iterrows():
 
-        # ✔ Nueva lógica: rojo si hay AL MENOS 1 colapsada
+        # Nueva lógica: rojo si hay AL MENOS 1 colapsada
         color = "red" if len(fila["Colapsadas"]) > 0 else "green"
 
         popup_html = f"""
