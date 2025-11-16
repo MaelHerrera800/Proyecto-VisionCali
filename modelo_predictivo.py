@@ -75,7 +75,7 @@ class ModeloPredictivoMIO_sklearn:
 
 
     # ===========================================================
-    # 🔧 ENCODING DE VARIABLES
+    # ENCODING DE VARIABLES
     # ===========================================================
     def _preparar_features(self, df, entrenar=True):
 
