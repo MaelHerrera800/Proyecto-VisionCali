@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import warnings
 from datetime import timedelta
-
+import os
 # Scikit-learn imports
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression, LogisticRegression
@@ -12,10 +12,23 @@ from sklearn.metrics import (
     mean_squared_error, r2_score, mean_absolute_error, classification_report
 )
 
-df_limpio = pd.read_excel("data_limpia_mio.xlsx")
+
 warnings.filterwarnings("ignore")
 
+if not os.path.exists("data_limpia_mio.xlsx"):
+    try:
+        from limpieza_mio import ObjetoDeDatos, df_terminales
+        objeto_datos = ObjetoDeDatos(df_terminales)
+        df_limpio = objeto_datos.limpiar_datos()  
+        if df_limpio is not None:
+            print("Archivo 'data_limpia_mio.xlsx' generado exitosamente.")
+        else:
+            print("No se pudo generar el DataFrame de data limpia.")
 
+    except Exception as e:
+        print("Error generando la data limpia:", e)
+
+df_limpio = pd.read_excel("data_limpia_mio.xlsx")
 class ModeloPredictivoMIO_sklearn:
 
     def __init__(self, usar_ultimo_mes=False, usar_random_forest=True):
@@ -41,7 +54,7 @@ class ModeloPredictivoMIO_sklearn:
 
 
     # ===========================================================
-    # 🧹 PREPARAR DATOS
+    # PREPARAR DATOS
     # ===========================================================
     def _preparar_datos(self):
 
@@ -100,7 +113,7 @@ class ModeloPredictivoMIO_sklearn:
 
 
     # ===========================================================
-    # 📈 MODELO DE OCUPACIÓN
+    # MODELO DE OCUPACIÓN
     # ===========================================================
     def entrenar_modelo_ocupacion(self):
 
@@ -314,7 +327,7 @@ class ModeloPredictivoMIO_sklearn:
 
 
 # ===========================================================
-# 🧠 BLOQUE PRINCIPAL
+# BLOQUE PRINCIPAL
 # ===========================================================
 if __name__ == "__main__":
 
