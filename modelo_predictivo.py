@@ -129,13 +129,13 @@ class ModeloPredictivoMIO_sklearn:
 
         if self.usar_random_forest:
             self.modelo_ocupacion = RandomForestRegressor(
-                n_estimators=100,
-                max_depth=20,
-                min_samples_split=5,
-                random_state=42
+                n_estimators=100, #numeros de arboles
+                max_depth=20,  #evita sobreajuste
+                min_samples_split=5, #mínimo 5 datos por división
+                random_state=42 # es reproducible
             )
         else:
-            self.modelo_ocupacion = LinearRegression()
+            self.modelo_ocupacion = LinearRegression() #nota este es por si llega a ver errores con el randomforest anque es menos pontente que este
 
         self.modelo_ocupacion.fit(X_train_scaled, y_train)
         y_test_pred = self.modelo_ocupacion.predict(X_test_scaled)
@@ -146,7 +146,7 @@ class ModeloPredictivoMIO_sklearn:
 
 
     # ===========================================================
-    # 🔍 MODELO DE COLAPSO
+    # MODELO DE COLAPSO
     # ===========================================================
     def entrenar_modelo_colapso(self):
 
@@ -163,16 +163,16 @@ class ModeloPredictivoMIO_sklearn:
 
         if self.usar_random_forest:
             self.modelo_colapso = RandomForestClassifier(
-                n_estimators=100,
+                n_estimators=100, #numeros de arboles
                 max_depth=20,
-                min_samples_split=5,
+                min_samples_split=5,#mínimo 5 datos por división
                 class_weight='balanced',
                 random_state=42
             )
         else:
             self.modelo_colapso = LogisticRegression(
                 class_weight='balanced',
-                max_iter=1000,
+                max_iter=1000, #max_iter=1000
                 random_state=42
             )
 
