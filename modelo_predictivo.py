@@ -188,7 +188,7 @@ class ModeloPredictivoMIO_sklearn:
 
 
     # ===========================================================
-    # 🔮 GENERAR FECHAS FUTURAS
+    #  GENERAR FECHAS FUTURAS
     # ===========================================================
     def generar_fechas_futuras(self, dias_futuros=5):
 
