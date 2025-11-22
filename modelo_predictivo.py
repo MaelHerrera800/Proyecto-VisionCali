@@ -182,7 +182,7 @@ class ModeloPredictivoMIO_sklearn:
         y_test_pred = self.modelo_colapso.predict(X_test_scaled)
         reporte = classification_report(y_test, y_test_pred, target_names=["Estable", "Colapsada"])
 
-        print("✅ Modelo de colapso entrenado correctamente")
+        print("Modelo de colapso entrenado correctamente")
         print(reporte)
 
 
