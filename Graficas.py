@@ -47,9 +47,13 @@ class VisualizacionesMIO:
     # ------------------------------
     # TOP 10 COLAPSOS POR DÍA
     # ------------------------------
+        # ------------------------------
+    # TOP 10 COLAPSOS POR DÍA (Lollipop Chart)
+    # ------------------------------
     def grafico_top_10(self, fecha=None):
         df = self.filtrar(fecha)
 
+        # Agrupar y obtener el top 10
         top_colapso = (
             df.groupby(["Terminal", "Franja Horaria"])["Prob_Colapso"]
             .mean()
@@ -57,12 +61,32 @@ class VisualizacionesMIO:
             .head(10)
         )
 
-        fig, ax = plt.subplots(figsize=(10, 6))
-        top_colapso.plot(kind="barh", ax=ax)
-        ax.set_title("Top 10 estaciones en riesgo de colapso")
-        ax.set_xlabel("Probabilidad promedio")
+        # Preparar etiquetas
+        etiquetas = [f"{t} ({f})" for t, f in top_colapso.index]
+
+        # Posiciones en eje Y
+        y_pos = range(len(top_colapso))
+
+        # Crear figura tipo lollipop
+        fig, ax = plt.subplots(figsize=(12, 7))
+
+        # Líneas 
+        ax.hlines(y=y_pos, xmin=0, xmax=top_colapso.values, color="gray", linewidth=2)
+
+        # Puntos 
+        ax.plot(top_colapso.values, y_pos, "o", markersize=10)
+
+        # Configuración
+        ax.set_yticks(y_pos)
+        ax.set_yticklabels(etiquetas)
+        ax.invert_yaxis()  # Para que el mayor aparezca arriba
+        ax.set_xlabel("Probabilidad promedio de colapso")
+        ax.set_title("Top 10 estaciones con mayor riesgo de colapso")
+
         plt.tight_layout()
         return fig
+
+        
 
 
 
