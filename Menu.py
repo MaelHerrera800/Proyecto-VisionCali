@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import ttk
 import pyrebase
 import subprocess
 import sys
@@ -140,13 +141,45 @@ def inicializar_sistema():
                 print("No se pudo generar el DataFrame de predicciones.")
         except Exception as e:
             print("Error generando predicciones:", e)
+def mostrar_pantalla_carga():
+    splash = tk.Tk()
+    splash.overrideredirect(True)  # Quita bordes
+    splash.geometry("400x300")
+
+    # Fondo blanco
+    frame = tk.Frame(splash, bg="white")
+    frame.pack(fill="both", expand=True)
+
+    # Logo opcional
+    try:
+        img = Image.open("logovisioncali.jpg")
+        img = img.resize((160, 160))
+        splash_logo = ImageTk.PhotoImage(img)
+        label_img = tk.Label(frame, image=splash_logo, bg="white")
+        label_img.image = splash_logo
+        label_img.pack(pady=10)
+    except:
+        tk.Label(frame, text="VISIÓNCALI", font=("Arial", 20, "bold"), bg="white").pack(pady=10)
+
+    # Texto de carga
+    tk.Label(frame, text="Cargando el sistema...", font=("Arial", 12), bg="white").pack(pady=10)
+
+    # Barra de progreso
+    progreso = ttk.Progressbar(frame, orient="horizontal", length=250, mode="indeterminate")
+    progreso.pack(pady=15)
+    progreso.start(10)  # velocidad
+
+    # Mostrar 2 segundos
+    splash.after(2000, splash.destroy)
+
+    splash.mainloop()
 
 # -----------------------------------------------------
 # MENÚ PRINCIPAL
 # -----------------------------------------------------
 if __name__ == "__main__":
+    mostrar_pantalla_carga() 
     inicializar_sistema()
-
     root = tk.Tk()
     root.title("MENÚ DE VISIÓNCALI")
     root.geometry("300x350")
@@ -166,5 +199,5 @@ if __name__ == "__main__":
     tk.Button(root, text="Operario", command=login_operario, bg="#2196F3", fg="white", width=20).pack(pady=10)
     tk.Button(root, text="Usuario", command=ventana_usuario, bg="#E21717", fg="white", width=20).pack(pady=10)
     tk.Button(root, text="Cerrar", command=root.destroy, bg="#E74C3C", fg="white", width=20).pack(pady=10)
-
+    root = tk.Tk()
     root.mainloop()

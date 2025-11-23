@@ -51,7 +51,7 @@ nombres_terminales = [
     "Lleras Restrepo", "Ciudad Modelo", "Villa del Sur", "Mariano Ramos", "Cañaverales"
 ]
 
-num_datos = 1_000_00
+num_datos = 1_000_000
 np.random.seed(42)
 
 terminales_random = np.random.choice(nombres_terminales, num_datos)
@@ -80,7 +80,7 @@ personas = np.array(personas)
 # Estado con umbral en 95%
 estado = np.where(personas > capacidades * 0.95, "Colapsada", "Estable")
 
-# Fechas entre hace 2 años y hoy (sin hora)
+# Fechas entre hace 5 años y hoy (sin hora)
 fecha_fin = datetime.now().date()
 fecha_inicio = fecha_fin - timedelta(days=1825)
 fechas_secuenciales = pd.date_range(start=fecha_inicio, end=fecha_fin, periods=num_datos)
