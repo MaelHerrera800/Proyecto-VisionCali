@@ -199,5 +199,4 @@ if __name__ == "__main__":
     tk.Button(root, text="Operario", command=login_operario, bg="#2196F3", fg="white", width=20).pack(pady=10)
     tk.Button(root, text="Usuario", command=ventana_usuario, bg="#E21717", fg="white", width=20).pack(pady=10)
     tk.Button(root, text="Cerrar", command=root.destroy, bg="#E74C3C", fg="white", width=20).pack(pady=10)
-    root = tk.Tk()
     root.mainloop()

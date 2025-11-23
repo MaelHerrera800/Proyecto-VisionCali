@@ -273,7 +273,7 @@ class ModeloPredictivoMIO_sklearn:
 
             df["Prob_Colapso"] = prob_colapso
             df["Estado_Previsto"] = np.select(
-                [df["Prob_Colapso"] > 0.75],
+                [df["Prob_Colapso"] > 0.65],
                 ["Colapsará"],
                 default="Estable"
             )
