@@ -1,0 +1,47 @@
+En este archivo vera indicaciones para que el programa funcione
+
+primero las librerías que tiene que instalar son las siguientes por el método pip son las siguientes
+
+
+folium
+
+matplotlib
+
+Pillow
+
+numpy
+
+pandas
+
+reportlab
+
+pyrebase4 (versión mantenida de pyrebase)
+
+scikit-learn
+
+le dejo en el comando pip que lo instale directamente de la terminal
+
+pip install folium matplotlib Pillow numpy pandas reportlab pyrebase4 scikit-learn
+
+OJO posiblemente el pyrebase4 o la GUI de tkinter te presente problemas en tal caso instalar el setuptools
+
+pip install setuptools
+
+Aca dejo la información sobre los login si quiere acceder a un rol
+
+ADMINISTRADOR
+
+USUARIO
+adminMio@mio.com
+
+CONTRASEÑA
+ejemplo1
+
+OPERARIO
+
+USUARIO
+operarioMio@mio.com
+
+CONTRASEÑA
+Ejemplo2
+
