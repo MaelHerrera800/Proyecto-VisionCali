@@ -120,7 +120,7 @@ def crear_mapa(df_resumen, filename="mapa_predicciones_mio.html"):
     for _, fila in df_resumen.iterrows():
 
         # Nueva lógica: rojo si hay AL MENOS 1 colapsada
-        color = "red" if len(fila["Colapsadas"]) > 0 else "green"
+        color = "red" if len(fila["Colapsadas"]) > 2 else "green"
 
         popup_html = f"""
         <b>{fila['Terminal']}</b><br>

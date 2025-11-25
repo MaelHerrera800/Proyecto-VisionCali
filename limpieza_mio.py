@@ -51,7 +51,7 @@ nombres_terminales = [
     "Lleras Restrepo", "Ciudad Modelo", "Villa del Sur", "Mariano Ramos", "Cañaverales"
 ]
 
-num_datos = 1_000_00
+num_datos = 1_000_000
 np.random.seed(42)
 
 terminales_random = np.random.choice(nombres_terminales, num_datos)

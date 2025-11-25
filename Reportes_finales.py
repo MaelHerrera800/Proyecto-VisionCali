@@ -18,7 +18,7 @@ from tkinter import ttk, messagebox
 
 
 # ==========================================================
-# 📌 FUNCIÓN PRINCIPAL: GENERAR REPORTE
+# FUNCIÓN PRINCIPAL: GENERAR REPORTE
 # ==========================================================
 def generar_reporte_por_dia(df_original, dia):
 
@@ -85,7 +85,7 @@ def generar_reporte_por_dia(df_original, dia):
     plt.close()
 
     # ================================
-    # 📈 ANÁLISIS DE TENDENCIAS
+    # ANÁLISIS DE TENDENCIAS
     # ================================
     tendencias = []
 
@@ -124,7 +124,7 @@ def generar_reporte_por_dia(df_original, dia):
     )
 
     # ====================================================
-    # 📝 CREAR PDF
+    # CREAR PDF
     # ====================================================
     pdf_filename = f"Reporte_MIO_Dia_{dia}.pdf"
     doc = SimpleDocTemplate(pdf_filename, pagesize=A4)
@@ -167,7 +167,7 @@ def generar_reporte_por_dia(df_original, dia):
     elements.append(tabla)
     elements.append(Spacer(1, 20))
 
-    # 📈 ANÁLISIS DE TENDENCIAS
+    # ANÁLISIS DE TENDENCIAS
     elements.append(Paragraph("<b>Análisis de Tendencias</b>", styles["Heading2"]))
     for t in tendencias:
         elements.append(Paragraph(f"- {t}", styles["BodyText"]))
@@ -217,7 +217,7 @@ def generar_reporte_por_dia(df_original, dia):
 
 
 # ==========================================================
-# 🔹 INTERFAZ GRÁFICA TKINTER
+# INTERFAZ GRÁFICA TKINTER
 # ==========================================================
 def abrir_interfaz():
     ventana = tk.Tk()

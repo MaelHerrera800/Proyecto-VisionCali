@@ -31,7 +31,7 @@ if not os.path.exists("data_limpia_mio.xlsx"):
 df_limpio = pd.read_excel("data_limpia_mio.xlsx")
 class ModeloPredictivoMIO_sklearn:
 
-    def __init__(self, usar_ultimo_mes=False, usar_random_forest=True):
+    def __init__(self, usar_ultimo_mes=True, usar_random_forest=True):
 
         if usar_ultimo_mes:
             fecha_max = pd.to_datetime(df_limpio["Fecha"]).max()
@@ -80,7 +80,7 @@ class ModeloPredictivoMIO_sklearn:
 
         self.df = self.df.dropna(subset=["Ocupacion"])
 
-        self.df["Colapsada"] = (self.df["Ocupacion"] > 0.95).astype(int)
+        self.df["Colapsada"] = (self.df["Ocupacion"] > 0.80).astype(int)
 
         # Unificar nombres de días
         self.df["Día de la Semana"] = pd.to_datetime(self.df["Fecha"]).dt.day_name()
@@ -238,7 +238,7 @@ class ModeloPredictivoMIO_sklearn:
     def predecir(self, incluir_futuro=True, dias_futuros=5):
 
         if self.modelo_ocupacion is None:
-            print("⚠️ No hay modelo de ocupación entrenado.")
+            print("No hay modelo de ocupación entrenado.")
             return None
 
         df = self.df.copy()
@@ -247,7 +247,7 @@ class ModeloPredictivoMIO_sklearn:
             df = self.generar_fechas_futuras(dias_futuros)
 
         # Predicción de ocupación
-        X = self._preparar_features(df, entrenar=False)
+        X = self._preparar_features(df, entrenar=True)
         X_scaled = self.scaler_ocupacion.transform(X)
 
         ocupacion_pred = np.clip(
@@ -298,18 +298,7 @@ class ModeloPredictivoMIO_sklearn:
 
         df_export = df_export[df_export["Franja Horaria"] != "Desconocida"]
 
-        def extraer_hora_inicio(franja):
-            try:
-                return int(franja.split(":")[0])
-            except:
-                return 0
-
-        df_export["Hora_Inicio"] = df_export["Franja Horaria"].apply(extraer_hora_inicio)
-
-        df_export = df_export.sort_values(
-            by=["Fecha", "Terminal", "Hora_Inicio"]
-        ).reset_index(drop=True)
-
+        
         columnas = [
             "Fecha", "Día de la Semana", "Terminal", "Franja Horaria",
             "Capacidad Máxima", "Ocupacion", "Personas_Predichas",
@@ -345,6 +334,6 @@ if __name__ == "__main__":
 
     if df_pred is not None:
         modelo.guardar_predicciones()
-        print("\n✅ Proceso completado con éxito.")
+        print("\nProceso completado con éxito.")
     else:
-        print("\n⚠️ No se generaron predicciones.")
+        print("\nNo se generaron predicciones.")

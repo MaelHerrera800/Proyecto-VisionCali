@@ -22,9 +22,9 @@ firebaseConfig = {
 firebase = pyrebase.initialize_app(firebaseConfig)
 auth = firebase.auth()
 
-# -----------------------------------------------------
+# 
 # FUNCIONES DE VENTANAS SECUNDARIAS
-# -----------------------------------------------------
+# 
 def ventana_usuario():
     try:
         subprocess.Popen([sys.executable, "Graficas_solo_tablas.py"])
@@ -169,8 +169,8 @@ def mostrar_pantalla_carga():
     progreso.pack(pady=15)
     progreso.start(10)  # velocidad
 
-    # Mostrar 2 segundos
-    splash.after(2000, splash.destroy)
+    # Mostrar  segundos
+    splash.after(5000, splash.destroy)
 
     splash.mainloop()
 
