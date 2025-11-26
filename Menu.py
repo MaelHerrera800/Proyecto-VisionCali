@@ -6,17 +6,20 @@ import subprocess
 import sys
 import os
 from PIL import Image, ImageTk
+from dotenv import load_dotenv
 
 # CONFIGURACIÓN DE FIREBASE
+load_dotenv()
+
 firebaseConfig = {
-    "apiKey": "AIzaSyALWtfuk7-Ti9S2L0uFzJOtj_kkt9SS-5Q",
-    "authDomain": "menu-del-mio.firebaseapp.com",
-    "projectId": "menu-del-mio",
-    "databaseURL": "https://menu-del-mio-default-rtdb.firebaseio.com/",
-    "storageBucket": "menu-del-mio.firebasestorage.app",
-    "messagingSenderId": "930983688745",
-    "appId": "1:930983688745:web:517fed39a792495104ba38",
-    "measurementId": "G-07JH7Y4RMZ"
+    "apiKey": os.getenv("API_KEY"),
+    "authDomain": os.getenv("AUTH_DOMAIN"),
+    "projectId": os.getenv("PROJECT_ID"),
+    "databaseURL": os.getenv("DATABASE_URL"),
+    "storageBucket": os.getenv("STORAGE_BUCKET"),
+    "messagingSenderId": os.getenv("MESSAGING_SENDER_ID"),
+    "appId": os.getenv("APP_ID"),
+    "measurementId": os.getenv("MEASUREMENT_ID")
 }
 
 firebase = pyrebase.initialize_app(firebaseConfig)
