@@ -198,3 +198,22 @@ if __name__ == "__main__":
         app.iniciar()
     except FileNotFoundError:
         messagebox.showerror("Error", "No se encontró el archivo 'predicciones_mio.xlsx'.")
+        
+        
+def mostrar_tablas_desde_archivo(ruta_predicciones: str = None):
+    """
+    Carga predicciones desde archivo (ruta absoluta o relativa) y muestra la interfaz de tablas.
+    """
+    if ruta_predicciones is None:
+        ruta_predicciones = os.path.join(BASE_DIR, "predicciones_mio.xlsx")
+    try:
+        df = pd.read_excel(ruta_predicciones)
+    except FileNotFoundError:
+        messagebox.showerror("Error", f"No se encontró el archivo '{ruta_predicciones}'.")
+        return
+    app = InterfazTablas(df)
+    app.iniciar()
+
+
+if __name__ == "__main__":
+    mostrar_tablas_desde_archivo()

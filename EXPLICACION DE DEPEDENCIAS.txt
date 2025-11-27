@@ -1,0 +1,29 @@
+# Dependencias del Sistema Predictivo MIO
+# Python >= 3.8
+
+# Core dependencies
+pandas>=1.5.0,<2.0.0
+numpy>=1.23.0,<2.0.0
+openpyxl>=3.0.0,<4.0.0
+
+# Machine Learning
+scikit-learn>=1.2.0,<2.0.0
+
+# Visualización
+matplotlib>=3.6.0,<4.0.0
+
+# GUI
+# tkinter viene incluido con Python, no requiere instalación
+
+# Mapas
+folium>=0.14.0,<1.0.0
+
+# Firebase
+pyrebase4>=4.6.0,<5.0.0
+
+# Procesamiento de imágenes
+Pillow>=9.0.0,<11.0.0
+
+# Testing (opcional)
+pytest>=7.0.0,<8.0.0
+pytest-cov>=4.0.0,<5.0.0

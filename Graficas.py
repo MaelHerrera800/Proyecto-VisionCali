@@ -272,3 +272,27 @@ if __name__ == "__main__":
         app.iniciar()
     except FileNotFoundError:
         messagebox.showerror("Error", "No se encontró el archivo 'predicciones_mio.xlsx'.")
+        
+        
+        
+
+def mostrar_interfaz_desde_archivo(ruta_predicciones: str = None):
+    """
+    Carga el archivo de predicciones (si ruta=None usa BASE_DIR/predicciones_mio.xlsx)
+    y muestra la interfaz.
+    """
+    if ruta_predicciones is None:
+        ruta_predicciones = os.path.join(BASE_DIR, "predicciones_mio.xlsx")
+
+    try:
+        df = pd.read_excel(ruta_predicciones)
+    except FileNotFoundError:
+        messagebox.showerror("Error", f"No se encontró el archivo '{ruta_predicciones}'.")
+        return
+
+    app = InterfazMIO(df)
+    app.iniciar()
+
+
+if __name__ == "__main__":
+    mostrar_interfaz_desde_archivo()

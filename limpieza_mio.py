@@ -3,7 +3,9 @@ import numpy as np
 import openpyxl
 import calendar 
 from datetime import datetime, timedelta
+import os
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # CLASE OBJETO DE DATOS
 
@@ -145,4 +147,5 @@ print("\nArchivo 'data_limpia_mio.xlsx' generado exitosamente.")
 # 🧾 BLOQUE PRINCIPAL
 # ============================================================
 if __name__ == "__main__":
-    pass
+    df = generar_datos_limpios(force_regen=False)
+    print("data_limpia_mio.xlsx disponible en:", os.path.join(BASE_DIR, "data_limpia_mio.xlsx"))

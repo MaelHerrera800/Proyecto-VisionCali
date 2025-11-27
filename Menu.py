@@ -8,6 +8,12 @@ import os
 from PIL import Image, ImageTk
 from dotenv import load_dotenv
 
+from limpieza_mio import generar_datos_limpios
+from modelo_predictivo import generar_predicciones_desde_archivo
+from Graficas import mostrar_interfaz_desde_archivo
+from Graficas_solo_tablas import mostrar_tablas_desde_archivo
+
+
 # CONFIGURACIÓN DE FIREBASE
 load_dotenv()
 
@@ -64,17 +70,14 @@ def abrir_reporte():
     except Exception as e:
         messagebox.showerror("Error", f"No se pudo abrir el módulo de reportes:\n{e}")
 
-def abrir_mapa():
-    try:
-        subprocess.Popen([sys.executable, "mapaMIO.py"])
-    except Exception as e:
-        messagebox.showerror("Error", f"No se pudo abrir el módulo de mapa:\n{e}")
-
 def abrir_graficas():
-    try:
-        subprocess.Popen([sys.executable, "Graficas.py"])
-    except Exception as e:
-        messagebox.showerror("Error", f"No se pudo abrir el módulo de gráficas:\n{e}")
+    """Abre la interfaz de gráficas (sin subprocess)."""
+    mostrar_interfaz_desde_archivo()
+
+
+def abrir_tablas():
+    """Abre la interfaz de solo tablas."""
+    mostrar_tablas_desde_archivo()
 
 # -----------------------------------------------------
 # FUNCIONES DE LOGIN
@@ -129,21 +132,12 @@ def login_operario():
 # INICIALIZACIÓN DEL SISTEMA
 # -----------------------------------------------------
 def inicializar_sistema():
-    
-    if not os.path.exists("predicciones_mio.xlsx"):
-        try:
-            from modelo_predictivo import ModeloPredictivoMIO_sklearn
-            modelo = ModeloPredictivoMIO_sklearn(usar_ultimo_mes=False, usar_random_forest=True)
-            modelo.entrenar_modelo_ocupacion()
-            modelo.entrenar_modelo_colapso()
-            df_pred = modelo.predecir(incluir_futuro=True, dias_futuros=5)
-            if df_pred is not None:
-                modelo.guardar_predicciones()
-                print("Archivo 'predicciones_mio.xlsx' generado exitosamente.")
-            else:
-                print("No se pudo generar el DataFrame de predicciones.")
-        except Exception as e:
-            print("Error generando predicciones:", e)
+    ruta_data = os.path.join(BASE_DIR, "data_limpia_mio.xlsx")
+    if not os.path.exists(ruta_data):
+        generar_datos_limpios()
+    ruta_pred = os.path.join(BASE_DIR, "predicciones_mio.xlsx")
+    if not os.path.exists(ruta_pred):
+        generar_predicciones_desde_archivo()
 def mostrar_pantalla_carga():
     splash = tk.Tk()
     splash.overrideredirect(True)  # Quita bordes

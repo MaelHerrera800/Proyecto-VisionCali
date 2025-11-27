@@ -12,6 +12,7 @@ from sklearn.metrics import (
     mean_squared_error, r2_score, mean_absolute_error, classification_report
 )
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 warnings.filterwarnings("ignore")
 
@@ -337,3 +338,24 @@ if __name__ == "__main__":
         print("\nProceso completado con éxito.")
     else:
         print("\nNo se generaron predicciones.")
+
+
+
+def generar_predicciones_desde_archivo(data_limpia_path: str = None, usar_ultimo_mes: bool = True, usar_random_forest: bool = True):
+    """
+    Conveniencia: carga data limpia (si no se proporciona, busca en BASE_DIR),
+    entrena modelos y genera + guarda predicciones.
+    """
+    if data_limpia_path is None:
+        data_limpia_path = os.path.join(BASE_DIR, "data_limpia_mio.xlsx")
+
+    if not os.path.exists(data_limpia_path):
+        raise FileNotFoundError(f"No se encontró {data_limpia_path}. Genera data_limpia_mio.xlsx primero.")
+
+    df_limpio = pd.read_excel(data_limpia_path)
+    modelo = ModeloPredictivoMIO_sklearn(df_limpio, usar_ultimo_mes=usar_ultimo_mes, usar_random_forest=usar_random_forest)
+    modelo.entrenar_modelo_ocupacion()
+    modelo.entrenar_modelo_colapso()
+    df_pred = modelo.predecir(incluir_futuro=True, dias_futuros=5)
+    modelo.guardar_predicciones()
+    return df_pred
